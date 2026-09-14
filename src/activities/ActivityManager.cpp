@@ -30,6 +30,7 @@
 #include "home/FileBrowserActivity.h"
 #include "home/HomeActivity.h"
 #include "home/RecentBookProgress.h"
+#include "home_control/HomeControlActivity.h"
 #include "library/LibraryActivity.h"
 #include "network/CrossPointWebServerActivity.h"
 #include "network/NearbyBookTransferActivity.h"
@@ -928,6 +929,32 @@ bool ActivityManager::resumeFileTransferFromNetworkBoot(const uint32_t payload) 
 
   replaceActivity(std::move(activity));
   return true;
+}
+
+bool ActivityManager::goToHomeControl(const bool networkBootReady) {
+#if CROSSINK_APP_CAP_HOME_CONTROL
+#ifndef SIMULATOR
+  if (!networkBootReady) {
+    silentRestartToNetwork(NetworkBootTarget::HOME_CONTROL);
+    return true;
+  }
+#else
+  // The desktop build has no fragmented WiFi heap to clear; stay in-process.
+  (void)networkBootReady;
+#endif
+  auto activity = makeUniqueNoThrow<HomeControlActivity>(renderer, mappedInput);
+  if (!activity) {
+    LOG_ERR("ACT", "OOM: Home Control after minimal boot (free=%u maxAlloc=%u)", ESP.getFreeHeap(),
+            ESP.getMaxAllocHeap());
+    return false;
+  }
+  replaceActivity(std::move(activity));
+  return true;
+#else
+  (void)networkBootReady;
+  LOG_ERR("ACT", "Home Control requested in a build without the capability");
+  return false;
+#endif
 }
 
 void ActivityManager::goToNearbyStatsSync() {
