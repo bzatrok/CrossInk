@@ -24,6 +24,22 @@ Layout vertical(const Rect container, const uint8_t count, const int buttonHeigh
   return result;
 }
 
+Layout horizontal(const Rect container, const uint8_t count, const int buttonHeight, const int gap) {
+  Layout result;
+  result.container = container;
+  result.count = std::min<uint8_t>(count, static_cast<uint8_t>(kMaxButtons));
+  if (result.count == 0 || container.width <= 0 || container.height <= 0) return result;
+
+  const int safeHeight = std::min(std::max(1, buttonHeight), container.height);
+  const int safeGap = std::max(0, gap);
+  const int width = std::max(1, (container.width - safeGap * (result.count - 1)) / result.count);
+  const int y = container.y + std::max(0, container.height - safeHeight);
+  for (uint8_t i = 0; i < result.count; ++i) {
+    result.buttons[i] = Rect{container.x + i * (width + safeGap), y, width, safeHeight};
+  }
+  return result;
+}
+
 int indexAt(const Layout& layout, const int x, const int y) {
   for (uint8_t i = 0; i < layout.count; ++i) {
     const Rect& button = layout.buttons[i];

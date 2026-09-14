@@ -27,6 +27,8 @@ struct Layout {
 };
 
 Layout vertical(Rect container, uint8_t count, int buttonHeight = kDefaultHeight, int gap = kDefaultGap);
+// One row of equally wide buttons filling the container width.
+Layout horizontal(Rect container, uint8_t count, int buttonHeight = kDefaultHeight, int gap = kDefaultGap);
 
 int indexAt(const Layout& layout, int x, int y);
 
