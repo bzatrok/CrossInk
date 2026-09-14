@@ -44,3 +44,12 @@ Refer to https://freeink.org/llms.txt for guidance.
 
 - POSIX TZ signs are inverted from ISO 8601 in `TimeStore::applyTimezone()`: `"UTC-1"` means UTC+1.
 - `LyraTheme::drawHeader()` does not call `BaseTheme::drawHeader()`, so header changes in the base theme must be duplicated in Lyra if needed.
+
+## Fork Tooling (macOS)
+
+- `pio` is at `~/.platformio/penv/bin/pio`, not on PATH. Native simulator envs need the Homebrew LLVM 20 recipe in
+  `docs/development/fork-workflow.md`; Apple clang fails on float `from_chars` before macOS 26.
+- Local flashing goes through self-hosted Inky with `INKY_DEV_FIRMWARE_DIR`; see the same doc.
+- Home Control (Hue + tado, X4 Pro only) is fork-only and documented in `docs/home-control.md`.
+- `scripts/run_simulator_smoke_test.py` rebuilds with the shell's `CC`/`CXX` unless `--no-build`; the simulator also
+  takes `CROSSPOINT_SIM_INPUT_SCRIPT` / `CROSSPOINT_SIM_SCREENSHOTS` for headless screenshots (recipe in the fork doc).

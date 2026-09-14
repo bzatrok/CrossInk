@@ -14,6 +14,7 @@ Welcome to CrossInk, a personal fork of CrossPoint Reader.
 - [Touch Navigation](./touch-navigation.md)
 - [User Guide](./user-guide.md)
 - [Installation](./installation.md)
+- [Home Control](./home-control.md) (X4 Pro: Philips Hue and tado°)
 - [SD Card Fonts](./sd-card-fonts.md)
 - [Reader Features](./reader-features.md)
 - [Dictionary](./dictionary.md)
