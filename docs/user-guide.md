@@ -252,6 +252,7 @@ device model and build.
   - "RoundedRaff" - A rounded theme with additional visual styling
   - "Cover Grid" (PSRAM devices, such as Sticky and X4 Pro) - Shows the current
     book and up to six additional book covers; tap a cover to open that book
+  - "Tiles" - Lyra with the home menu as a phone-style grid of icon tiles
 
   Themes that show reading stats hide those stats while **Track Reading Stats** is off.
 

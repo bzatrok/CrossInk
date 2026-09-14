@@ -359,7 +359,8 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
     MINIMAL = 5,
     DASHBOARD = 6,
     COVER_GRID = 7,
-    UI_THEME_COUNT = 8
+    TILES = 8,
+    UI_THEME_COUNT = 9
   };
   enum RECENT_BOOKS_VIEW { RECENT_BOOKS_LIST = 0, RECENT_BOOKS_GRID = 1, RECENT_BOOKS_VIEW_COUNT };
 
