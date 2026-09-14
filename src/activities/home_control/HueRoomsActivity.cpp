@@ -28,8 +28,10 @@ namespace {
 // gently and give the user a minute and a half to reach the bridge.
 constexpr unsigned long PAIR_RETRY_MS = 2000;
 constexpr unsigned long PAIR_TIMEOUT_MS = 90000;
-// Room JSON repeats children/services per room; large installs need headroom.
-constexpr size_t BODY_BUFFER_PSRAM = 48 * 1024;
+// The scene list carries every light action of every scene and is by far the
+// largest reply; PSRAM is plentiful on the X4 Pro. The internal fallback only
+// fits rooms and states, so scenes degrade to plain on/off there.
+constexpr size_t BODY_BUFFER_PSRAM = 160 * 1024;
 constexpr size_t BODY_BUFFER_FALLBACK = 16 * 1024;
 
 TouchActionButtons::Layout touchActionLayout(const GfxRenderer& renderer, const uint8_t buttonCount) {
@@ -297,6 +299,7 @@ void HueRoomsActivity::loadRooms() {
     // Tiles still show names; states stay unknown until a later refresh.
     for (size_t i = 0; i < roomCount; ++i) roomStateKnown[i] = false;
   }
+  loadRoomScenes();
   {
     RenderLock lock(*this);
     selectedRoom = 0;
@@ -304,6 +307,33 @@ void HueRoomsActivity::loadRooms() {
     state = State::ROOMS;
   }
   requestUpdate();
+}
+
+// Scenes are an enhancement: any failure (typically a scene list larger than
+// the buffer) leaves every sceneId empty and "on" falls back to a plain PUT.
+void HueRoomsActivity::loadRoomScenes() {
+  const HueClient::Error error = client->listLastScenes(rooms, roomCount, roomScenes);
+  if (error != HueClient::Error::Ok) {
+    LOG_ERR("HC", "Hue scenes unavailable (%s); Turn on will not recall scenes", HueClient::errorName(error));
+    for (size_t i = 0; i < roomCount; ++i) roomScenes[i].sceneId[0] = '\0';
+  }
+}
+
+// Turning a room on replays its last scene when it has one, as the Hue app
+// does, then re-reads the group so the tile shows the scene's brightness.
+HueClient::Error HueRoomsActivity::turnRoomOn(const int index) {
+  const char* rid = rooms[index].groupedLightId;
+  if (roomScenes[index].sceneId[0] == '\0') return client->setOn(rid, true);
+  const HueClient::Error error = client->recallScene(roomScenes[index].sceneId);
+  if (error != HueClient::Error::Ok) return error;
+  roomScenes[index].active = true;
+  hue::RoomState fresh;
+  if (client->getRoomState(rid, fresh) == HueClient::Error::Ok) {
+    RenderLock lock(*this);
+    roomStates[index] = fresh;
+    roomStateKnown[index] = true;
+  }
+  return HueClient::Error::Ok;
 }
 
 void HueRoomsActivity::openRoom(const int index) {
@@ -328,7 +358,13 @@ void HueRoomsActivity::applyDetailAction(const DetailAction action) {
   switch (action) {
     case DetailAction::TOGGLE:
       next.on = !current.on;
-      error = client->setOn(rid, next.on);
+      if (next.on) {
+        error = turnRoomOn(selectedRoom);
+        if (error == HueClient::Error::Ok) next = roomStates[selectedRoom];  // read back after a scene recall
+      } else {
+        error = client->setOn(rid, false);
+        roomScenes[selectedRoom].active = false;
+      }
       break;
     case DetailAction::BRIGHTER:
       next.on = true;
@@ -357,8 +393,19 @@ void HueRoomsActivity::applyBulkAction(const BulkAction action) {
   setState(State::APPLYING);
   if (requestUpdateAndWait() != RequestUpdateResult::Rendered) requestUpdate(true);
 
+  bool anyScene = false;
+  for (size_t i = 0; i < roomCount; ++i) anyScene = anyScene || roomScenes[i].sceneId[0] != '\0';
+
   HueClient::Error error = HueClient::Error::Ok;
-  if (allLightsId[0] != '\0') {
+  if (on && anyScene) {
+    // Rooms come back to their last scene; rooms without one just switch on.
+    for (size_t i = 0; i < roomCount && error == HueClient::Error::Ok; ++i) {
+      if (rooms[i].groupedLightId[0] == '\0') continue;
+      error = roomScenes[i].sceneId[0] != '\0' ? client->recallScene(roomScenes[i].sceneId)
+                                               : client->setOn(rooms[i].groupedLightId, true);
+    }
+    if (error == HueClient::Error::Ok) loadRoomStates();  // one bulk read for the scene brightnesses
+  } else if (allLightsId[0] != '\0') {
     error = client->setOn(allLightsId, on);
   } else {
     for (size_t i = 0; i < roomCount && error == HueClient::Error::Ok; ++i) {
@@ -376,6 +423,7 @@ void HueRoomsActivity::applyBulkAction(const BulkAction action) {
       if (rooms[i].groupedLightId[0] == '\0') continue;
       roomStates[i].on = on;
       roomStateKnown[i] = true;
+      roomScenes[i].active = on && roomScenes[i].sceneId[0] != '\0';
     }
     state = State::ROOMS;
   }
@@ -535,6 +583,8 @@ void HueRoomsActivity::renderRooms() {
     TileGrid::Content content;
     content.title = rooms[index].name;
     content.line1 = line;
+    const hue::RoomScene& scene = roomScenes[index];
+    content.line2 = (scene.active && roomStateKnown[index] && roomStates[index].on) ? scene.name : nullptr;
     content.icon = &icon_bulb_32;
     content.enabled = rooms[index].groupedLightId[0] != '\0';
     content.filled = roomStateKnown[index] && roomStates[index].on;
@@ -556,9 +606,15 @@ void HueRoomsActivity::renderDetail() {
                             EpdFontFamily::BOLD);
   y += lineHeight + metrics.verticalSpacing;
 
-  char line[48];
+  char line[64];
   std::snprintf(line, sizeof(line), "%s: %u%%", tr(STR_HUE_BRIGHTNESS), s.brightness);
   renderer.drawCenteredText(UI_10_FONT_ID, y, line);
+  const hue::RoomScene& scene = roomScenes[selectedRoom];
+  if (scene.sceneId[0] != '\0') {
+    y += renderer.getLineHeight(UI_10_FONT_ID) + metrics.verticalSpacing;
+    std::snprintf(line, sizeof(line), "%s: %s", tr(STR_HUE_SCENE), scene.name);
+    renderer.drawCenteredText(UI_10_FONT_ID, y, line);
+  }
 
   if (mappedInput.hasTouch()) {
     const auto actions = touchActionLayout(renderer, kDetailActionCount);

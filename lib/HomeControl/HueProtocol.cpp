@@ -162,6 +162,63 @@ const GroupedLight* findGroupedLight(const GroupedLight* list, const size_t coun
   return nullptr;
 }
 
+void buildScenesFilter(JsonDocument& filter) {
+  JsonObject root = filter.to<JsonObject>();
+  JsonObject entry = root["data"].add<JsonObject>();
+  entry["id"] = true;
+  entry["group"]["rid"] = true;
+  entry["metadata"]["name"] = true;
+  entry["status"]["active"] = true;
+  entry["status"]["last_recall"] = true;
+}
+
+bool parseLastScenes(const char* body, size_t len, const Room* rooms, size_t roomCount, RoomScene* out) {
+  for (size_t i = 0; i < roomCount; ++i) {
+    out[i].sceneId[0] = '\0';
+    out[i].name[0] = '\0';
+    out[i].active = false;
+    out[i].lastRecall[0] = '\0';
+  }
+  JsonDocument filter;
+  buildScenesFilter(filter);
+  JsonDocument doc;
+  if (deserializeJson(doc, body, len, DeserializationOption::Filter(filter.as<JsonVariantConst>())) !=
+      DeserializationError::Ok) {
+    return false;
+  }
+  JsonArrayConst data = doc["data"].as<JsonArrayConst>();
+  if (data.isNull()) return false;
+
+  for (JsonObjectConst entry : data) {
+    const char* id = entry["id"] | "";
+    const char* groupId = entry["group"]["rid"] | "";
+    if (id[0] == '\0' || groupId[0] == '\0') continue;
+    size_t roomIndex = roomCount;
+    for (size_t i = 0; i < roomCount; ++i) {
+      if (std::strcmp(rooms[i].id, groupId) == 0) {
+        roomIndex = i;
+        break;
+      }
+    }
+    if (roomIndex == roomCount) continue;  // zone scene, not a room
+
+    const char* activeText = entry["status"]["active"] | "inactive";
+    const bool active = std::strcmp(activeText, "inactive") != 0;
+    const char* lastRecall = entry["status"]["last_recall"] | "";
+    RoomScene& best = out[roomIndex];
+    const bool better = best.sceneId[0] == '\0' || (active && !best.active) ||
+                        (active == best.active && std::strcmp(lastRecall, best.lastRecall) > 0);
+    if (!better) continue;
+    copyBounded(best.sceneId, kIdLen, id);
+    copyBounded(best.name, kNameLen, entry["metadata"]["name"] | "");
+    best.active = active;
+    copyBounded(best.lastRecall, kTimestampLen, lastRecall);
+  }
+  return true;
+}
+
+size_t buildSceneRecallBody(char* out, size_t cap) { return writeBody(out, cap, R"({"recall":{"action":"active"}})"); }
+
 size_t buildOnBody(char* out, size_t cap, const bool on) {
   return writeBody(out, cap, on ? R"({"on":{"on":true}})" : R"({"on":{"on":false}})");
 }

@@ -31,6 +31,10 @@ class HueClient {
   // Every grouped_light on the bridge in one request: room states plus the
   // bridge_home group that switches all lights at once.
   Error listGroupedLights(hue::GroupedLight* out, size_t cap, size_t& count);
+  // Last-recalled scene per room, in the order of rooms. The scene list can be
+  // large; on BodyTooLarge the caller should fall back to plain on/off.
+  Error listLastScenes(const hue::Room* rooms, size_t roomCount, hue::RoomScene* out);
+  Error recallScene(const char* sceneId);
   Error getRoomState(const char* groupedLightId, hue::RoomState& out);
   Error setOn(const char* groupedLightId, bool on);
   Error setBrightness(const char* groupedLightId, uint8_t percent, bool alsoOn);

@@ -127,6 +127,24 @@ HueClient::Error HueClient::listGroupedLights(hue::GroupedLight* out, const size
   return Error::Ok;
 }
 
+HueClient::Error HueClient::listLastScenes(const hue::Room* rooms, const size_t roomCount, hue::RoomScene* out) {
+  const Error error = call("GET", "/clip/v2/resource/scene", nullptr, 0);
+  if (error != Error::Ok) return error;
+  if (!hue::parseLastScenes(response.text(), response.len, rooms, roomCount, out)) {
+    LOG_ERR("HC", "Hue scene list not understood (%u bytes)", static_cast<unsigned>(response.len));
+    return Error::BadResponse;
+  }
+  LOG_INF("HC", "Hue scenes parsed (%u bytes)", static_cast<unsigned>(response.len));
+  return Error::Ok;
+}
+
+HueClient::Error HueClient::recallScene(const char* sceneId) {
+  char path[96];
+  hue::buildResourcePath(path, sizeof(path), "scene", sceneId);
+  const size_t len = hue::buildSceneRecallBody(bodyBuf, sizeof(bodyBuf));
+  return call("PUT", path, bodyBuf, len);
+}
+
 HueClient::Error HueClient::getRoomState(const char* groupedLightId, hue::RoomState& out) {
   char path[96];
   hue::buildResourcePath(path, sizeof(path), "grouped_light", groupedLightId);

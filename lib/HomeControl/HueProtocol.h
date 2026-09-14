@@ -39,6 +39,17 @@ struct GroupedLight {
   RoomState state;
 };
 
+// The scene a room should come back to when it is switched on: the scene
+// with the latest status.last_recall, an active scene winning over an
+// inactive one. sceneId is empty when the room has no scene.
+constexpr size_t kTimestampLen = 32;
+struct RoomScene {
+  char sceneId[kIdLen];
+  char name[kNameLen];
+  bool active;
+  char lastRecall[kTimestampLen];  // ISO 8601 UTC, compares lexicographically
+};
+
 enum class PairResult : uint8_t { Paired, LinkButtonNotPressed, Malformed, OtherError };
 
 // POST /api body. Returns bytes written (excluding NUL).
@@ -62,6 +73,13 @@ void buildGroupedLightListFilter(JsonDocument& filter);
 bool parseGroupedLights(const char* body, size_t len, GroupedLight* out, size_t cap, size_t& count);
 // Entry with the given id, or nullptr.
 const GroupedLight* findGroupedLight(const GroupedLight* list, size_t count, const char* id);
+
+// Filter and parser for GET /clip/v2/resource/scene. Writes one RoomScene per
+// entry of rooms (same order). Returns false only on malformed JSON.
+void buildScenesFilter(JsonDocument& filter);
+bool parseLastScenes(const char* body, size_t len, const Room* rooms, size_t roomCount, RoomScene* out);
+// PUT /clip/v2/resource/scene/<id> body that replays the scene. Returns bytes written.
+size_t buildSceneRecallBody(char* out, size_t cap);
 
 // PUT bodies for grouped_light. Return bytes written.
 size_t buildOnBody(char* out, size_t cap, bool on);

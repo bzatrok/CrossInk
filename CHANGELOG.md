@@ -3,7 +3,7 @@
 ### Added
 
 - Home Control on the Xteink X4 Pro: a home-screen entry that turns Philips Hue rooms on or off and adjusts their brightness over the local bridge, and shows tado° heating zones with current and target temperature, nudges the target in 0.5° steps until the next schedule block, or resumes the schedule. Hue pairs with the bridge link button; tado° signs in once with a code shown on the device.
-- Home Control shows rooms and zones as a tile grid with their live state, and offers "All on / All off" for Hue and "All off / Resume all" for tado° heating.
+- Home Control shows rooms and zones as a tile grid with their live state, and offers "All on / All off" for Hue and "All off / Resume all" for tado° heating. Turning a Hue room on replays its last scene, and the tile shows the scene name.
 - "Tiles" UI theme: Lyra with the home menu laid out as a phone-style grid of icon tiles.
 
 ## [v1.6.1] - 2026-10-03

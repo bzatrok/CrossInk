@@ -65,6 +65,58 @@ inline void applyLightBody(SimLight& light, const char* body) {
   if (dim != nullptr) light.brightness = std::atoi(dim + 13);
 }
 
+// Scenes per room; recalling one switches its light on at the scene brightness.
+struct SimScene {
+  const char* id;
+  const char* roomId;
+  const char* lightRid;
+  const char* name;
+  const char* lastRecall;
+  int brightness;
+};
+inline SimScene* simScenes() {
+  static SimScene scenes[] = {{"scene-relax", "room-living", "gl-living", "Relax", "2026-09-14T08:00:00Z", 40},
+                              {"scene-bright", "room-living", "gl-living", "Bright", "2026-09-14T12:00:00Z", 100},
+                              {"scene-cook", "room-kitchen", "gl-kitchen", "Cook", "2026-09-13T18:30:00Z", 80}};
+  return scenes;
+}
+constexpr size_t kSimSceneCount = 3;
+inline int& activeSceneIndex() {
+  static int index = -1;  // one active scene at a time keeps the fixture simple
+  return index;
+}
+
+inline int replySceneList(HttpResponse& out) {
+  char body[900];
+  size_t pos = static_cast<size_t>(std::snprintf(body, sizeof(body), R"({"errors":[],"data":[)"));
+  for (size_t i = 0; i < kSimSceneCount; ++i) {
+    const SimScene& scene = simScenes()[i];
+    pos += static_cast<size_t>(std::snprintf(
+        body + pos, sizeof(body) - pos,
+        R"({"id":"%s","type":"scene","group":{"rid":"%s","rtype":"room"},"metadata":{"name":"%s"},"status":{"active":"%s","last_recall":"%s"}}%s)",
+        scene.id, scene.roomId, scene.name, static_cast<int>(i) == activeSceneIndex() ? "static" : "inactive",
+        scene.lastRecall, i + 1 < kSimSceneCount ? "," : ""));
+  }
+  std::snprintf(body + pos, sizeof(body) - pos, "]}");
+  return reply(out, 200, body);
+}
+
+inline int recallSimScene(HttpResponse& out, const char* url) {
+  for (size_t i = 0; i < kSimSceneCount; ++i) {
+    const SimScene& scene = simScenes()[i];
+    if (!contains(url, scene.id)) continue;
+    for (size_t l = 0; l < kSimLightCount; ++l) {
+      if (std::strcmp(simLights()[l].rid, scene.lightRid) == 0) {
+        simLights()[l].on = true;
+        simLights()[l].brightness = scene.brightness;
+      }
+    }
+    activeSceneIndex() = static_cast<int>(i);
+    return reply(out, 200, R"({"errors":[],"data":[{"rid":"scene","rtype":"scene"}]})");
+  }
+  return reply(out, 404, R"({"errors":[{"description":"unknown scene"}]})");
+}
+
 // The bridge_home group: a PUT here reaches every simulated light.
 constexpr const char* kAllLightsRid = "gl-all";
 
@@ -174,6 +226,8 @@ inline int respond(const HttpRequest& req, HttpResponse& out) {
     return reply(out, 200, ++pairAttempts >= 3 ? kPairSuccess : kPairLinkNotPressed);
   }
   if (contains(req.url, "/clip/v2/resource/room")) return reply(out, 200, kRooms);
+  if (contains(req.url, "/clip/v2/resource/scene/")) return isPut ? recallSimScene(out, req.url) : reply(out, 405, "");
+  if (contains(req.url, "/clip/v2/resource/scene")) return replySceneList(out);
   if (contains(req.url, "/clip/v2/resource/grouped_light") && !contains(req.url, "/clip/v2/resource/grouped_light/")) {
     return replyGroupedLightList(out);
   }

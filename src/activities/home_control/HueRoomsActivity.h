@@ -51,6 +51,8 @@ class HueRoomsActivity final : public Activity {
   void pairingTick();
   void loadRooms();
   bool loadRoomStates();
+  void loadRoomScenes();
+  HueClient::Error turnRoomOn(int index);
   void openRoom(int index);
   void applyDetailAction(DetailAction action);
   void applyBulkAction(BulkAction action);
@@ -74,6 +76,7 @@ class HueRoomsActivity final : public Activity {
   hue::Room rooms[hue::kMaxRooms];
   hue::RoomState roomStates[hue::kMaxRooms];
   bool roomStateKnown[hue::kMaxRooms] = {};
+  hue::RoomScene roomScenes[hue::kMaxRooms];  // empty sceneId = plain on/off
   size_t roomCount = 0;
   char allLightsId[hue::kIdLen] = "";  // bridge_home grouped_light, empty if the bridge has none
   const char* errorMessage = nullptr;

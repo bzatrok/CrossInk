@@ -35,9 +35,19 @@ Local only. Nothing leaves your LAN and no account is involved.
    at once (filled tile = on). Tapping a room opens on/off and brightness.
    Turn on/off, Brighter and Dimmer send one PUT each; the screen updates from
    what was sent, without a read-back round trip.
-4. **All on** and **All off** use the `grouped_light` owned by the bridge's
-   `bridge_home` resource, so they are one PUT that also reaches lights outside
-   any room. If the bridge exposes no such group, the buttons loop the rooms.
+4. Turning a room on replays its last scene, as the Hue app does. The scene
+   list (`GET /clip/v2/resource/scene`) is read once per visit; for each room
+   the scene with the latest `status.last_recall` wins, an active one first.
+   The recall is a PUT on the scene, followed by one read of the group so the
+   tile shows the scene's brightness. Rooms without a scene get a plain on.
+   The scene list is the largest Hue reply, so the Hue screen uses a 160 KB
+   PSRAM buffer; if it still does not fit, scenes are skipped and on/off stays
+   plain (logged as "Hue scenes unavailable").
+5. **All off** uses the `grouped_light` owned by the bridge's `bridge_home`
+   resource, one PUT that also reaches lights outside any room. **All on**
+   recalls each room's last scene (rooms without one are switched on), then
+   re-reads all groups in one request. If the bridge exposes no `bridge_home`
+   group, All off loops the rooms.
 
 The bridge uses a self-signed certificate, so TLS verification is disabled for
 it, as it is for the other HTTPS clients in the firmware.

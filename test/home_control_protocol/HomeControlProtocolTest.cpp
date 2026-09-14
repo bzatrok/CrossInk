@@ -150,6 +150,44 @@ TEST(HueGroupedLightList, CapacityAndMalformed) {
   EXPECT_FALSE(hue::parseGroupedLights(R"({"errors":[]})", 13, groups, 1, count));
 }
 
+TEST(HueScenes, PicksLatestRecallPerRoomAndPrefersActive) {
+  hue::Room rooms[3] = {};
+  std::strcpy(rooms[0].id, "room-a");
+  std::strcpy(rooms[1].id, "room-b");
+  std::strcpy(rooms[2].id, "room-c");
+  const char* reply = R"({"errors":[],"data":[
+    {"id":"s1","group":{"rid":"room-a","rtype":"room"},"metadata":{"name":"Relax"},"status":{"active":"inactive","last_recall":"2026-09-14T08:00:00Z"}},
+    {"id":"s2","group":{"rid":"room-a","rtype":"room"},"metadata":{"name":"Bright"},"status":{"active":"inactive","last_recall":"2026-09-14T12:00:00Z"}},
+    {"id":"s3","group":{"rid":"room-a","rtype":"room"},"metadata":{"name":"Older but active"},"status":{"active":"static","last_recall":"2026-09-01T00:00:00Z"}},
+    {"id":"s4","group":{"rid":"room-b","rtype":"room"},"metadata":{"name":"No timestamp"},"status":{"active":"inactive"}},
+    {"id":"s5","group":{"rid":"zone-x","rtype":"zone"},"metadata":{"name":"Zone scene"},"status":{"active":"static"}}]})";
+  hue::RoomScene scenes[3];
+  ASSERT_TRUE(hue::parseLastScenes(reply, std::strlen(reply), rooms, 3, scenes));
+  EXPECT_STREQ(scenes[0].sceneId, "s3");
+  EXPECT_TRUE(scenes[0].active);
+  EXPECT_STREQ(scenes[0].name, "Older but active");
+  EXPECT_STREQ(scenes[1].sceneId, "s4");
+  EXPECT_FALSE(scenes[1].active);
+  EXPECT_STREQ(scenes[2].sceneId, "");
+
+  // Without an active scene the newest recall wins.
+  const char* replyInactive = R"({"data":[
+    {"id":"s1","group":{"rid":"room-a"},"metadata":{"name":"Relax"},"status":{"active":"inactive","last_recall":"2026-09-14T08:00:00Z"}},
+    {"id":"s2","group":{"rid":"room-a"},"metadata":{"name":"Bright"},"status":{"active":"inactive","last_recall":"2026-09-14T12:00:00Z"}}]})";
+  ASSERT_TRUE(hue::parseLastScenes(replyInactive, std::strlen(replyInactive), rooms, 3, scenes));
+  EXPECT_STREQ(scenes[0].sceneId, "s2");
+  EXPECT_FALSE(hue::parseLastScenes("[", 1, rooms, 3, scenes));
+}
+
+TEST(HueBodies, SceneRecall) {
+  char body[64];
+  hue::buildSceneRecallBody(body, sizeof(body));
+  EXPECT_STREQ(body, R"({"recall":{"action":"active"}})");
+  char path[96];
+  hue::buildResourcePath(path, sizeof(path), "scene", "s1");
+  EXPECT_STREQ(path, "/clip/v2/resource/scene/s1");
+}
+
 TEST(HueBodies, OnOffAndBrightness) {
   char body[96];
   hue::buildOnBody(body, sizeof(body), true);
