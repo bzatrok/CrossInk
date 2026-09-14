@@ -61,6 +61,7 @@ enum class HomeMenuAction {
   ReadingStats,
   Bookmarks,
   FileTransfer,
+  HomeControl,
   Settings,
 };
 
@@ -71,7 +72,7 @@ struct HomeMenuEntry {
 };
 
 struct HomeMenuEntries {
-  static constexpr int kCapacity = 8;
+  static constexpr int kCapacity = 9;  // ContinueReading + every optional entry + Home Control
   std::array<HomeMenuEntry, kCapacity> entries{};
   int count = 0;
 
@@ -249,6 +250,9 @@ void appendHomeMenuItems(HomeMenuEntries& items, bool hasOpdsServers, bool hasRe
   }
 
   items.push({tr(STR_FILE_TRANSFER), Transfer, HomeMenuAction::FileTransfer});
+#if CROSSINK_APP_CAP_HOME_CONTROL
+  items.push({tr(STR_HOME_CONTROL), HomeControl, HomeMenuAction::HomeControl});
+#endif
   items.push({tr(STR_SETTINGS_TITLE), Settings, HomeMenuAction::Settings});
 }
 
@@ -277,6 +281,9 @@ HomeMenuEntries buildMinimalMenuItems(bool hasOpdsServers, bool hasReadingStats,
   }
 
   items.push({tr(STR_FILE_TRANSFER), Transfer, HomeMenuAction::FileTransfer});
+#if CROSSINK_APP_CAP_HOME_CONTROL
+  items.push({tr(STR_HOME_CONTROL), HomeControl, HomeMenuAction::HomeControl});
+#endif
   return items;
 }
 
@@ -302,6 +309,8 @@ HomeMenuAction homeActionForInitialMenuItem(HomeMenuItem item) {
       return HomeMenuAction::FileTransfer;
     case HomeMenuItem::SETTINGS_MENU:
       return HomeMenuAction::Settings;
+    case HomeMenuItem::HOME_CONTROL:
+      return HomeMenuAction::HomeControl;
     case HomeMenuItem::NONE:
     default:
       return HomeMenuAction::ContinueReading;
@@ -1475,6 +1484,9 @@ void HomeActivity::loop() {
           case HomeMenuAction::FileTransfer:
             onFileTransferOpen();
             break;
+          case HomeMenuAction::HomeControl:
+            onHomeControlOpen();
+            break;
           case HomeMenuAction::ContinueReading:
           case HomeMenuAction::Settings:
             break;
@@ -1719,6 +1731,9 @@ void HomeActivity::loop() {
         break;
       case HomeMenuAction::FileTransfer:
         onFileTransferOpen();
+        break;
+      case HomeMenuAction::HomeControl:
+        onHomeControlOpen();
         break;
       case HomeMenuAction::Settings:
         onSettingsOpen();
@@ -2330,6 +2345,14 @@ void HomeActivity::onLibraryOpen() { activityManager.goToLibrary(); }
 void HomeActivity::onSettingsOpen() { activityManager.goToSettings(); }
 
 void HomeActivity::onFileTransferOpen() { activityManager.goToFileTransfer(); }
+
+void HomeActivity::onHomeControlOpen() {
+#if CROSSINK_APP_CAP_HOME_CONTROL
+  activityManager.goToHomeControl();
+#else
+  LOG_ERR("HOME", "Home Control requested in a build without the capability");
+#endif
+}
 
 void HomeActivity::onOpdsBrowserOpen() { activityManager.goToBrowser(); }
 

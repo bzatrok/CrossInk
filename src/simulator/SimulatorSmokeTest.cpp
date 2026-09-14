@@ -76,6 +76,7 @@ enum class SmokeStep : uint8_t {
   BackHomeReturnedReader,
   BackHomeReturnedHome,
   Home,
+  HomeControl,
   FileBrowser,
   FileBrowserSettings,
   Library,
@@ -1609,6 +1610,18 @@ class SimulatorSmokeTest {
         break;
 
       case SmokeStep::Home:
+#if CROSSINK_APP_CAP_HOME_CONTROL
+        // Fixtures answer every request, so the hub renders its two-row menu
+        // without Wi-Fi; this trips on any crash in the network boot factory.
+        if (!activityManager.goToHomeControl(true)) fail("Home Control did not launch");
+        queueStep("Home Control", SmokeStep::HomeControl);
+        break;
+#else
+        step = SmokeStep::HomeControl;
+        break;
+#endif
+
+      case SmokeStep::HomeControl:
         activityManager.goToFileBrowser("/books");
         queueStep("File Browser", SmokeStep::FileBrowser);
         break;
