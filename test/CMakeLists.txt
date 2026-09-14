@@ -22,6 +22,16 @@ set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# Same ArduinoJson release the firmware pins in platformio.ini, so the pure
+# protocol parsers under lib/HomeControl are tested against the real library.
+FetchContent_Declare(
+  ArduinoJson
+  GIT_REPOSITORY https://github.com/bblanchon/ArduinoJson.git
+  GIT_TAG v7.4.2
+  GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(ArduinoJson)
+
 set(REPO_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 add_library(crosspoint_test_common INTERFACE)
@@ -59,6 +69,7 @@ add_subdirectory(section_page_index)
 add_subdirectory(section_persistence)
 add_subdirectory(compact_table_layout)
 add_subdirectory(quick_lock)
+add_subdirectory(home_control_protocol)
 add_subdirectory(frontlight_schedule)
 add_subdirectory(pinch_font_resize)
 add_subdirectory(font_catalog_index)
