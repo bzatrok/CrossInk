@@ -19,6 +19,17 @@
 #error "CROSSINK_APP_CAP_USB_DRIVE must be 0 or 1"
 #endif
 
+// Home Control (Philips Hue + tado remote) is an x4-pro-only feature. It pulls
+// in TLS clients and extra activities, so it is compiled out everywhere else
+// rather than gated at runtime.
+#ifndef CROSSINK_APP_CAP_HOME_CONTROL
+#error "Define CROSSINK_APP_CAP_HOME_CONTROL as 0 or 1 in the PlatformIO environment"
+#endif
+
+#if CROSSINK_APP_CAP_HOME_CONTROL != 0 && CROSSINK_APP_CAP_HOME_CONTROL != 1
+#error "CROSSINK_APP_CAP_HOME_CONTROL must be 0 or 1"
+#endif
+
 // Native simulator BoardConfig intentionally exposes only simulated runtime
 // profiles, so keep this firmware-image identity available at the app layer.
 #if defined(FREEINK_DEVICE_X4CLASSIC) && FREEINK_DEVICE_X4CLASSIC
