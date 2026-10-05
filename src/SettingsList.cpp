@@ -274,6 +274,38 @@ const std::vector<SettingInfo>& getBaseSettingsList() {
     add(SettingInfo::Value(StrId::STR_WARMTH, &CrossPointSettings::frontlightWarmth, {0, 100, 5}, "frontlightWarmth"));
     add(SettingInfo::Toggle(StrId::STR_FRONTLIGHT, &CrossPointSettings::frontlightOn, "frontlightOn"));
 
+#if CROSSINK_APP_CAP_DASHBOARD
+    // --- Dashboard sleep (own tab; status and "Refresh now" rows are added by the tab builder) ---
+    add(SettingInfo::Toggle(StrId::STR_DASHBOARD_SLEEP_ENABLED, &CrossPointSettings::dashboardEnabled,
+                            "dashboardEnabled", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::String(StrId::STR_DASHBOARD_SERVER_URL, SETTINGS.dashboardServerUrl,
+                            sizeof(SETTINGS.dashboardServerUrl), "dashboardServerUrl", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::String(StrId::STR_DASHBOARD_API_KEY, SETTINGS.dashboardApiKey, sizeof(SETTINGS.dashboardApiKey),
+                            "dashboardApiKey", StrId::STR_CAT_DASHBOARD)
+            .withObfuscated());
+    add(SettingInfo::Enum(StrId::STR_DASHBOARD_INTERVAL, &CrossPointSettings::dashboardInterval,
+                          {StrId::STR_DASHBOARD_MIN_1, StrId::STR_DASHBOARD_MIN_2, StrId::STR_DASHBOARD_MIN_3, StrId::STR_DASHBOARD_MIN_5,
+                           StrId::STR_DASHBOARD_MIN_10, StrId::STR_DASHBOARD_MIN_15, StrId::STR_DASHBOARD_MIN_30, StrId::STR_DASHBOARD_MIN_60},
+                          "dashboardInterval", StrId::STR_CAT_DASHBOARD)
+            .withEnumRawValues({1, 2, 3, 5, 10, 15, 30, 60}));
+    add(SettingInfo::Toggle(StrId::STR_DASHBOARD_QUIET_HOURS, &CrossPointSettings::dashboardQuietEnabled,
+                            "dashboardQuietEnabled", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::Value(StrId::STR_DASHBOARD_QUIET_START, &CrossPointSettings::dashboardQuietStart, {0, 23, 1},
+                           "dashboardQuietStart", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::Value(StrId::STR_DASHBOARD_QUIET_END, &CrossPointSettings::dashboardQuietEnd, {0, 23, 1},
+                           "dashboardQuietEnd", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::Enum(StrId::STR_DASHBOARD_RETRIES, &CrossPointSettings::dashboardRetries,
+                          {StrId::STR_DASHBOARD_COUNT_1, StrId::STR_DASHBOARD_COUNT_3, StrId::STR_DASHBOARD_COUNT_5,
+                           StrId::STR_DASHBOARD_COUNT_10},
+                          "dashboardRetries", StrId::STR_CAT_DASHBOARD)
+            .withEnumRawValues({1, 3, 5, 10}));
+    add(SettingInfo::Enum(StrId::STR_DASHBOARD_BATTERY_FLOOR, &CrossPointSettings::dashboardBatteryFloor,
+                          {StrId::STR_STATE_OFF, StrId::STR_DASHBOARD_PCT_10, StrId::STR_DASHBOARD_PCT_15,
+                           StrId::STR_DASHBOARD_PCT_20, StrId::STR_DASHBOARD_PCT_25, StrId::STR_DASHBOARD_PCT_30},
+                          "dashboardBatteryFloor", StrId::STR_CAT_DASHBOARD)
+            .withEnumRawValues({0, 10, 15, 20, 25, 30}));
+#endif
+
     // --- KOReader Sync (web-only, uses KOReaderCredentialStore) ---
     add(SettingInfo::DynamicString(
         StrId::STR_KOREADER_USERNAME, [] { return KOREADER_STORE.getUsername(); },

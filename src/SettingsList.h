@@ -585,8 +585,10 @@ inline SettingInfo buildSideButtonActionSetting(const StrId nameId, uint8_t Cros
 // #1636) so the per-entry SettingInfo cost is paid once. Read-only consumers
 // can use it directly; mutable device UI lists use getSettingsList(), which
 // returns an owned copy and can add SD-card font and dictionary options.
-// Four edge gesture entries are compiled only for touch devices.
-inline constexpr size_t BASE_SETTINGS_CAPACITY = 104 + (CROSSINK_APP_CAP_TOUCH ? 4 : 0);
+// Four edge gesture entries are compiled only for touch devices, and nine
+// Dashboard sleep entries only for builds with the dashboard capability.
+inline constexpr size_t BASE_SETTINGS_CAPACITY =
+    104 + (CROSSINK_APP_CAP_TOUCH ? 4 : 0) + (CROSSINK_APP_CAP_DASHBOARD ? 9 : 0);
 
 const std::vector<SettingInfo>& getBaseSettingsList();
 
@@ -1111,3 +1113,22 @@ inline std::vector<SettingInfo> buildSystemGlobalStatsSettingsList(const std::ve
   settings.push_back(SettingInfo::Action(StrId::STR_RESET_ALL_TIME_STATS, SettingAction::ResetGlobalStats));
   return settings;
 }
+
+#if CROSSINK_APP_CAP_DASHBOARD
+// Dashboard tab: every persisted dashboard setting in display order, then the
+// read-only status line and the "Refresh now" action.
+inline std::vector<SettingInfo> buildDashboardSettingsList(const std::vector<SettingInfo>& allSettings,
+                                                           std::function<std::string()> statusGetter) {
+  std::vector<SettingInfo> settings;
+  settings.reserve(11);
+  for (const char* key : {"dashboardEnabled", "dashboardServerUrl", "dashboardApiKey", "dashboardInterval",
+                          "dashboardQuietEnabled", "dashboardQuietStart", "dashboardQuietEnd", "dashboardRetries",
+                          "dashboardBatteryFloor"}) {
+    addSettingByKey(settings, allSettings, key);
+  }
+  // No setter and no backing field: the settings screen treats it as read-only.
+  settings.push_back(SettingInfo::DynamicString(StrId::STR_DASHBOARD_STATUS, std::move(statusGetter), nullptr));
+  settings.push_back(SettingInfo::Action(StrId::STR_DASHBOARD_REFRESH_NOW, SettingAction::DashboardRefreshNow));
+  return settings;
+}
+#endif
