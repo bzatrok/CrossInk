@@ -14,6 +14,12 @@ class GfxRenderer;
 // the first fetch runs on the timer wake rather than with the reader on screen.
 namespace DashboardSleep {
 
+// What the deep-sleep tail does after a sleep entry or a timer wake.
+struct SleepPlan {
+  uint32_t timerSeconds = 0;  // 0 = button wake only
+  bool evening = false;       // wait for the timer in light sleep (DashboardEvening)
+};
+
 // Seconds until the first fetch after the dashboard is drawn on sleep entry.
 constexpr uint32_t FIRST_FETCH_DELAY_SECONDS = 2;
 
@@ -29,9 +35,10 @@ dashboard::Shown shownForFallback(dashboard::Screen screen);
 bool drawOnSleepEntry(GfxRenderer& renderer);
 
 // enterDeepSleep hook, after the sleep screen is on the glass. Saves frame.bin
-// and the state when a fallback screen was drawn, and returns the timer wake in
-// seconds (0 = button wake only). Returns 0 when Dashboard sleep is off.
-uint32_t timerOnSleepEntry(GfxRenderer& renderer);
+// and the state when a fallback screen was drawn, and returns the timer wake
+// (0 = button wake only). Returns an empty plan when Dashboard sleep is off.
+// Sleep entry never waits in light sleep: the first fetch is seconds away.
+SleepPlan planOnSleepEntry(GfxRenderer& renderer);
 
 // Settings > Dashboard > Refresh now: the next sleep entry arms a 2 s timer.
 void requestRefreshSoon();

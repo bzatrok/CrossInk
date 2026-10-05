@@ -131,7 +131,7 @@ void maybeSyncClock(dashboard::DashboardState& state) {
 }
 }  // namespace
 
-uint32_t run(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*setupDisplay)()) {
+DashboardSleep::SleepPlan run(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*setupDisplay)()) {
   const unsigned long startMs = millis();
   const uint32_t intervalSeconds =
       static_cast<uint32_t>(SETTINGS.dashboardInterval == 0 ? 1 : SETTINGS.dashboardInterval) * 60;
@@ -224,10 +224,10 @@ uint32_t run(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*setu
 
   // Recompute: this wake may have changed the failure count.
   const dashboard::PolicyResult next = DashboardSleep::evaluateNow(state);
-  LOG_INF("DSH", "Timer wake: policy=%s fetch=%s refresh=%s next=%us awake=%lums", screenName(policy.screen),
-          fetchResult, refreshMode, static_cast<unsigned>(next.timerSeconds),
-          static_cast<unsigned long>(millis() - startMs));
-  return next.timerSeconds;
+  LOG_INF("DSH", "Timer wake: policy=%s fetch=%s refresh=%s next=%us evening=%d awake=%lums",
+          screenName(policy.screen), fetchResult, refreshMode, static_cast<unsigned>(next.timerSeconds),
+          next.evening ? 1 : 0, static_cast<unsigned long>(millis() - startMs));
+  return {next.timerSeconds, next.evening};
 }
 
 }  // namespace DashboardWake
