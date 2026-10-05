@@ -30,6 +30,7 @@ The main data directory is `.crosspoint` on the SD card. It stores render caches
 ├── opds.json               # Saved OPDS servers
 ├── koreader.json           # KOReader sync credentials
 ├── home-control.json       # Home Control pairing: Hue bridge address/app key, tado° refresh token (X4 Pro)
+├── dashboard/              # Dashboard sleep image, on-glass frame and state (X4 Pro)
 ├── bookmarks/              # Bookmark files, one per book
 ├── clippings/              # EPUB clipping/highlight files, one per book
 ├── home_carousel_cache_<index>.bin # Lyra Carousel artwork cache for each book position
