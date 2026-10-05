@@ -48,6 +48,9 @@ regeneration is automatic; EPUB layout caches and reading history are unaffected
   that parses as a bitmap; the swap goes through `current.bmp.old`, which is
   restored if a crash interrupts it.
 - `next.bmp`: the image being published. Removed when it does not parse.
+- `download.img` and `download.img.part`: the raw TRMNL BYOS download (PNG or
+  BMP, sniffed by magic bytes) and its staging file. Transient: removed on every
+  exit path of a fetch.
 - `frame.bin`: the raw 1-bit framebuffer that is on the glass, exactly the
   renderer buffer size (48000 bytes at 800x480). Written after every dashboard or
   fallback draw. A file of any other size is ignored.
