@@ -81,6 +81,31 @@ new settings tab.
 - [sdk-frame-restore](handover_001_sdk-frame-restore.md) — Ben opens the upstream Free-Ink PR. Rejected: the
   executor opens it, because it is an outward-facing action on someone else's repo.
 
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — settings live in `CrossPointSettings` under the flag.
+  Rejected: a separate store (the tab and web portal would need custom code).
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — the API key is obfuscated on SD and masked in the
+  web GET; an empty POST keeps it. Rejected: plain text as cross-trmnl does.
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — all dashboard state is on SD in `state.json`.
+  Rejected: RTC memory (lost on power loss, a second store).
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — "Refresh now" sleeps with a 2 s timer.
+  Rejected: a foreground Wi-Fi refresh.
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — sleep entry draws the cached image and wakes 2 s
+  later to fetch. Rejected: fetching before sleep (reader on screen with Wi-Fi up).
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — HALF refresh every 30 FAST updates, on the first
+  draw, and after any fallback. Rejected: FAST forever (ghosting) and HALF always (flash).
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — 60 s backstop plus per-step timeouts; the backstop
+  sleeps through `HalPowerManager::startDeepSleep`. Rejected: timeouts alone, and a bare `esp_deep_sleep_start()`
+  (skips the power-latch hold and the power-button wake).
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — the local-folder source stays as the offline
+  option. Rejected: a test-only stub.
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — the timer is a parameter of `startDeepSleep`.
+  Rejected: a global setter.
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — the retry-limit fallback keeps fetching each wake
+  and returns on the first success; quiet and battery fallbacks draw once and skip the fetch. Rejected: skipping
+  the fetch for every fallback (the device would never recover).
+- [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — the policy has a `Disabled` screen for "feature
+  off". Rejected: reusing a fallback value for it.
+
 ## Not yet specified
 - Reaching the BYOS server away from home: a Tailscale client on the device (microlink) or plain WireGuard.
   Revisit only if the dashboard must work outside the home LAN.
@@ -95,5 +120,5 @@ new settings tab.
 | # | Slug | Goal | Status | Branch | Created | Completed |
 |---|------|------|--------|--------|---------|-----------|
 | 001 | [sdk-frame-restore](handover_001_sdk-frame-restore.md) | SDK method that seeds the old-image plane after wake | ✅ done | feat/sdk-frame-restore | 2026-10-05 | 2026-10-05 |
-| 002 | [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) | Timer wake, silent refresh boot, settings tab, quiet hours, battery floor | 🔄 in-progress | feat/dashboard-timer-wake | 2026-10-05 | — |
+| 002 | [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) | Timer wake, silent refresh boot, settings tab, quiet hours, battery floor | ✅ done | feat/dashboard-timer-wake | 2026-10-05 | 2026-10-05 |
 | 003 | [trmnl-byos-client](handover_003_trmnl-byos-client.md) | TRMNL BYOS client, provisioning, download, failure banner | ⬜ pending | feat/trmnl-byos-client | 2026-10-05 | — |
