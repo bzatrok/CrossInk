@@ -30,6 +30,17 @@
 #error "CROSSINK_APP_CAP_HOME_CONTROL must be 0 or 1"
 #endif
 
+// Dashboard sleep (timer wake + silent redraw of a dashboard image) is an
+// x4-pro-only feature. It relies on the SDK's restoreVisibleFrame() and a
+// headless timer-wake boot path, so it is compiled out everywhere else.
+#ifndef CROSSINK_APP_CAP_DASHBOARD
+#error "Define CROSSINK_APP_CAP_DASHBOARD as 0 or 1 in the PlatformIO environment"
+#endif
+
+#if CROSSINK_APP_CAP_DASHBOARD != 0 && CROSSINK_APP_CAP_DASHBOARD != 1
+#error "CROSSINK_APP_CAP_DASHBOARD must be 0 or 1"
+#endif
+
 // Native simulator BoardConfig intentionally exposes only simulated runtime
 // profiles, so keep this firmware-image identity available at the app layer.
 #if defined(FREEINK_DEVICE_X4CLASSIC) && FREEINK_DEVICE_X4CLASSIC
