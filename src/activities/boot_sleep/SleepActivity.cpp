@@ -33,6 +33,9 @@
 #include "AppCapabilities.h"
 #include "AppVersion.h"
 #include "CrossPointSettings.h"
+#if CROSSINK_APP_CAP_DASHBOARD
+#include "dashboard/DashboardSleep.h"
+#endif
 #include "CrossPointState.h"
 #include "ImageFolderIndex.h"
 #include "RecentBooksStore.h"
@@ -514,6 +517,10 @@ bool selectRandomSleepImage(SleepImageMode mode, SleepImageSelection& selection,
 
 void SleepActivity::onEnter() {
   Activity::onEnter();
+#if CROSSINK_APP_CAP_DASHBOARD
+  // Dashboard sleep draws its cached image instead; otherwise the regular sleep screen is the fallback.
+  if (DashboardSleep::drawOnSleepEntry(renderer)) return;
+#endif
   const bool renderQuickResume =
       SETTINGS.sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::QUICK_RESUME ||
       (fromTimeout &&

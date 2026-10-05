@@ -34,7 +34,9 @@ void drawBanner(GfxRenderer& renderer, const char* text) {
 }  // namespace
 
 HalDisplay::RefreshMode chooseRefreshMode(dashboard::DashboardState& state, const bool frameRestored) {
-  if (frameRestored && !state.showsFallback() && state.fastRefreshesSinceHalf < MAX_FAST_REFRESHES) {
+  // A first draw or the first draw after a fallback screen replaces unrelated content: HALF.
+  const bool replacesOtherScreen = state.screenShows == dashboard::Shown::Nothing || state.showsFallback();
+  if (frameRestored && !replacesOtherScreen && state.fastRefreshesSinceHalf < MAX_FAST_REFRESHES) {
     ++state.fastRefreshesSinceHalf;
     return HalDisplay::FAST_REFRESH;
   }

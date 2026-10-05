@@ -16,7 +16,7 @@ namespace DashboardRender {
 constexpr uint8_t MAX_FAST_REFRESHES = 30;
 
 // FAST when the previous frame was restored into the panel on this wake, the
-// glass does not show a fallback screen, and fewer than MAX_FAST_REFRESHES ran
+// glass already shows a dashboard frame (not a fallback or nothing), and fewer than MAX_FAST_REFRESHES ran
 // since the last HALF. Otherwise HALF. Updates state.fastRefreshesSinceHalf.
 HalDisplay::RefreshMode chooseRefreshMode(dashboard::DashboardState& state, bool frameRestored);
 
