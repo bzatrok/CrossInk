@@ -45,6 +45,11 @@ PolicyResult evaluatePolicy(const PolicyInput& input) {
   return {Screen::Dashboard, intervalSeconds(input.intervalMinutes)};
 }
 
+DrawRotation chooseDrawRotation(const int imageWidth, const int imageHeight, const bool deviceStandsPortrait) {
+  if (imageWidth <= imageHeight) return DrawRotation::Portrait;
+  return deviceStandsPortrait ? DrawRotation::LandscapeCw : DrawRotation::LandscapeCcw;
+}
+
 }  // namespace dashboard
 
 #endif  // CROSSINK_APP_CAP_DASHBOARD

@@ -5,6 +5,8 @@
 using dashboard::evaluatePolicy;
 using dashboard::isInQuietHours;
 using dashboard::PolicyInput;
+using dashboard::chooseDrawRotation;
+using dashboard::DrawRotation;
 using dashboard::Screen;
 
 namespace {
@@ -143,4 +145,14 @@ TEST(DashboardPolicy, ZeroIntervalFallsBackToOneMinute) {
   PolicyInput in = baseInput();
   in.intervalMinutes = 0;
   EXPECT_EQ(evaluatePolicy(in).timerSeconds, 60u);
+}
+
+TEST(DashboardRotation, TallImageDrawsPortraitEitherWay) {
+  EXPECT_EQ(chooseDrawRotation(480, 800, true), DrawRotation::Portrait);
+  EXPECT_EQ(chooseDrawRotation(480, 800, false), DrawRotation::Portrait);
+}
+
+TEST(DashboardRotation, WideImageFollowsHowTheDeviceStands) {
+  EXPECT_EQ(chooseDrawRotation(800, 480, true), DrawRotation::LandscapeCw);
+  EXPECT_EQ(chooseDrawRotation(800, 480, false), DrawRotation::LandscapeCcw);
 }
