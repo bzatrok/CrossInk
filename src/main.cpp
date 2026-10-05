@@ -29,6 +29,8 @@
 #include "AppCapabilities.h"
 
 #ifdef SIMULATOR
+#include <cstdlib>
+#include <cstring>
 using esp_reset_reason_t = int;
 using esp_sleep_wakeup_cause_t = int;
 enum : int {
@@ -65,7 +67,14 @@ enum : int {
   ESP_SLEEP_WAKEUP_BT
 };
 inline esp_reset_reason_t esp_reset_reason() { return ESP_RST_UNKNOWN; }
-inline esp_sleep_wakeup_cause_t esp_sleep_get_wakeup_cause() { return ESP_SLEEP_WAKEUP_UNDEFINED; }
+inline esp_sleep_wakeup_cause_t esp_sleep_get_wakeup_cause() {
+#if CROSSINK_APP_CAP_DASHBOARD
+  // CROSSPOINT_SIM_TIMER_WAKE=1 simulates a Dashboard sleep timer wake.
+  const char* timerWake = std::getenv("CROSSPOINT_SIM_TIMER_WAKE");
+  if (timerWake && std::strcmp(timerWake, "1") == 0) return ESP_SLEEP_WAKEUP_TIMER;
+#endif
+  return ESP_SLEEP_WAKEUP_UNDEFINED;
+}
 #else
 #include <esp_sleep.h>
 #include <esp_system.h>
@@ -105,6 +114,10 @@ inline esp_sleep_wakeup_cause_t esp_sleep_get_wakeup_cause() { return ESP_SLEEP_
 #include "activities/settings/SdFirmwareUpdateActivity.h"
 #include "components/UITheme.h"
 #include "components/icons/tablerFilledIcons.h"
+#if CROSSINK_APP_CAP_DASHBOARD
+#include "dashboard/DashboardSleep.h"
+#include "dashboard/DashboardWake.h"
+#endif
 #include "fontIds.h"
 #include "network/UsbSerialFileTransfer.h"
 #ifdef SIMULATOR
@@ -1083,6 +1096,27 @@ void mirrorWakeShortPressToNvs() {
 #endif
 }
 
+// Hardware tail of every deep sleep: no file writes may follow it.
+static void sleepHardware(const uint32_t timerWakeSeconds) {
+  // All sleep-time file writes are complete. Stop SDMMC before the power path
+  // cuts peripheral rails and isolates the bus pads; SPI boards are a no-op.
+  libraryScanSleepToken.save(!library::libraryIndexNeedsRefresh());
+  Storage.shutdown();
+
+  putTiltSensorToSleepForDeepSleep();
+  display.deepSleep();
+  mirrorWakeShortPressToNvs();
+  LOG_DBG("MAIN", "Entering deep sleep (timer %us)", static_cast<unsigned>(timerWakeSeconds));
+
+#ifdef SIMULATOR
+  // The simulator's HalPowerManager has no timer wake; deep sleep is a no-op there.
+  (void)timerWakeSeconds;
+  powerManager.startDeepSleep(gpio);
+#else
+  powerManager.startDeepSleep(gpio, timerWakeSeconds);
+#endif
+}
+
 // Enter deep sleep mode
 void enterDeepSleep(bool fromTimeout) {
   HalPowerManager::Lock powerLock;  // Ensure we are at normal CPU frequency for sleep preparation
@@ -1125,17 +1159,11 @@ void enterDeepSleep(bool fromTimeout) {
   // Last chance to sample: startDeepSleep() cuts the SD rail on X3, so nothing
   // can be written again until the next wake.
   BatteryDiagnosticLog::record(BatteryDiagnosticLog::Event::Sleep, BoardConfig::ACTIVE.name);
-  // All sleep-time file writes are complete. Stop SDMMC before the power path
-  // cuts peripheral rails and isolates the bus pads; SPI boards are a no-op.
-  libraryScanSleepToken.save(!library::libraryIndexNeedsRefresh());
-  Storage.shutdown();
-
-  putTiltSensorToSleepForDeepSleep();
-  display.deepSleep();
-  mirrorWakeShortPressToNvs();
-  LOG_DBG("MAIN", "Entering deep sleep");
-
-  powerManager.startDeepSleep(gpio);
+  uint32_t timerWakeSeconds = 0;
+#if CROSSINK_APP_CAP_DASHBOARD
+  timerWakeSeconds = DashboardSleep::timerOnSleepEntry(renderer);
+#endif
+  sleepHardware(timerWakeSeconds);
 }
 
 void setupDisplayAndFonts(const bool seamless, const bool loadReaderResources, const bool useReaderRenderStack) {
@@ -1365,6 +1393,26 @@ void setup() {
   UITheme::getInstance().reload();
   ButtonNavigator::setMappedInputManager(mappedInputManager);
   logBootHeap("boot state ready");
+#if CROSSINK_APP_CAP_DASHBOARD
+  // Dashboard timer wake: headless refresh, then straight back to sleep. No
+  // frontlight, quick lock, boot screen, BootResume or activity route.
+  if (rawWakeupCause == ESP_SLEEP_WAKEUP_TIMER) {
+    Frontlight.begin(SETTINGS.frontlightBrightness, SETTINGS.frontlightWarmth, false);
+    const auto setupDisplay = [] { setupDisplayAndFonts(true, false, false); };
+    uint32_t nextTimerSeconds = 0;
+    if (SETTINGS.dashboardEnabled) {
+      nextTimerSeconds = DashboardWake::run(renderer, mappedInputManager, setupDisplay);
+    } else {
+      LOG_INF("MAIN", "Timer wake with Dashboard sleep off; sleeping again");
+      setupDisplay();
+    }
+    sleepHardware(nextTimerSeconds);
+#ifdef SIMULATOR
+    // Simulator deep sleep returns on QUIT; end the run like a sleeping device.
+    std::exit(0);
+#endif
+  }
+#endif
   // Silent restarts are invisible recovery steps, so they always retain the
   // current light state rather than applying wake or schedule policy.
   const bool wasLightOnBeforeSleep =
