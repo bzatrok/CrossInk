@@ -712,7 +712,8 @@ void SleepActivity::renderDefaultSleepScreen() const {
   renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);
 }
 
-bool SleepActivity::renderBitmapSleepScreen(Bitmap& bitmap) const {
+bool SleepActivity::drawBitmapToFramebuffer(GfxRenderer& renderer, Bitmap& bitmap, BitmapPlacement* placementOut,
+                                            const bool drawBlackWhite) {
   int x, y;
   const auto pageWidth = renderer.getScreenWidth();
   const auto pageHeight = renderer.getScreenHeight();
@@ -758,7 +759,19 @@ bool SleepActivity::renderBitmapSleepScreen(Bitmap& bitmap) const {
   }
 
   renderer.clearScreen();
+  if (placementOut) *placementOut = BitmapPlacement{x, y, cropX, cropY};
+  if (!drawBlackWhite) return true;
 
+  if (!renderer.drawBitmap(bitmap, x, y, pageWidth, pageHeight, cropX, cropY)) return false;
+  if (SETTINGS.sleepScreenCoverFilter == CrossPointSettings::SLEEP_SCREEN_COVER_FILTER::INVERTED_BLACK_AND_WHITE) {
+    renderer.invertScreen();
+  }
+  return true;
+}
+
+bool SleepActivity::renderBitmapSleepScreen(Bitmap& bitmap) const {
+  const auto pageWidth = renderer.getScreenWidth();
+  const auto pageHeight = renderer.getScreenHeight();
   const bool hasGreyscale = bitmap.hasGreyscale() &&
                             SETTINGS.sleepScreenCoverFilter == CrossPointSettings::SLEEP_SCREEN_COVER_FILTER::NO_FILTER;
   const bool absolute = renderer.supportsAbsoluteGrayscale();
@@ -766,12 +779,12 @@ bool SleepActivity::renderBitmapSleepScreen(Bitmap& bitmap) const {
 
   // Direct grayscale consumes only the two complete gray planes. Other modes
   // still need the B/W base, so only Direct can skip this extra image decode.
-  if (!hasGreyscale || !direct) {
-    if (!renderer.drawBitmap(bitmap, x, y, pageWidth, pageHeight, cropX, cropY)) return false;
-    if (SETTINGS.sleepScreenCoverFilter == CrossPointSettings::SLEEP_SCREEN_COVER_FILTER::INVERTED_BLACK_AND_WHITE) {
-      renderer.invertScreen();
-    }
-  }
+  BitmapPlacement placement;
+  if (!drawBitmapToFramebuffer(renderer, bitmap, &placement, !hasGreyscale || !direct)) return false;
+  const int x = placement.x;
+  const int y = placement.y;
+  const float cropX = placement.cropX;
+  const float cropY = placement.cropY;
 
   if (!hasGreyscale) {
     renderer.displayBuffer(HalDisplay::HALF_REFRESH, TURN_OFF_SCREEN_AFTER_SLEEP_REFRESH);
