@@ -2,6 +2,7 @@
 
 #if CROSSINK_APP_CAP_DASHBOARD
 
+#include <CrossInkHalFrontlight.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
 #include <HalPowerManager.h>
@@ -16,7 +17,7 @@ namespace DashboardSleep {
 
 namespace {
 bool refreshSoonRequested = false;
-// What drawOnSleepEntry() decided, so timerOnSleepEntry() acts on the same result.
+// What drawOnSleepEntry() decided, so planOnSleepEntry() acts on the same result.
 bool entryEvaluated = false;
 dashboard::PolicyResult entryResult{dashboard::Screen::Disabled, 0};
 bool entryDrewDashboard = false;
@@ -31,6 +32,10 @@ dashboard::PolicyResult evaluateNow(const dashboard::DashboardState& state) {
   in.quietEnabled = SETTINGS.dashboardQuietEnabled != 0;
   in.quietStartHour = SETTINGS.dashboardQuietStart;
   in.quietEndHour = SETTINGS.dashboardQuietEnd;
+  // The evening phase exists to light the frontlight on a side-key press.
+  in.eveningEnabled = SETTINGS.dashboardEveningEnabled != 0 && Frontlight.present();
+  in.eveningStartHour = SETTINGS.dashboardEveningStart;
+  in.eveningEndHour = SETTINGS.dashboardEveningEnd;
   in.consecutiveFailures = state.consecutiveFailures;
   in.retryLimit = SETTINGS.dashboardRetries;
   in.intervalMinutes = SETTINGS.dashboardInterval;
@@ -77,10 +82,10 @@ bool drawOnSleepEntry(GfxRenderer& renderer) {
   return true;
 }
 
-uint32_t timerOnSleepEntry(GfxRenderer& renderer) {
+SleepPlan planOnSleepEntry(GfxRenderer& renderer) {
   if (!SETTINGS.dashboardEnabled) {
     refreshSoonRequested = false;
-    return 0;
+    return {};
   }
 
   dashboard::DashboardState state;
@@ -98,10 +103,12 @@ uint32_t timerOnSleepEntry(GfxRenderer& renderer) {
 
   const bool fetchSoon = refreshSoonRequested || result.screen == dashboard::Screen::Dashboard;
   refreshSoonRequested = false;
-  const uint32_t timer = fetchSoon ? FIRST_FETCH_DELAY_SECONDS : result.timerSeconds;
-  LOG_INF("DSH", "Sleep entry: policy=%u timer=%us", static_cast<unsigned>(result.screen),
-          static_cast<unsigned>(timer));
-  return timer;
+  SleepPlan plan;
+  plan.timerSeconds = fetchSoon ? FIRST_FETCH_DELAY_SECONDS : result.timerSeconds;
+  plan.evening = result.evening && !fetchSoon;
+  LOG_INF("DSH", "Sleep entry: policy=%u timer=%us evening=%d", static_cast<unsigned>(result.screen),
+          static_cast<unsigned>(plan.timerSeconds), plan.evening ? 1 : 0);
+  return plan;
 }
 
 void requestRefreshSoon() { refreshSoonRequested = true; }

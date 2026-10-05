@@ -22,6 +22,13 @@ extern "C" bool tud_mounted(void);
 HalGPIO gpio;
 
 namespace {
+// Set just before restartAsPowerButtonWake()'s esp_restart(). RTC_NOINIT memory
+// survives a software reset and is random after power-on, hence the magic.
+constexpr uint32_t POWER_BUTTON_HANDOFF_MAGIC = 0x50574b48;  // 'PWKH'
+RTC_NOINIT_ATTR uint32_t powerButtonHandoffMagic;
+}  // namespace
+
+namespace {
 constexpr unsigned long BUTTON_DEBOUNCE_REPOLL_MS = 6;
 // Poll cadence adapted from Sichroteph/YACP commit
 // 6d1f10f4bae52d282a088f9b2e45aaac96da8377 (MIT).
@@ -142,6 +149,8 @@ bool detectX3DisplayIsUc8279() {
 }  // namespace
 
 void HalGPIO::begin() {
+  _powerButtonHandoff = powerButtonHandoffMagic == POWER_BUTTON_HANDOFF_MAGIC && esp_reset_reason() == ESP_RST_SW;
+  powerButtonHandoffMagic = 0;
 #if FREEINK_DEVICE_X4 || FREEINK_DEVICE_X3
 #ifdef FORCE_DEVICE_X3
   _deviceType = DeviceType::X3;
@@ -298,7 +307,8 @@ bool HalGPIO::hasEdgeSideButtons() const {
          BoardConfig::ACTIVE.board == BoardConfig::Board::XteinkX4Classic;
 }
 
-bool HalGPIO::verifyPowerButtonWakeup(const bool shortPressWakes, const uint16_t longHoldMs) {
+bool HalGPIO::verifyPowerButtonWakeup(const bool shortPressWakes, const uint16_t longHoldMs,
+                                      const unsigned long holdStartMs) {
   // M5Paper v1.1 reaches setup after a normal wheel click has already been
   // released. Its hardware pull-ups make this ghost-wake debounce unnecessary.
   if (BoardConfig::isPaperMono() || BoardConfig::isM5PaperV11() || BoardConfig::ACTIVE.input.power < 0) {
@@ -319,7 +329,7 @@ bool HalGPIO::verifyPowerButtonWakeup(const bool shortPressWakes, const uint16_t
   // Deep sleep wakes as soon as the GPIO changes. Keep the panel and SD card
   // asleep until the held press qualifies as a long Power gesture. millis()
   // starts at reset, so time spent reaching this early boot check counts too.
-  while (millis() < longHoldMs) {
+  while (millis() - holdStartMs < longHoldMs) {
     delay(1);
     inputMgr.update();
     if (!inputMgr.isPowerButtonPhysicallyPressed()) return false;
@@ -407,7 +417,14 @@ bool HalGPIO::coldBootImpliesPowerButton() const {
   return isXteinkDevice() || BoardConfig::isPaperMono() || BoardConfig::isSticky();
 }
 
+void HalGPIO::restartAsPowerButtonWake() {
+  powerButtonHandoffMagic = POWER_BUTTON_HANDOFF_MAGIC;
+  LOG_INF("HW", "Power-button wake from light sleep: restarting");
+  esp_restart();
+}
+
 HalGPIO::WakeupReason HalGPIO::getWakeupReason() const {
+  if (_powerButtonHandoff) return WakeupReason::PowerButton;
   const auto wakeupCause = esp_sleep_get_wakeup_cause();
   const auto resetReason = esp_reset_reason();
 

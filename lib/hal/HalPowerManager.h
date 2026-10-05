@@ -57,6 +57,14 @@ class HalPowerManager {
   // timerWakeSeconds > 0 also arms an RTC timer wake (Dashboard sleep).
   void startDeepSleep(HalGPIO& gpio, uint32_t timerWakeSeconds = 0) const;
 
+  // Light sleep for the Dashboard evening phase. Unlike deep sleep it keeps RAM
+  // and a lit LEDC frontlight (FREEINK_FRONTLIGHT_LS), and returns in place.
+  // Turns WiFi off and waits for the power and side buttons to be released,
+  // then wakes on the timer, the power button and, with wakeOnSideButtons, a
+  // press of the board's digital Up/Down keys (the X4 Pro's two side keys).
+  enum class LightSleepWake : uint8_t { Timer, SideButton, PowerButton, Other };
+  LightSleepWake startLightSleep(uint32_t timerMs, bool wakeOnSideButtons) const;
+
   // Get battery percentage (range 0-100)
   uint16_t getBatteryPercentage() const;
 

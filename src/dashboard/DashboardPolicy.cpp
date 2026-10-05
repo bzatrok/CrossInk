@@ -38,11 +38,15 @@ PolicyResult evaluatePolicy(const PolicyInput& input) {
     return {Screen::FallbackQuiet, secondsUntilHour(input.localHour, input.localMinute, input.quietEndHour)};
   }
 
+  // Quiet hours returned above, so they win where the two windows overlap.
+  const bool evening = input.eveningEnabled && input.clockValid &&
+                       isInQuietHours(input.localHour, input.eveningStartHour, input.eveningEndHour);
+
   if (input.consecutiveFailures >= input.retryLimit) {
-    return {Screen::FallbackFailures, intervalSeconds(input.intervalMinutes)};
+    return {Screen::FallbackFailures, intervalSeconds(input.intervalMinutes), evening};
   }
 
-  return {Screen::Dashboard, intervalSeconds(input.intervalMinutes)};
+  return {Screen::Dashboard, intervalSeconds(input.intervalMinutes), evening};
 }
 
 DrawRotation chooseDrawRotation(const int imageWidth, const int imageHeight, const bool deviceStandsPortrait) {

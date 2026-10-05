@@ -34,3 +34,9 @@ void HalFrontlight::setOn(const bool on) {
   lit = on;
   manager.setBrightness(lit ? lastBrightness : 0);
 }
+
+void HalFrontlight::parkForDeepSleep() {
+#ifdef FREEINK_FRONTLIGHT_LS
+  manager.park();
+#endif
+}

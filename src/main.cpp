@@ -115,6 +115,7 @@ inline esp_sleep_wakeup_cause_t esp_sleep_get_wakeup_cause() {
 #include "components/UITheme.h"
 #include "components/icons/tablerFilledIcons.h"
 #if CROSSINK_APP_CAP_DASHBOARD
+#include "dashboard/DashboardEvening.h"
 #include "dashboard/DashboardSleep.h"
 #include "dashboard/DashboardWake.h"
 #endif
@@ -1097,7 +1098,8 @@ void mirrorWakeShortPressToNvs() {
 }
 
 // Hardware tail of every deep sleep: no file writes may follow it.
-static void sleepHardware(const uint32_t timerWakeSeconds) {
+// eveningWait: Dashboard evening phase, wait for the timer in light sleep first.
+static void sleepHardware(uint32_t timerWakeSeconds, const bool eveningWait = false) {
   // All sleep-time file writes are complete. Stop SDMMC before the power path
   // cuts peripheral rails and isolates the bus pads; SPI boards are a no-op.
   libraryScanSleepToken.save(!library::libraryIndexNeedsRefresh());
@@ -1106,6 +1108,13 @@ static void sleepHardware(const uint32_t timerWakeSeconds) {
   putTiltSensorToSleepForDeepSleep();
   display.deepSleep();
   mirrorWakeShortPressToNvs();
+#if CROSSINK_APP_CAP_DASHBOARD && !defined(SIMULATOR)
+  if (eveningWait && timerWakeSeconds > DashboardEvening::FETCH_HANDOFF_SECONDS) {
+    timerWakeSeconds = DashboardEvening::waitForNextFetch(timerWakeSeconds, readWakeShortPressFromNvs());
+  }
+#else
+  (void)eveningWait;
+#endif
   LOG_DBG("MAIN", "Entering deep sleep (timer %us)", static_cast<unsigned>(timerWakeSeconds));
 
 #ifdef SIMULATOR
@@ -1159,11 +1168,12 @@ void enterDeepSleep(bool fromTimeout) {
   // Last chance to sample: startDeepSleep() cuts the SD rail on X3, so nothing
   // can be written again until the next wake.
   BatteryDiagnosticLog::record(BatteryDiagnosticLog::Event::Sleep, BoardConfig::ACTIVE.name);
-  uint32_t timerWakeSeconds = 0;
 #if CROSSINK_APP_CAP_DASHBOARD
-  timerWakeSeconds = DashboardSleep::timerOnSleepEntry(renderer);
+  const DashboardSleep::SleepPlan plan = DashboardSleep::planOnSleepEntry(renderer);
+  sleepHardware(plan.timerSeconds, plan.evening);
+#else
+  sleepHardware(0);
 #endif
-  sleepHardware(timerWakeSeconds);
 }
 
 void setupDisplayAndFonts(const bool seamless, const bool loadReaderResources, const bool useReaderRenderStack) {
@@ -1299,7 +1309,8 @@ void setup() {
   const auto wakeupReason = gpio.getWakeupReason();
 #ifndef SIMULATOR
   const bool shortPressWakes = readWakeShortPressFromNvs();
-  if (wakeupReason == HalGPIO::WakeupReason::PowerButton &&
+  // A light-sleep handoff verified its press before restarting.
+  if (wakeupReason == HalGPIO::WakeupReason::PowerButton && !gpio.wasPowerButtonHandoff() &&
       !gpio.verifyPowerButtonWakeup(shortPressWakes, CrossPointSettings::POWER_BUTTON_LONG_PRESS_MS)) {
     LOG_DBG("MAIN", "Power-button wake not held through verification, sleeping");
     powerManager.startDeepSleep(gpio);
@@ -1399,9 +1410,9 @@ void setup() {
   if (rawWakeupCause == ESP_SLEEP_WAKEUP_TIMER) {
     Frontlight.begin(SETTINGS.frontlightBrightness, SETTINGS.frontlightWarmth, false);
     const auto setupDisplay = [] { setupDisplayAndFonts(true, false, false); };
-    uint32_t nextTimerSeconds = 0;
+    DashboardSleep::SleepPlan next;
     if (SETTINGS.dashboardEnabled) {
-      nextTimerSeconds = DashboardWake::run(renderer, mappedInputManager, setupDisplay);
+      next = DashboardWake::run(renderer, mappedInputManager, setupDisplay);
     } else {
       LOG_INF("MAIN", "Timer wake with Dashboard sleep off; sleeping again");
       setupDisplay();
@@ -1411,7 +1422,7 @@ void setup() {
     // loop, which this path never reaches; present the drawn frame once.
     display.presentIfNeeded();
 #endif
-    sleepHardware(nextTimerSeconds);
+    sleepHardware(next.timerSeconds, next.evening);
 #ifdef SIMULATOR
     // Simulator deep sleep returns on QUIT. _Exit skips static destructors,
     // which assert on a never-started activity stack.
