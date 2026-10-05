@@ -105,7 +105,7 @@ void HalPowerManager::setPowerSaving(bool enabled) {
   // Otherwise, no change needed
 }
 
-void HalPowerManager::startDeepSleep(HalGPIO& gpio) const {
+void HalPowerManager::startDeepSleep(HalGPIO& gpio, const uint32_t timerWakeSeconds) const {
   // Once started, let the SDK exit configuration mode and seal the gauge.
   // Sleep runs on the main task after rendering has stopped. The SDK bounds
   // every wait; ordinary sleep has no delay once the startup check is done.
@@ -164,6 +164,11 @@ void HalPowerManager::startDeepSleep(HalGPIO& gpio) const {
   freeink::PowerManager::waitForPowerButtonRelease();
   esp_sleep_config_gpio_isolate();
   freeink::PowerManager::armPowerButtonWakeup();
+#ifndef SIMULATOR
+  if (timerWakeSeconds > 0) {
+    esp_sleep_enable_timer_wakeup(static_cast<uint64_t>(timerWakeSeconds) * 1000000ULL);
+  }
+#endif
   gpio_deep_sleep_hold_en();
   esp_deep_sleep_start();
 }

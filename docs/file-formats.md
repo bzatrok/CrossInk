@@ -42,6 +42,22 @@ other positions in advance. The development version 7 combined
 `home_carousel_cache.bin` is removed after the first successful write. Cache
 regeneration is automatic; EPUB layout caches and reading history are unaffected.
 
+## `/.crosspoint/dashboard/` (X4 Pro, Dashboard sleep)
+
+- `current.bmp`: the last good dashboard image. Only replaced by a `next.bmp`
+  that parses as a bitmap; the swap goes through `current.bmp.old`, which is
+  restored if a crash interrupts it.
+- `next.bmp`: the image being published. Removed when it does not parse.
+- `frame.bin`: the raw 1-bit framebuffer that is on the glass, exactly the
+  renderer buffer size (48000 bytes at 800x480). Written after every dashboard or
+  fallback draw. A file of any other size is ignored.
+- `state.json`: one JSON object, unversioned; missing keys take defaults and a
+  corrupt file resets to defaults. Keys: `lastSuccessUtc`, `firstFailureUtc`,
+  `lastNtpSyncUtc` (UTC epoch seconds, 0 = never), `lastFilename` (source-defined
+  identity of `current.bmp`), `lastReason`, `consecutiveFailures`, `screenShows`
+  (0 nothing, 1 dashboard, 2 dashboard with banner, 3 quiet fallback, 4 battery
+  fallback, 5 retry-limit fallback), `fastRefreshesSinceHalf`, `localFolderIndex`.
+
 ## `/.crosspoint/ttf-rendering.json`
 
 This user-owned JSON file stores only custom TTF families whose raster settings

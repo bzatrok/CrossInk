@@ -53,6 +53,8 @@ Refer to https://freeink.org/llms.txt for guidance.
   `docs/development/fork-workflow.md`; Apple clang fails on float `from_chars` before macOS 26.
 - Local flashing goes through self-hosted Inky with `INKY_DEV_FIRMWARE_DIR`; see the same doc.
 - Home Control (Hue + tado, X4 Pro only) is fork-only and documented in `docs/home-control.md`.
+- Dashboard sleep (X4 Pro): a timer wake branches in `setup()` right after `UITheme::reload()` into
+  `DashboardWake::run()` and never reaches the activity routes. A 60 s `esp_timer` backstop forces deep sleep.
 - The `freeink-sdk` submodule points at `bzatrok/freeink-sdk`, branch `feat/restore-visible-frame`
   (adds `restoreVisibleFrame()`), until Free-Ink merges it upstream.
 - `scripts/run_simulator_smoke_test.py` rebuilds with the shell's `CC`/`CXX` unless `--no-build`; the simulator also

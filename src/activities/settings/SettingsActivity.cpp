@@ -23,6 +23,7 @@
 #include "CrossPointSettings.h"
 #include "DeviceCapabilities.h"
 #include "FontSelectionActivity.h"
+#include "GlobalActions.h"
 #if CROSSINK_SCALABLE_FONTS
 #include "TtfRenderOptionsActivity.h"
 #endif
@@ -50,6 +51,10 @@
 #include "components/UIThemeTokens.h"
 #include "components/UiAppHelpers.h"
 #include "components/icons/frontlightHeaderIcons.h"
+#if CROSSINK_APP_CAP_DASHBOARD
+#include "dashboard/DashboardSleep.h"
+#include "dashboard/DashboardState.h"
+#endif
 #include "fontIds.h"
 #include "util/DictionaryRegistry.h"
 #include "util/FrontlightSchedule.h"
@@ -63,7 +68,11 @@ constexpr int16_t TOUCH_TAB_BAR_HEIGHT = 50;
 }  // namespace
 
 const StrId SettingsActivity::categoryNames[categoryCount] = {StrId::STR_CAT_DISPLAY, StrId::STR_CAT_READER,
-                                                              StrId::STR_CAT_CONTROLS, StrId::STR_CAT_SYSTEM};
+                                                              StrId::STR_CAT_CONTROLS, StrId::STR_CAT_SYSTEM,
+#if CROSSINK_APP_CAP_DASHBOARD
+                                                              StrId::STR_CAT_DASHBOARD
+#endif
+};
 
 namespace {
 constexpr int systemVersionFooterSideMargin = 20;
@@ -298,6 +307,9 @@ void SettingsActivity::rebuildSettingsLists() {
   fileBrowserSettings.clear();
   systemReadingStatsSettings.clear();
   systemGlobalStatsSettings.clear();
+#if CROSSINK_APP_CAP_DASHBOARD
+  dashboardSettings.clear();
+#endif
 
   if (isFileBrowserView()) {
     fileBrowserSettings = buildFileBrowserSettingsList(getBaseSettingsList());
@@ -342,6 +354,17 @@ void SettingsActivity::rebuildSettingsLists() {
   systemFilesCacheSettings = buildSystemFilesCacheSettingsList(allSettings);
   systemReadingStatsSettings = buildSystemReadingStatsSettingsList(allSettings);
   systemGlobalStatsSettings = buildSystemGlobalStatsSettingsList(allSettings);
+#if CROSSINK_APP_CAP_DASHBOARD
+  {
+    // Read state.json once per rebuild; the row getter runs on every render.
+    dashboard::DashboardState state;
+    state.load();
+    char statusLine[64];
+    dashboard::formatStatusLine(state, statusLine, sizeof(statusLine));
+    dashboardSettings =
+        buildDashboardSettingsList(allSettings, [status = std::string(statusLine)] { return status; });
+  }
+#endif
   controlsSettings = buildControlsSettingsParentList(allSettings);
   controlsPowerSettings = buildControlsPowerSettingsList(allSettings);
   controlsHomeButtonSettings = buildControlsHomeButtonSettingsList(allSettings);
@@ -469,6 +492,11 @@ void SettingsActivity::setCurrentSettingsForCategory() {
           break;
       }
       break;
+#if CROSSINK_APP_CAP_DASHBOARD
+    case 4:
+      currentSettings = &dashboardSettings;
+      break;
+#endif
   }
   settingsCount = static_cast<int>(currentSettings->size());
 }
@@ -1072,6 +1100,8 @@ void SettingsActivity::toggleCurrentSetting() {
     return;
   }
   if (setting.type == SettingType::STRING) {
+    // A string row with neither a setter nor a backing field is a read-only status line.
+    if (!setting.stringSetter && setting.stringMaxLen == 0) return;
     openStringEditor(setting);
     return;
   }
@@ -1216,6 +1246,21 @@ void SettingsActivity::toggleCurrentSetting() {
         break;
       case SettingAction::ClockSync:
         startActivityForResult(std::make_unique<ClockSyncActivity>(renderer, mappedInput), resultHandler);
+        break;
+      case SettingAction::DashboardRefreshNow:
+#if CROSSINK_APP_CAP_DASHBOARD
+        if (!SETTINGS.dashboardEnabled) {
+          startActivityForResult(std::make_unique<ConfirmationActivity>(renderer, mappedInput,
+                                                                        tr(STR_DASHBOARD_REFRESH_NOW),
+                                                                        tr(STR_DASHBOARD_TURN_ON_FIRST)),
+                                 [this](const ActivityResult&) { requestUpdate(); });
+        } else {
+          // No foreground Wi-Fi: sleep with a 2 s timer and let the timer wake refresh.
+          SETTINGS.saveToFile();
+          DashboardSleep::requestRefreshSoon();
+          enterDeepSleep();
+        }
+#endif
         break;
       case SettingAction::QuickActions:
         startActivityForResult(std::make_unique<QuickActionsActivity>(renderer, mappedInput), resultHandler);

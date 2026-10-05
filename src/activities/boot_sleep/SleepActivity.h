@@ -20,6 +20,19 @@ class SleepActivity final : public Activity {
   // Whether this screen is independent of the outgoing activity's saves.
   bool rendersBeforeExit() const;
 
+  // Where drawBitmapToFramebuffer() placed the image, for later grayscale passes.
+  struct BitmapPlacement {
+    int x = 0;
+    int y = 0;
+    float cropX = 0;
+    float cropY = 0;
+  };
+  // Places `bitmap` per the sleep cover mode, clears the framebuffer and, when
+  // drawBlackWhite, draws the B/W image and applies the inverted filter. Never
+  // refreshes the panel; the caller picks the refresh mode.
+  static bool drawBitmapToFramebuffer(GfxRenderer& renderer, Bitmap& bitmap, BitmapPlacement* placementOut = nullptr,
+                                      bool drawBlackWhite = true);
+
  private:
   void renderDefaultSleepScreen() const;
   void renderCustomSleepScreen() const;

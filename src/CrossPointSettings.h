@@ -9,6 +9,7 @@
 #include <iosfwd>
 #include <mutex>
 
+#include "AppCapabilities.h"
 #include "ReaderFontSizeStep.h"
 #include "util/ReaderStatusBarConfig.h"
 
@@ -693,6 +694,20 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
   uint8_t quickResumeSleepScreen = QUICK_RESUME_NEVER;
   // Master switch for automatic reading statistics; Time Left pace remains independent.
   uint8_t trackReadingStats = 1;
+#if CROSSINK_APP_CAP_DASHBOARD
+  // Dashboard sleep (Settings > Dashboard). Not the DASHBOARD_SLEEP reading-stats
+  // sleep screen: this shows a server-rendered image and refreshes it on a timer
+  // wake. The fallback screen is the regular sleepScreen setting.
+  uint8_t dashboardEnabled = 0;
+  char dashboardServerUrl[128] = "";
+  char dashboardApiKey[64] = "";  // persisted obfuscated, never returned by the web GET
+  uint8_t dashboardInterval = 15;  // minutes; raw enum values 1/2/3/5/10/15/30/60
+  uint8_t dashboardQuietEnabled = 1;
+  uint8_t dashboardQuietStart = 22;  // local hour, 0-23
+  uint8_t dashboardQuietEnd = 7;     // local hour, 0-23
+  uint8_t dashboardRetries = 3;      // failed wakes in a row before the fallback screen
+  uint8_t dashboardBatteryFloor = 15;  // percent; 0 = off
+#endif
 
   ~CrossPointSettings() = default;
 
