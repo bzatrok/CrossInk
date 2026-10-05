@@ -25,9 +25,10 @@ screen for quiet hours, low battery, and repeated failures.
 | Row | Values | Default | Meaning |
 |---|---|---|---|
 | Dashboard sleep | Off / On | Off | Master switch. |
-| Server URL | text | empty | Empty = the local folder source (below). The TRMNL BYOS client uses it. |
-| API key | text | empty | Stored obfuscated on SD. The web settings page never shows it; an empty POST keeps it. |
+| Server URL | text | empty | A TRMNL BYOS server, for example `http://192.168.1.10:2300`. Empty = the local folder source (below). |
+| API key | text | empty | Stored obfuscated on SD. The web settings page never shows it; an empty POST keeps it. Left empty, the first fetch provisions one through `/api/setup`. |
 | Interval | 1, 2, 3, 5, 10, 15, 30, 60 min | 15 min | Time between timer wakes. |
+| Orientation | Portrait / Landscape | Portrait | How the device stands. See "Orientation" below. |
 | Quiet hours | Off / On | On | Show the fallback screen between Quiet start and Quiet end. |
 | Quiet start / Quiet end | 0-23 (hour) | 22 / 7 | Local hours; the window wraps past midnight. Equal hours mean no quiet period. |
 | Retry attempts | 1, 3, 5, 10 | 3 | Failed wakes in a row before the fallback screen replaces the dashboard. |
@@ -74,7 +75,54 @@ A power-button wake behaves exactly as before.
 With an empty Server URL, each wake copies the next `*.bmp` (name order,
 wrapping) from `/dashboard/` on the SD root. One file whose name matches the
 last one is "unchanged". An empty folder is a failure ("no images"). Use 800×480
-1-bit BMPs; landscape images are drawn full-screen in landscape.
+or 480×800 1-bit BMPs; they draw as described under "Orientation".
+
+### TRMNL BYOS server
+
+With a Server URL set, the source is a self-hosted TRMNL BYOS server (Terminus
+or byos_next) on a network the device can reach. Each wake:
+
+1. **Provision** when the API key is empty: `GET /api/setup`. The returned
+   `api_key` is saved to the settings and used in the same wake. The friendly ID
+   is logged, not stored.
+2. **Poll** `GET /api/display`. HTTP 202, `"status":202`, or the same `filename`
+   as the shown image means "unchanged": no download, no redraw. Any other
+   `status` than 0 or 200 is a failure (`display <status>`). The server's
+   `refresh_rate` is ignored: the Interval setting wins.
+3. **Download** `image_url` (relative URLs join the server origin) to
+   `download.img`, staged through `download.img.part`.
+4. **Convert.** The format comes from the magic bytes. A BMP is used as is. A
+   PNG becomes a 1-bit BMP of exactly 800×480, or 480×800 for a tall PNG. The
+   converter crops to its target, so other sizes lose their edges.
+5. **Publish** through `next.bmp`, as for every source. Temp files are removed
+   on every exit path, and a failure never touches `current.bmp`.
+
+Headers on both calls: `ID` (Wi-Fi MAC), `Access-Token` (when set),
+`Battery-Voltage` (volts, two decimals), `FW-Version`, `RSSI`, `Width` = 800,
+`Height` = 480 (the physical panel, whatever the Orientation), and `Model`
+(the board name). JSON bodies are read into a fixed 2 KB buffer with a 10 s
+timeout; a larger body is a failure.
+
+`http://` is the supported setup. `https://` works but does not check
+certificates yet (`TODO(trmnl-https)` in `lib/Trmnl/TrmnlClient.cpp`), and it
+needs 55 KB of free and contiguous heap.
+
+Failure reasons in the status line: `server url`, `setup`, `display <code>`
+(negative codes are transport errors), `display json`, `image url`, `download`,
+`format`.
+
+The request shape is ported from
+[cross-trmnl](https://github.com/wolodarskij/cross-trmnl) (MIT License,
+Copyright (c) 2025 Dave Allie).
+
+### Orientation
+
+The Orientation setting says how the device stands. A tall image always draws
+in portrait. A wide image (TRMNL's 800×480) draws in landscape when the device
+stands landscape. When it stands portrait (the default), a wide image is taken
+as a portrait layout the server rotated 90° clockwise, and is rotated back.
+On Terminus, set the device Model's **Rotation** to `90` for a portrait device.
+The banner always reads upright the way the device stands.
 
 ## Storage
 
@@ -90,6 +138,9 @@ settings live in `crossink-settings.json` as `dashboard*` keys.
 - `src/dashboard/DashboardImageStore.*` — SD paths, validated `next.bmp` swap, `frame.bin`.
 - `src/dashboard/DashboardSource.*`, `LocalFolderSource.*` — the source interface
   (`selectDashboardSource()`) and the offline folder source.
+- `src/dashboard/TrmnlSource.*` — the BYOS source: provision, poll, download, convert.
+- `lib/Trmnl/TrmnlProtocol.*` — pure `/api/setup` and `/api/display` parsing; native tests.
+- `lib/Trmnl/TrmnlClient.*` — the BYOS HTTP calls and device headers (ported from cross-trmnl, MIT).
 - `src/dashboard/DashboardRender.*` — draws the image and banner, picks FAST/HALF, saves `frame.bin`.
 - `src/dashboard/DashboardSleep.*` — sleep-entry hooks in `SleepActivity::onEnter` and `enterDeepSleep`.
 - `src/dashboard/DashboardWake.*` — the timer-wake path and the 60 s backstop.
@@ -100,11 +151,16 @@ settings live in `crossink-settings.json` as `dashboard*` keys.
 
 ## Testing
 
-- Native tests: `cmake -S test -B test/build && cmake --build test/build --target DashboardPolicyTest && ctest --test-dir test/build -R Dashboard`.
+- Native tests: `cmake -S test -B test/build && cmake --build test/build --target DashboardPolicyTest TrmnlProtocolTest && ctest --test-dir test/build -R "Dashboard|Trmnl"`.
 - Simulator: put BMPs in `fs_/dashboard/`, set `"dashboardEnabled":1` in
   `fs_/.crosspoint/crossink-settings.json`, and run with `CROSSPOINT_SIM_TIMER_WAKE=1`
   and a screenshot at `0` ms (`CROSSPOINT_SIM_SCREENSHOTS="0:/tmp/sim/wake.bmp"`,
   `CROSSPOINT_SIM_INPUT_SCRIPT="1500:QUIT"`). Each run is one timer wake. The
   simulator has no frame restore, so every draw is HALF.
+- Simulator with a server: run Terminus with Docker (its README quick start), set
+  `"dashboardServerUrl":"http://<mac-lan-ip>:2300"`, and save a network in
+  `fs_/.crosspoint/wifi.json` (`{"credentials":[{"ssid":"Sim","password":"x"}]}`);
+  the simulator Wi-Fi connects to any saved network. Lines tagged `TRMNL` show
+  setup, display, and the download.
 - Hardware: serial lines tagged `DSH`. Each timer wake logs one line with the
   policy, fetch result, refresh mode, next timer, and awake milliseconds.

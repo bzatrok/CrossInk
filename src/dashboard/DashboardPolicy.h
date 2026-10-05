@@ -43,6 +43,18 @@ bool isInQuietHours(uint8_t hour, uint8_t startHour, uint8_t endHour);
 
 PolicyResult evaluatePolicy(const PolicyInput& input);
 
+// How current.bmp maps onto the panel.
+enum class DrawRotation : uint8_t {
+  Portrait,      // a tall image, drawn as is
+  LandscapeCcw,  // a wide image on a device standing landscape (native panel orientation)
+  LandscapeCw,   // a wide image on a device standing portrait
+};
+
+// Tall images draw in portrait. A wide image on a portrait-standing device is
+// a portrait layout the server rotated 90 degrees clockwise (Terminus Model
+// rotation 90), so it draws rotated back to come out upright.
+DrawRotation chooseDrawRotation(int imageWidth, int imageHeight, bool deviceStandsPortrait);
+
 }  // namespace dashboard
 
 #endif  // CROSSINK_APP_CAP_DASHBOARD

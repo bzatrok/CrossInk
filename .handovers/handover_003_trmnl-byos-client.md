@@ -1,7 +1,7 @@
 # Handover 003 — TRMNL BYOS client
 
 **Branch:** `feat/trmnl-byos-client` (create from `main` after [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) merges)
-**Author:** session 2026-10-05  ·  **Status:** pending
+**Author:** session 2026-10-05  ·  **Status:** done (branched from `feat/home-control` with its PR into `feat/home-control`, at Ben's instruction)
 **Log:** [handover_log.md](handover_log.md)
 **Serves:** "shows a dashboard image from Ben's self-hosted TRMNL BYOS server".
 **Scope:** Add a TRMNL BYOS image source behind the `DashboardSource` interface that

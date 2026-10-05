@@ -10,14 +10,28 @@
 
 #include <cstdio>
 
+#include "CrossPointSettings.h"
 #include "DashboardClock.h"
 #include "DashboardImageStore.h"
+#include "DashboardPolicy.h"
 #include "activities/boot_sleep/SleepActivity.h"
 #include "fontIds.h"
 
 namespace DashboardRender {
 
 namespace {
+GfxRenderer::Orientation toRendererOrientation(const dashboard::DrawRotation rotation) {
+  switch (rotation) {
+    case dashboard::DrawRotation::LandscapeCcw:
+      return GfxRenderer::Orientation::LandscapeCounterClockwise;
+    case dashboard::DrawRotation::LandscapeCw:
+      return GfxRenderer::Orientation::LandscapeClockwise;
+    case dashboard::DrawRotation::Portrait:
+      break;
+  }
+  return GfxRenderer::Orientation::Portrait;
+}
+
 // Full-width black strip at the bottom of the oriented viewable area, white text.
 void drawBanner(GfxRenderer& renderer, const char* text) {
   int top = 0, right = 0, bottom = 0, left = 0;
@@ -56,14 +70,17 @@ bool draw(GfxRenderer& renderer, const char* bannerText, const HalDisplay::Refre
     return false;
   }
 
-  // TRMNL images are 800x480 landscape; draw them full-screen in landscape.
   const GfxRenderer::Orientation previous = renderer.getOrientation();
-  if (bitmap.getWidth() > bitmap.getHeight()) {
-    renderer.setOrientation(GfxRenderer::Orientation::LandscapeCounterClockwise);
-  }
+  const bool standsPortrait = SETTINGS.dashboardOrientation == 0;
+  renderer.setOrientation(toRendererOrientation(
+      dashboard::chooseDrawRotation(bitmap.getWidth(), bitmap.getHeight(), standsPortrait)));
   const bool drawn = SleepActivity::drawBitmapToFramebuffer(renderer, bitmap);
   file.close();
-  if (drawn && bannerText) drawBanner(renderer, bannerText);
+  if (drawn && bannerText) {
+    // The banner reads upright the way the device stands, not the way the image is rotated.
+    if (standsPortrait) renderer.setOrientation(GfxRenderer::Orientation::Portrait);
+    drawBanner(renderer, bannerText);
+  }
   renderer.setOrientation(previous);
   if (!drawn) {
     LOG_ERR("DSH", "Could not draw current.bmp");

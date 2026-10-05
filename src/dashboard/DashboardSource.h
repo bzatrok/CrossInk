@@ -7,7 +7,7 @@
 #include "DashboardState.h"
 
 // Where a dashboard image comes from. The timer-wake path calls fetch() once
-// per wake. trmnl-byos-client adds TrmnlSource against this interface.
+// per wake. Implementations: LocalFolderSource and TrmnlSource.
 enum class DashboardFetch : uint8_t { Updated, Unchanged, Failed };
 
 struct DashboardFetchResult {
@@ -23,7 +23,7 @@ class DashboardSource {
   virtual bool needsWifi() const = 0;
 };
 
-// Server URL empty -> LocalFolderSource.
+// Server URL set -> TrmnlSource. Empty -> LocalFolderSource.
 DashboardSource& selectDashboardSource();
 
 // Helper for sources: a result with a copied reason.

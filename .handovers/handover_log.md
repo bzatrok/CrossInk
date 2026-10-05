@@ -106,6 +106,34 @@ new settings tab.
 - [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) — the policy has a `Disabled` screen for "feature
   off". Rejected: reusing a fallback value for it.
 
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — a new `lib/Trmnl` on `SecureHttpClient`. Rejected:
+  `HomeControlHttp` (one extra header only).
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — a pure `TrmnlProtocol` with native tests. Rejected:
+  parsing inside the transport (not host-testable).
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — a fixed 2 KB JSON body buffer that fails on overflow.
+  Rejected: `getString()` into a heap `String`.
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — the PNG target is exactly the panel size, 1-bit only.
+  Rejected: cross-trmnl's square `maxDim` target and its 2-bit variant.
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — battery voltage and model headers are sent. Rejected:
+  cross-trmnl's header set.
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — `https://` runs without certificate checks in v1,
+  behind `TODO(trmnl-https)`. Rejected: blocking v1 on certificates.
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — no BLE stop before Wi-Fi. Rejected: cross-trmnl's
+  `bleinput::stop()` (CrossInk has no BLE stack).
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — `TrmnlSource` (app layer) reads and saves the
+  settings; `lib/Trmnl` takes the URL and key as arguments. Rejected: `lib/Trmnl` reading `SETTINGS` (libraries
+  cannot include `src/` headers).
+- Added by Ben during [trmnl-byos-client](handover_003_trmnl-byos-client.md): a Dashboard **Orientation**
+  setting, Portrait by default ("i intend the device to stand portrait for now"). A tall image draws in
+  portrait. A wide image on a portrait device is taken as rotated 90° clockwise by the server (Terminus Model
+  rotation 90) and drawn back upright. The banner follows the device. Rejected: following the image shape only
+  (fails for Terminus rotated images), and landscape only.
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — `Width`/`Height` headers stay 800×480 (the physical
+  panel) in both orientations. Rejected: swapping them for portrait, because Terminus stores them on the device
+  record and takes rotation from the Model, so a swap risks a double rotation.
+- [trmnl-byos-client](handover_003_trmnl-byos-client.md) — a PNG converts to 800×480, or 480×800 when it is tall.
+  Rejected: a fixed 800×480 target (crops a portrait PNG).
+
 ## Not yet specified
 - Reaching the BYOS server away from home: a Tailscale client on the device (microlink) or plain WireGuard.
   Revisit only if the dashboard must work outside the home LAN.
@@ -116,9 +144,10 @@ new settings tab.
 - Building or hosting the BYOS server itself. Ben runs an existing BYOS server (byos_next or Terminus).
 - Configuring a home reverse proxy or the tailnet. v1 assumes the server is reachable on the LAN.
 - Grayscale or colour dashboards. v1 draws 1-bit images only.
+- `/api/log` reporting. Not needed for v1 (see [trmnl-byos-client](handover_003_trmnl-byos-client.md)).
 
 | # | Slug | Goal | Status | Branch | Created | Completed |
 |---|------|------|--------|--------|---------|-----------|
 | 001 | [sdk-frame-restore](handover_001_sdk-frame-restore.md) | SDK method that seeds the old-image plane after wake | ✅ done | feat/sdk-frame-restore | 2026-10-05 | 2026-10-05 |
 | 002 | [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) | Timer wake, silent refresh boot, settings tab, quiet hours, battery floor | ✅ done | feat/dashboard-timer-wake | 2026-10-05 | 2026-10-05 |
-| 003 | [trmnl-byos-client](handover_003_trmnl-byos-client.md) | TRMNL BYOS client, provisioning, download, failure banner | ⬜ pending | feat/trmnl-byos-client | 2026-10-05 | — |
+| 003 | [trmnl-byos-client](handover_003_trmnl-byos-client.md) | TRMNL BYOS client, provisioning, download, failure banner | ✅ done | feat/trmnl-byos-client | 2026-10-05 | 2026-10-05 |
