@@ -70,6 +70,17 @@ new settings tab.
   Quiet end, Retry attempts, Battery floor, a read-only status line, and a "Refresh now" action.
 - Claim gate stays OFF. Most of the proof for this work is on the hardware, which a diff review cannot see.
 
+- [sdk-frame-restore](handover_001_sdk-frame-restore.md) — a new `PanelDriver::restoreVisibleFrame` hook also clears
+  the first-paint promotion. Rejected: `seedPreviousFrame` alone, because the first FAST is still promoted to HALF.
+- [sdk-frame-restore](handover_001_sdk-frame-restore.md) — the facade clears `_inversionDirty` and leaves
+  `_needsGrayClear` alone. Rejected: keeping the inversion flag (second HALF), and dropping an explicit resync.
+- [sdk-frame-restore](handover_001_sdk-frame-restore.md) — dual-buffer builds also copy the frame into the
+  secondary buffer. Rejected: leaving it white from `begin()`, because the first FAST then writes white into RED.
+- [sdk-frame-restore](handover_001_sdk-frame-restore.md) — the SDK fork branch starts at the pinned SHA, and the
+  submodule uses HTTPS. Rejected: upstream `main` (unrelated changes), and an SSH URL (breaks clones without keys).
+- [sdk-frame-restore](handover_001_sdk-frame-restore.md) — Ben opens the upstream Free-Ink PR. Rejected: the
+  executor opens it, because it is an outward-facing action on someone else's repo.
+
 ## Not yet specified
 - Reaching the BYOS server away from home: a Tailscale client on the device (microlink) or plain WireGuard.
   Revisit only if the dashboard must work outside the home LAN.
@@ -83,7 +94,6 @@ new settings tab.
 
 | # | Slug | Goal | Status | Branch | Created | Completed |
 |---|------|------|--------|--------|---------|-----------|
-| 001 | [sdk-frame-restore](handover_001_sdk-frame-restore.md) | SDK method that seeds the old-image plane after wake | 🔄 in-progress | feat/sdk-frame-restore | 2026-10-05 | — |
-|  | ↳ note | Code, tests and builds done. Remaining: create `bzatrok/freeink-sdk`, push the SDK branch, push CrossInk, open the PR. | | | | |
+| 001 | [sdk-frame-restore](handover_001_sdk-frame-restore.md) | SDK method that seeds the old-image plane after wake | ✅ done | feat/sdk-frame-restore | 2026-10-05 | 2026-10-05 |
 | 002 | [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) | Timer wake, silent refresh boot, settings tab, quiet hours, battery floor | ⬜ pending | feat/dashboard-timer-wake | 2026-10-05 | — |
 | 003 | [trmnl-byos-client](handover_003_trmnl-byos-client.md) | TRMNL BYOS client, provisioning, download, failure banner | ⬜ pending | feat/trmnl-byos-client | 2026-10-05 | — |
