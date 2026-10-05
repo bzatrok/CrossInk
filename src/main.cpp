@@ -1406,10 +1406,16 @@ void setup() {
       LOG_INF("MAIN", "Timer wake with Dashboard sleep off; sleeping again");
       setupDisplay();
     }
+#ifdef SIMULATOR
+    // The simulator presents (and takes scripted screenshots) only from its main
+    // loop, which this path never reaches; present the drawn frame once.
+    display.presentIfNeeded();
+#endif
     sleepHardware(nextTimerSeconds);
 #ifdef SIMULATOR
-    // Simulator deep sleep returns on QUIT; end the run like a sleeping device.
-    std::exit(0);
+    // Simulator deep sleep returns on QUIT. _Exit skips static destructors,
+    // which assert on a never-started activity stack.
+    std::_Exit(0);
 #endif
   }
 #endif
