@@ -22,6 +22,10 @@ class HalFrontlight {
   // Warm/cool mix, 0 = cool .. 100 = warm. No-op on single-channel boards.
   void setWarmth(uint8_t warmPercent);
   void setOn(bool on);
+  // Last step before deep sleep. With light-sleep PWM (FREEINK_FRONTLIGHT_LS)
+  // the pads are driven and held LOW so they stop drawing current; begin()
+  // releases the hold on the next boot. A no-op without that flag.
+  void parkForDeepSleep();
 
   uint8_t brightness() const { return lastBrightness; }
   uint8_t warmth() const { return manager.colorTemperature(); }
