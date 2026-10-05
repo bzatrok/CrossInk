@@ -83,6 +83,7 @@ new settings tab.
 
 | # | Slug | Goal | Status | Branch | Created | Completed |
 |---|------|------|--------|--------|---------|-----------|
-| 001 | [sdk-frame-restore](handover_001_sdk-frame-restore.md) | SDK method that seeds the old-image plane after wake | ⬜ pending | feat/sdk-frame-restore | 2026-10-05 | — |
+| 001 | [sdk-frame-restore](handover_001_sdk-frame-restore.md) | SDK method that seeds the old-image plane after wake | 🔄 in-progress | feat/sdk-frame-restore | 2026-10-05 | — |
+|  | ↳ note | Code, tests and builds done. Remaining: create `bzatrok/freeink-sdk`, push the SDK branch, push CrossInk, open the PR. | | | | |
 | 002 | [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) | Timer wake, silent refresh boot, settings tab, quiet hours, battery floor | ⬜ pending | feat/dashboard-timer-wake | 2026-10-05 | — |
 | 003 | [trmnl-byos-client](handover_003_trmnl-byos-client.md) | TRMNL BYOS client, provisioning, download, failure banner | ⬜ pending | feat/trmnl-byos-client | 2026-10-05 | — |
