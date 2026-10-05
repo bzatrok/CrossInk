@@ -17,10 +17,10 @@
 namespace {
 
 constexpr const char* DOWNLOAD_PART_PATH = "/.crosspoint/dashboard/download.img.part";
-// Exactly the panel size: the converter always crops to its target, so a
-// square target would cut the sides off a landscape image.
-constexpr int TARGET_WIDTH = 800;
-constexpr int TARGET_HEIGHT = 480;
+// Exactly the panel size in the image's own orientation: the converter always
+// crops to its target, so a square or mismatched target cuts the image.
+constexpr int PANEL_LONG_SIDE = 800;
+constexpr int PANEL_SHORT_SIDE = 480;
 
 enum class ImageFormat : uint8_t { Unknown, Bmp, Png };
 
@@ -74,15 +74,34 @@ ImageFormat sniffFormat(const char* path) {
   return ImageFormat::Unknown;
 }
 
+// Reads width and height from the PNG IHDR chunk (bytes 16-23, big-endian).
+bool readPngSize(FsFile& png, uint32_t& width, uint32_t& height) {
+  uint8_t head[24];
+  if (png.read(head, sizeof(head)) != static_cast<int>(sizeof(head)) || !png.seek(0)) return false;
+  width = (uint32_t{head[16]} << 24) | (uint32_t{head[17]} << 16) | (uint32_t{head[18]} << 8) | head[19];
+  height = (uint32_t{head[20]} << 24) | (uint32_t{head[21]} << 16) | (uint32_t{head[22]} << 8) | head[23];
+  return width > 0 && height > 0;
+}
+
 bool convertPngToNext() {
   FsFile png;
   if (!Storage.openFileForRead("TRMNL", TrmnlSource::DOWNLOAD_PATH, png)) return false;
+  uint32_t width = 0;
+  uint32_t height = 0;
+  if (!readPngSize(png, width, height)) {
+    LOG_ERR("TRMNL", "PNG header unreadable");
+    png.close();
+    return false;
+  }
+  const bool tall = width < height;
+  const int targetWidth = tall ? PANEL_SHORT_SIDE : PANEL_LONG_SIDE;
+  const int targetHeight = tall ? PANEL_LONG_SIDE : PANEL_SHORT_SIDE;
   FsFile bmp;
   if (!Storage.openFileForWrite("TRMNL", DashboardImageStore::NEXT_BMP, bmp)) {
     png.close();
     return false;
   }
-  const bool ok = PngToBmpConverter::pngFileTo1BitBmpStreamWithSize(png, bmp, TARGET_WIDTH, TARGET_HEIGHT);
+  const bool ok = PngToBmpConverter::pngFileTo1BitBmpStreamWithSize(png, bmp, targetWidth, targetHeight);
   bmp.close();
   png.close();
   if (!ok) {
