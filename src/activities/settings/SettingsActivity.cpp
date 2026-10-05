@@ -50,6 +50,9 @@
 #include "components/UIThemeTokens.h"
 #include "components/UiAppHelpers.h"
 #include "components/icons/frontlightHeaderIcons.h"
+#if CROSSINK_APP_CAP_DASHBOARD
+#include "dashboard/DashboardState.h"
+#endif
 #include "fontIds.h"
 #include "util/DictionaryRegistry.h"
 #include "util/FrontlightSchedule.h"
@@ -350,7 +353,15 @@ void SettingsActivity::rebuildSettingsLists() {
   systemReadingStatsSettings = buildSystemReadingStatsSettingsList(allSettings);
   systemGlobalStatsSettings = buildSystemGlobalStatsSettingsList(allSettings);
 #if CROSSINK_APP_CAP_DASHBOARD
-  dashboardSettings = buildDashboardSettingsList(allSettings, [] { return std::string(tr(STR_DASHBOARD_STATUS_NEVER)); });
+  {
+    // Read state.json once per rebuild; the row getter runs on every render.
+    dashboard::DashboardState state;
+    state.load();
+    char statusLine[64];
+    dashboard::formatStatusLine(state, statusLine, sizeof(statusLine));
+    dashboardSettings =
+        buildDashboardSettingsList(allSettings, [status = std::string(statusLine)] { return status; });
+  }
 #endif
   controlsSettings = buildControlsSettingsParentList(allSettings);
   controlsPowerSettings = buildControlsPowerSettingsList(allSettings);
