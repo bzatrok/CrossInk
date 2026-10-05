@@ -69,6 +69,7 @@ class HalGPIO {
 
  private:
   DeviceType _deviceType = DeviceType::X4;
+  bool _powerButtonHandoff = false;  // this boot came from restartAsPowerButtonWake()
 
  public:
   HalGPIO() = default;
@@ -139,8 +140,16 @@ class HalGPIO {
   // Verify the physical power button through debounce, then require a long
   // hold when the saved shortcut does not permit short-press wake.
   // Returns true if verification succeeded, false if device should return to sleep.
-  // Should only be called when wakeup reason is PowerButton.
-  bool verifyPowerButtonWakeup(bool shortPressWakes, uint16_t longHoldMs);
+  // Should only be called when wakeup reason is PowerButton, or right after a
+  // light-sleep power wake with holdStartMs = the wake time (millis()).
+  // holdStartMs 0 counts the hold from reset, as a deep-sleep wake does.
+  bool verifyPowerButtonWakeup(bool shortPressWakes, uint16_t longHoldMs, unsigned long holdStartMs = 0);
+
+  // Ends a light sleep with a normal wake: restarts, and the next boot reports
+  // WakeupReason::PowerButton with wasPowerButtonHandoff(). Verify the press
+  // first; the restarted boot does not re-verify it.
+  [[noreturn]] void restartAsPowerButtonWake();
+  bool wasPowerButtonHandoff() const { return _powerButtonHandoff; }
 
   // Check if USB is connected
   bool isUsbConnected() const;
