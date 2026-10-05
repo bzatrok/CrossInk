@@ -37,4 +37,9 @@ bool isNoChange(const DisplayResult& r, const char* lastFilename);
 // image URL is empty, or the result does not fit in cap.
 bool resolveImageUrl(const char* base, const char* imageUrl, char* out, size_t cap);
 
+// Copies the leading "X.Y.Z" of a build version ("1.6.1-x4-pro" -> "1.6.1").
+// Terminus rejects any FW-Version header that is not exactly three numeric
+// parts. False, with out empty, when the version does not start that way.
+bool firmwareVersionCore(const char* version, char* out, size_t cap);
+
 }  // namespace trmnl

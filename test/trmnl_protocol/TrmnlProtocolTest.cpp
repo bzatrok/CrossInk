@@ -129,4 +129,27 @@ TEST(TrmnlImageUrl, BadInputsFail) {
   EXPECT_FALSE(trmnl::resolveImageUrl("http://lan", "", out, sizeof(out)));
 }
 
+TEST(TrmnlFirmwareVersion, BuildSuffixIsDropped) {
+  char out[24];
+  ASSERT_TRUE(trmnl::firmwareVersionCore("1.6.1-x4-pro", out, sizeof(out)));
+  EXPECT_STREQ(out, "1.6.1");
+  ASSERT_TRUE(trmnl::firmwareVersionCore("10.20.300", out, sizeof(out)));
+  EXPECT_STREQ(out, "10.20.300");
+}
+
+TEST(TrmnlFirmwareVersion, NonSemverFails) {
+  char out[24];
+  EXPECT_FALSE(trmnl::firmwareVersionCore("1.6", out, sizeof(out)));
+  EXPECT_STREQ(out, "");
+  EXPECT_FALSE(trmnl::firmwareVersionCore("v1.6.1", out, sizeof(out)));
+  EXPECT_FALSE(trmnl::firmwareVersionCore("1..1", out, sizeof(out)));
+  EXPECT_FALSE(trmnl::firmwareVersionCore(nullptr, out, sizeof(out)));
+}
+
+TEST(TrmnlFirmwareVersion, TooSmallBufferFails) {
+  char out[5];
+  EXPECT_FALSE(trmnl::firmwareVersionCore("1.6.1", out, sizeof(out)));
+  EXPECT_STREQ(out, "");
+}
+
 }  // namespace

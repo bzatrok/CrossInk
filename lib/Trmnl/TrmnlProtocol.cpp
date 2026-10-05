@@ -79,4 +79,24 @@ bool resolveImageUrl(const char* base, const char* imageUrl, char* out, size_t c
   return true;
 }
 
+bool firmwareVersionCore(const char* version, char* out, size_t cap) {
+  if (cap == 0) return false;
+  out[0] = '\0';
+  if (version == nullptr) return false;
+  size_t i = 0;
+  for (int part = 0; part < 3; ++part) {
+    if (part > 0) {
+      if (version[i] != '.') return false;
+      ++i;
+    }
+    const size_t digitsStart = i;
+    while (version[i] >= '0' && version[i] <= '9') ++i;
+    if (i == digitsStart) return false;
+  }
+  if (i >= cap) return false;
+  std::memcpy(out, version, i);
+  out[i] = '\0';
+  return true;
+}
+
 }  // namespace trmnl

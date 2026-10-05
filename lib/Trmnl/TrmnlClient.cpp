@@ -52,7 +52,8 @@ void addDeviceHeaders(freeink::SecureHttpClient& http, const char* apiKey) {
   const uint16_t mv = batteryMillivolts();
   snprintf(value, sizeof(value), "%u.%02u", mv / 1000U, (mv % 1000U) / 10U);
   http.addHeader("Battery-Voltage", value);
-  http.addHeader("FW-Version", AppVersion::version());
+  // Terminus answers 422 to anything but "X.Y.Z"; a build suffix is dropped.
+  if (firmwareVersionCore(AppVersion::version(), value, sizeof(value))) http.addHeader("FW-Version", value);
   snprintf(value, sizeof(value), "%d", static_cast<int>(WiFi.RSSI()));
   http.addHeader("RSSI", value);
   snprintf(value, sizeof(value), "%d", PANEL_WIDTH);
