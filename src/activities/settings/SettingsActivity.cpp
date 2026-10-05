@@ -23,6 +23,7 @@
 #include "CrossPointSettings.h"
 #include "DeviceCapabilities.h"
 #include "FontSelectionActivity.h"
+#include "GlobalActions.h"
 #if CROSSINK_SCALABLE_FONTS
 #include "TtfRenderOptionsActivity.h"
 #endif
@@ -51,6 +52,7 @@
 #include "components/UiAppHelpers.h"
 #include "components/icons/frontlightHeaderIcons.h"
 #if CROSSINK_APP_CAP_DASHBOARD
+#include "dashboard/DashboardSleep.h"
 #include "dashboard/DashboardState.h"
 #endif
 #include "fontIds.h"
@@ -1252,6 +1254,11 @@ void SettingsActivity::toggleCurrentSetting() {
                                                                         tr(STR_DASHBOARD_REFRESH_NOW),
                                                                         tr(STR_DASHBOARD_TURN_ON_FIRST)),
                                  [this](const ActivityResult&) { requestUpdate(); });
+        } else {
+          // No foreground Wi-Fi: sleep with a 2 s timer and let the timer wake refresh.
+          SETTINGS.saveToFile();
+          DashboardSleep::requestRefreshSoon();
+          enterDeepSleep();
         }
 #endif
         break;
