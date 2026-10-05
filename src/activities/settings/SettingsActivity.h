@@ -53,6 +53,7 @@ enum class SettingAction {
   DownloadFonts,
   TtfRendering,
   ClockSync,
+  DashboardRefreshNow,
 };
 
 struct SettingInfo {
@@ -257,6 +258,9 @@ class SettingsActivity final : public Activity {
   std::vector<SettingInfo> fileBrowserSettings;
   std::vector<SettingInfo> systemReadingStatsSettings;
   std::vector<SettingInfo> systemGlobalStatsSettings;
+#if CROSSINK_APP_CAP_DASHBOARD
+  std::vector<SettingInfo> dashboardSettings;
+#endif
   const std::vector<SettingInfo>* currentSettings = nullptr;
 
   bool preserveQuickResumeTimeoutOn = false;
@@ -278,12 +282,13 @@ class SettingsActivity final : public Activity {
 
   OptionPopup optionPopup;
 
-  static constexpr int categoryCount = 4;
+  static constexpr int categoryCount = 4 + CROSSINK_APP_CAP_DASHBOARD;
   static const StrId categoryNames[categoryCount];
 
   // FreeInkApp hosts the tab bar + settings list (themed, touch-routed); the
   // header stays on GUI.drawHeader for the battery, OptionPopup stays legacy.
-  using UiApp = freeink::ui::FreeInkApp<24, 4>;
+  // The Dashboard tab adds one tab interaction on x4-pro builds.
+  using UiApp = freeink::ui::FreeInkApp<24 + CROSSINK_APP_CAP_DASHBOARD, 4>;
   freeink::ui::GfxRendererTarget uiTarget;  // must precede `app`: the app holds a reference to it
   UiApp app;
   // render() rebuilds the app's interaction table; loop() only routes touch

@@ -1675,7 +1675,7 @@ void CrossPointWebServer::handleGetSettings() const {
         // Passwords are write-only in the web UI. Returning the KOReader
         // value can expose credentials and, for legacy invalid data, emit
         // binary bytes that make the whole JSON response unparsable.
-        if (strcmp(s.key, "koPassword") == 0) {
+        if (strcmp(s.key, "koPassword") == 0 || strcmp(s.key, "dashboardApiKey") == 0) {
           doc["value"] = "";
         } else if (s.stringGetter) {
           doc["value"] = s.stringGetter();
@@ -1777,6 +1777,8 @@ void CrossPointWebServer::handlePostSettings() {
                                                       val.length() > CrossPointSettings::MAX_DEVICE_NAME_LENGTH)) {
           break;
         }
+        // The web GET never returns the dashboard API key, so an empty POST means "unchanged".
+        if (std::strcmp(s.key, "dashboardApiKey") == 0 && val.empty()) break;
         if (s.stringSetter) {
           s.stringSetter(val);
         } else if (s.stringMaxLen > 0) {

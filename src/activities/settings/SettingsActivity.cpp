@@ -63,7 +63,11 @@ constexpr int16_t TOUCH_TAB_BAR_HEIGHT = 50;
 }  // namespace
 
 const StrId SettingsActivity::categoryNames[categoryCount] = {StrId::STR_CAT_DISPLAY, StrId::STR_CAT_READER,
-                                                              StrId::STR_CAT_CONTROLS, StrId::STR_CAT_SYSTEM};
+                                                              StrId::STR_CAT_CONTROLS, StrId::STR_CAT_SYSTEM,
+#if CROSSINK_APP_CAP_DASHBOARD
+                                                              StrId::STR_CAT_DASHBOARD
+#endif
+};
 
 namespace {
 constexpr int systemVersionFooterSideMargin = 20;
@@ -298,6 +302,9 @@ void SettingsActivity::rebuildSettingsLists() {
   fileBrowserSettings.clear();
   systemReadingStatsSettings.clear();
   systemGlobalStatsSettings.clear();
+#if CROSSINK_APP_CAP_DASHBOARD
+  dashboardSettings.clear();
+#endif
 
   if (isFileBrowserView()) {
     fileBrowserSettings = buildFileBrowserSettingsList(getBaseSettingsList());
@@ -342,6 +349,9 @@ void SettingsActivity::rebuildSettingsLists() {
   systemFilesCacheSettings = buildSystemFilesCacheSettingsList(allSettings);
   systemReadingStatsSettings = buildSystemReadingStatsSettingsList(allSettings);
   systemGlobalStatsSettings = buildSystemGlobalStatsSettingsList(allSettings);
+#if CROSSINK_APP_CAP_DASHBOARD
+  dashboardSettings = buildDashboardSettingsList(allSettings, [] { return std::string(tr(STR_DASHBOARD_STATUS_NEVER)); });
+#endif
   controlsSettings = buildControlsSettingsParentList(allSettings);
   controlsPowerSettings = buildControlsPowerSettingsList(allSettings);
   controlsHomeButtonSettings = buildControlsHomeButtonSettingsList(allSettings);
@@ -469,6 +479,11 @@ void SettingsActivity::setCurrentSettingsForCategory() {
           break;
       }
       break;
+#if CROSSINK_APP_CAP_DASHBOARD
+    case 4:
+      currentSettings = &dashboardSettings;
+      break;
+#endif
   }
   settingsCount = static_cast<int>(currentSettings->size());
 }
@@ -1072,6 +1087,8 @@ void SettingsActivity::toggleCurrentSetting() {
     return;
   }
   if (setting.type == SettingType::STRING) {
+    // A string row with neither a setter nor a backing field is a read-only status line.
+    if (!setting.stringSetter && setting.stringMaxLen == 0) return;
     openStringEditor(setting);
     return;
   }
@@ -1216,6 +1233,16 @@ void SettingsActivity::toggleCurrentSetting() {
         break;
       case SettingAction::ClockSync:
         startActivityForResult(std::make_unique<ClockSyncActivity>(renderer, mappedInput), resultHandler);
+        break;
+      case SettingAction::DashboardRefreshNow:
+#if CROSSINK_APP_CAP_DASHBOARD
+        if (!SETTINGS.dashboardEnabled) {
+          startActivityForResult(std::make_unique<ConfirmationActivity>(renderer, mappedInput,
+                                                                        tr(STR_DASHBOARD_REFRESH_NOW),
+                                                                        tr(STR_DASHBOARD_TURN_ON_FIRST)),
+                                 [this](const ActivityResult&) { requestUpdate(); });
+        }
+#endif
         break;
       case SettingAction::QuickActions:
         startActivityForResult(std::make_unique<QuickActionsActivity>(renderer, mappedInput), resultHandler);
