@@ -6,10 +6,12 @@
 
 #include "CrossPointSettings.h"
 #include "LocalFolderSource.h"
+#include "TrmnlSource.h"
 
 DashboardSource& selectDashboardSource() {
   static LocalFolderSource localFolder;
-  // trmnl-byos-client returns its TrmnlSource when SETTINGS.dashboardServerUrl is set.
+  static TrmnlSource trmnl;
+  if (SETTINGS.dashboardServerUrl[0] != '\0') return trmnl;
   return localFolder;
 }
 
