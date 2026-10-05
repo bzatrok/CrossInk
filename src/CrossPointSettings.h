@@ -707,6 +707,7 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
   uint8_t dashboardQuietEnd = 7;     // local hour, 0-23
   uint8_t dashboardRetries = 3;      // failed wakes in a row before the fallback screen
   uint8_t dashboardBatteryFloor = 15;  // percent; 0 = off
+  uint8_t dashboardOrientation = 0;    // how the device stands: 0 = portrait, 1 = landscape
 #endif
 
   ~CrossPointSettings() = default;

@@ -1120,9 +1120,9 @@ inline std::vector<SettingInfo> buildSystemGlobalStatsSettingsList(const std::ve
 inline std::vector<SettingInfo> buildDashboardSettingsList(const std::vector<SettingInfo>& allSettings,
                                                            std::function<std::string()> statusGetter) {
   std::vector<SettingInfo> settings;
-  settings.reserve(11);
+  settings.reserve(12);
   for (const char* key : {"dashboardEnabled", "dashboardServerUrl", "dashboardApiKey", "dashboardInterval",
-                          "dashboardQuietEnabled", "dashboardQuietStart", "dashboardQuietEnd", "dashboardRetries",
+                          "dashboardOrientation", "dashboardQuietEnabled", "dashboardQuietStart", "dashboardQuietEnd", "dashboardRetries",
                           "dashboardBatteryFloor"}) {
     addSettingByKey(settings, allSettings, key);
   }
