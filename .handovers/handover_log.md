@@ -95,5 +95,5 @@ new settings tab.
 | # | Slug | Goal | Status | Branch | Created | Completed |
 |---|------|------|--------|--------|---------|-----------|
 | 001 | [sdk-frame-restore](handover_001_sdk-frame-restore.md) | SDK method that seeds the old-image plane after wake | ✅ done | feat/sdk-frame-restore | 2026-10-05 | 2026-10-05 |
-| 002 | [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) | Timer wake, silent refresh boot, settings tab, quiet hours, battery floor | ⬜ pending | feat/dashboard-timer-wake | 2026-10-05 | — |
+| 002 | [dashboard-timer-wake](handover_002_dashboard-timer-wake.md) | Timer wake, silent refresh boot, settings tab, quiet hours, battery floor | 🔄 in-progress | feat/dashboard-timer-wake | 2026-10-05 | — |
 | 003 | [trmnl-byos-client](handover_003_trmnl-byos-client.md) | TRMNL BYOS client, provisioning, download, failure banner | ⬜ pending | feat/trmnl-byos-client | 2026-10-05 | — |
