@@ -49,8 +49,8 @@ struct Content {
   const char* line1 = nullptr;
   const char* line2 = nullptr;
   const freeink::Icon* icon = nullptr;  // SDK icon (kIconSize square), or nullptr
-  bool filled = false;            // "active" look: black tile with white text
-  bool enabled = true;            // disabled tiles draw the title only
+  bool filled = false;                  // "active" look: black tile with white text
+  bool enabled = true;                  // disabled tiles draw the title only
 };
 
 void drawTile(const GfxRenderer& renderer, const Rect& tile, const Content& content, bool selected, int titleFontId,

@@ -72,8 +72,8 @@ bool draw(GfxRenderer& renderer, const char* bannerText, const HalDisplay::Refre
 
   const GfxRenderer::Orientation previous = renderer.getOrientation();
   const bool standsPortrait = SETTINGS.dashboardOrientation == 0;
-  renderer.setOrientation(toRendererOrientation(
-      dashboard::chooseDrawRotation(bitmap.getWidth(), bitmap.getHeight(), standsPortrait)));
+  renderer.setOrientation(
+      toRendererOrientation(dashboard::chooseDrawRotation(bitmap.getWidth(), bitmap.getHeight(), standsPortrait)));
   const bool drawn = SleepActivity::drawBitmapToFramebuffer(renderer, bitmap);
   file.close();
   if (drawn && bannerText) {

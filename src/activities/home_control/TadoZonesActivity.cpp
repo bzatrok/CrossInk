@@ -45,10 +45,9 @@ int tappedAction(MappedInputManager& mappedInput, const TouchActionButtons::Layo
   consumed = false;
   if (!mappedInput.hasTouch() || actions.count == 0) return -1;
   int touched = -1;
-  const auto touch = mappedInput.rowTouch(touched, actions.buttons[0].y,
-                                          TouchActionButtons::kDefaultHeight + TouchActionButtons::kDefaultGap,
-                                          actions.count, actions.buttons[0].x,
-                                          actions.buttons[0].x + actions.buttons[0].width, actions.buttons[0].height);
+  const auto touch = mappedInput.rowTouch(
+      touched, actions.buttons[0].y, TouchActionButtons::kDefaultHeight + TouchActionButtons::kDefaultGap,
+      actions.count, actions.buttons[0].x, actions.buttons[0].x + actions.buttons[0].width, actions.buttons[0].height);
   if (touch == MappedInputManager::RowTouch::Down) {
     consumed = true;
     return -1;
@@ -107,7 +106,8 @@ bool TadoZonesActivity::allocateNetworkResources() {
   size_t cap = BODY_BUFFER_PSRAM;
 #endif
   if (!body) {
-    LOG_ERR("HC", "PSRAM body buffer failed, falling back to internal %u bytes", static_cast<unsigned>(BODY_BUFFER_FALLBACK));
+    LOG_ERR("HC", "PSRAM body buffer failed, falling back to internal %u bytes",
+            static_cast<unsigned>(BODY_BUFFER_FALLBACK));
     body = makeInternalByteBufferNoThrow(BODY_BUFFER_FALLBACK);
     cap = BODY_BUFFER_FALLBACK;
   }
@@ -336,8 +336,8 @@ void TadoZonesActivity::applyDetailAction(const DetailAction action) {
     case DetailAction::COOLER: {
       // Start from the active target; when heating is off, from the room temperature.
       const float base = (current.powerOn && current.hasTarget) ? current.targetCelsius
-                         : current.hasInside                     ? current.insideCelsius
-                                                                 : tado::kMinCelsius;
+                         : current.hasInside                    ? current.insideCelsius
+                                                                : tado::kMinCelsius;
       const float delta = action == DetailAction::WARMER ? tado::kStepCelsius : -tado::kStepCelsius;
       error = client->setOverlay(homeId, zoneId, tado::stepTarget(base, delta));
       break;
@@ -363,8 +363,8 @@ void TadoZonesActivity::applyBulkAction(const BulkAction action) {
 
   for (size_t i = 0; i < zoneCount; ++i) {
     const int32_t zoneId = zones[i].id;
-    const TadoClient::Error error = action == BulkAction::ALL_OFF ? client->setHeatingOff(homeId, zoneId)
-                                                                   : client->clearOverlay(homeId, zoneId);
+    const TadoClient::Error error =
+        action == BulkAction::ALL_OFF ? client->setHeatingOff(homeId, zoneId) : client->clearOverlay(homeId, zoneId);
     if (error != TadoClient::Error::Ok) {
       failWith(error);
       return;
@@ -493,8 +493,8 @@ void TadoZonesActivity::renderZones() {
     content.icon = &icon_temperature_32;
     // Filled tiles mark manual overrides, so a glance shows what deviates from the schedule.
     content.filled = zoneStateKnown[index] && zoneStates[index].hasOverlay;
-    TileGrid::drawTile(renderer, geometry.grid.tiles[i], content, showSelection && index == selectedZone,
-                       UI_10_FONT_ID, UI_10_FONT_ID);
+    TileGrid::drawTile(renderer, geometry.grid.tiles[i], content, showSelection && index == selectedZone, UI_10_FONT_ID,
+                       UI_10_FONT_ID);
   }
   const char* labels[] = {tr(STR_TADO_ALL_OFF), tr(STR_TADO_RESUME_ALL)};
   HomeControlTileScreen::drawChrome(renderer, geometry, labels, mappedInput.hasTouch());
@@ -533,8 +533,8 @@ void TadoZonesActivity::renderDeviceCode() {
   // The QR carries verification_uri_complete, so the phone lands on the
   // approval page with the code already filled in. Size it to what is left
   // above the code and countdown lines.
-  const int reservedBelow = (lineHeight + metrics.verticalSpacing) * 4 + renderer.getLineHeight(UI_12_FONT_ID) +
-                            metrics.buttonHintsHeight;
+  const int reservedBelow =
+      (lineHeight + metrics.verticalSpacing) * 4 + renderer.getLineHeight(UI_12_FONT_ID) + metrics.buttonHintsHeight;
   const int available = screen.y + screen.height - y - reservedBelow;
   const int qrSide = std::max(120, std::min(available, screen.width - metrics.contentSidePadding * 4));
   const Rect qrBounds{screen.x + (screen.width - qrSide) / 2, y, qrSide, qrSide};
@@ -560,7 +560,8 @@ void TadoZonesActivity::renderDeviceCode() {
   const unsigned long now = millis();
   const long remainingMs = static_cast<long>(deviceCodeDeadlineMs - now);
   char line[64];
-  std::snprintf(line, sizeof(line), "%s %ld s", tr(STR_TADO_WAITING_APPROVAL), remainingMs > 0 ? remainingMs / 1000 : 0L);
+  std::snprintf(line, sizeof(line), "%s %ld s", tr(STR_TADO_WAITING_APPROVAL),
+                remainingMs > 0 ? remainingMs / 1000 : 0L);
   renderer.drawCenteredText(UI_10_FONT_ID, y, line);
 }
 

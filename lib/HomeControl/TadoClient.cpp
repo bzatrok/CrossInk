@@ -133,8 +133,8 @@ TadoClient::Error TadoClient::persistTokens() {
     LOG_ERR("HC", "Could not save tado refresh token; re-pairing may be needed after a reboot");
   }
   LOG_INF("HC", "tado tokens updated (access token %u chars, refresh token %u chars, expires in %u s)",
-          static_cast<unsigned>(std::strlen(tokens.accessToken)), static_cast<unsigned>(std::strlen(tokens.refreshToken)),
-          static_cast<unsigned>(tokens.expiresInSec));
+          static_cast<unsigned>(std::strlen(tokens.accessToken)),
+          static_cast<unsigned>(std::strlen(tokens.refreshToken)), static_cast<unsigned>(tokens.expiresInSec));
   return Error::Ok;
 }
 

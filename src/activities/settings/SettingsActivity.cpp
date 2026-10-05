@@ -361,8 +361,7 @@ void SettingsActivity::rebuildSettingsLists() {
     state.load();
     char statusLine[64];
     dashboard::formatStatusLine(state, statusLine, sizeof(statusLine));
-    dashboardSettings =
-        buildDashboardSettingsList(allSettings, [status = std::string(statusLine)] { return status; });
+    dashboardSettings = buildDashboardSettingsList(allSettings, [status = std::string(statusLine)] { return status; });
   }
 #endif
   controlsSettings = buildControlsSettingsParentList(allSettings);
@@ -1250,10 +1249,10 @@ void SettingsActivity::toggleCurrentSetting() {
       case SettingAction::DashboardRefreshNow:
 #if CROSSINK_APP_CAP_DASHBOARD
         if (!SETTINGS.dashboardEnabled) {
-          startActivityForResult(std::make_unique<ConfirmationActivity>(renderer, mappedInput,
-                                                                        tr(STR_DASHBOARD_REFRESH_NOW),
-                                                                        tr(STR_DASHBOARD_TURN_ON_FIRST)),
-                                 [this](const ActivityResult&) { requestUpdate(); });
+          startActivityForResult(
+              std::make_unique<ConfirmationActivity>(renderer, mappedInput, tr(STR_DASHBOARD_REFRESH_NOW),
+                                                     tr(STR_DASHBOARD_TURN_ON_FIRST)),
+              [this](const ActivityResult&) { requestUpdate(); });
         } else {
           // No foreground Wi-Fi: sleep with a 2 s timer and let the timer wake refresh.
           SETTINGS.saveToFile();

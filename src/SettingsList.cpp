@@ -284,12 +284,14 @@ const std::vector<SettingInfo>& getBaseSettingsList() {
                             "dashboardApiKey", StrId::STR_CAT_DASHBOARD)
             .withObfuscated());
     add(SettingInfo::Enum(StrId::STR_DASHBOARD_INTERVAL, &CrossPointSettings::dashboardInterval,
-                          {StrId::STR_DASHBOARD_MIN_1, StrId::STR_DASHBOARD_MIN_2, StrId::STR_DASHBOARD_MIN_3, StrId::STR_DASHBOARD_MIN_5,
-                           StrId::STR_DASHBOARD_MIN_10, StrId::STR_DASHBOARD_MIN_15, StrId::STR_DASHBOARD_MIN_30, StrId::STR_DASHBOARD_MIN_60},
+                          {StrId::STR_DASHBOARD_MIN_1, StrId::STR_DASHBOARD_MIN_2, StrId::STR_DASHBOARD_MIN_3,
+                           StrId::STR_DASHBOARD_MIN_5, StrId::STR_DASHBOARD_MIN_10, StrId::STR_DASHBOARD_MIN_15,
+                           StrId::STR_DASHBOARD_MIN_30, StrId::STR_DASHBOARD_MIN_60},
                           "dashboardInterval", StrId::STR_CAT_DASHBOARD)
             .withEnumRawValues({1, 2, 3, 5, 10, 15, 30, 60}));
     add(SettingInfo::Enum(StrId::STR_ORIENTATION, &CrossPointSettings::dashboardOrientation,
-                          {StrId::STR_PORTRAIT, StrId::STR_LANDSCAPE}, "dashboardOrientation", StrId::STR_CAT_DASHBOARD));
+                          {StrId::STR_PORTRAIT, StrId::STR_LANDSCAPE}, "dashboardOrientation",
+                          StrId::STR_CAT_DASHBOARD));
     add(SettingInfo::Toggle(StrId::STR_DASHBOARD_QUIET_HOURS, &CrossPointSettings::dashboardQuietEnabled,
                             "dashboardQuietEnabled", StrId::STR_CAT_DASHBOARD));
     add(SettingInfo::Value(StrId::STR_DASHBOARD_QUIET_START, &CrossPointSettings::dashboardQuietStart, {0, 23, 1},

@@ -18,8 +18,8 @@ namespace {
 constexpr int kIndicatorHeight = 20;
 }
 
-Geometry layout(const GfxRenderer& renderer, const MappedInputManager& mappedInput, const int itemCount,
-                const int page, const int actionCount) {
+Geometry layout(const GfxRenderer& renderer, const MappedInputManager& mappedInput, const int itemCount, const int page,
+                const int actionCount) {
   Geometry g;
   const auto& metrics = UITheme::getInstance().getMetrics();
   const Rect screen = UITheme::getInstance().getScreenSafeArea(renderer, true, false);

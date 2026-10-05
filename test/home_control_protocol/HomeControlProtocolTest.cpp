@@ -94,7 +94,8 @@ TEST(HueRooms, MalformedBodyFails) {
 }
 
 TEST(HueGroupedLight, ParsesOnAndBrightness) {
-  const char* reply = R"({"errors":[],"data":[{"id":"gl-1","on":{"on":true},"dimming":{"brightness":57.4},"color":{}}]})";
+  const char* reply =
+      R"({"errors":[],"data":[{"id":"gl-1","on":{"on":true},"dimming":{"brightness":57.4},"color":{}}]})";
   hue::RoomState state;
   ASSERT_TRUE(hue::parseGroupedLightState(reply, std::strlen(reply), state));
   EXPECT_TRUE(state.on);
@@ -236,7 +237,8 @@ TEST(TadoForms, DeviceTokenEncodesGrantTypeAndCode) {
 TEST(TadoForms, RefreshTokenForm) {
   char form[320];
   ASSERT_GT(tado::buildRefreshForm(form, sizeof(form), "rt-token_1.2~3"), 0u);
-  EXPECT_STREQ(form, "client_id=1bb50063-6b0c-4d11-bd99-387f4a91cc46&grant_type=refresh_token&refresh_token=rt-token_1.2~3");
+  EXPECT_STREQ(form,
+               "client_id=1bb50063-6b0c-4d11-bd99-387f4a91cc46&grant_type=refresh_token&refresh_token=rt-token_1.2~3");
 }
 
 TEST(TadoForms, TruncatedFormIsReportedAsEmpty) {
@@ -273,7 +275,8 @@ TEST(TadoDeviceCode, MissingFieldsFail) {
 TEST(TadoToken, PendingAndOtherErrors) {
   tado::Tokens tokens;
   auto parse = [&](const char* body) { return tado::parseTokenResponse(400, body, std::strlen(body), tokens); };
-  EXPECT_EQ(parse(R"({"error":"authorization_pending","error_description":"x"})"), tado::TokenResult::AuthorizationPending);
+  EXPECT_EQ(parse(R"({"error":"authorization_pending","error_description":"x"})"),
+            tado::TokenResult::AuthorizationPending);
   EXPECT_EQ(parse(R"({"error":"slow_down"})"), tado::TokenResult::SlowDown);
   EXPECT_EQ(parse(R"({"error":"expired_token"})"), tado::TokenResult::ExpiredToken);
   EXPECT_EQ(parse(R"({"error":"access_denied"})"), tado::TokenResult::AccessDenied);
@@ -282,7 +285,8 @@ TEST(TadoToken, PendingAndOtherErrors) {
 }
 
 TEST(TadoToken, SuccessCopiesTokens) {
-  const char* reply = R"({"access_token":"at.jwt","expires_in":599,"refresh_token":"rt-1","scope":"offline_access","token_type":"Bearer"})";
+  const char* reply =
+      R"({"access_token":"at.jwt","expires_in":599,"refresh_token":"rt-1","scope":"offline_access","token_type":"Bearer"})";
   tado::Tokens tokens;
   EXPECT_EQ(tado::parseTokenResponse(200, reply, std::strlen(reply), tokens), tado::TokenResult::Ok);
   EXPECT_STREQ(tokens.accessToken, "at.jwt");
@@ -335,7 +339,8 @@ TEST(TadoZones, NonArrayFails) {
 }
 
 TEST(TadoZoneState, OnSchedule) {
-  const char* reply = R"({"tadoMode":"HOME","setting":{"type":"HEATING","power":"ON","temperature":{"celsius":19.0,"fahrenheit":66.2}},
+  const char* reply =
+      R"({"tadoMode":"HOME","setting":{"type":"HEATING","power":"ON","temperature":{"celsius":19.0,"fahrenheit":66.2}},
     "overlayType":null,"overlay":null,"nextTimeBlock":{"start":"2026-09-14T20:00:00Z"},
     "activityDataPoints":{"heatingPower":{"percentage":0.0}},
     "sensorDataPoints":{"insideTemperature":{"celsius":21.3,"fahrenheit":70.3,"type":"TEMPERATURE"},"humidity":{"type":"PERCENTAGE","percentage":48.5}}})";
@@ -396,9 +401,8 @@ TEST(TadoSteps, StepTargetClampsAtRangeEnds) {
 TEST(TadoBodies, OverlayBodyRoundsAndUsesNextTimeBlock) {
   char body[200];
   ASSERT_GT(tado::buildOverlayBody(body, sizeof(body), 19.5f), 0u);
-  EXPECT_STREQ(body,
-               R"({"setting":{"type":"HEATING","power":"ON","temperature":{"celsius":19.5}},)"
-               R"("termination":{"typeSkillBasedApp":"NEXT_TIME_BLOCK"}})");
+  EXPECT_STREQ(body, R"({"setting":{"type":"HEATING","power":"ON","temperature":{"celsius":19.5}},)"
+                     R"("termination":{"typeSkillBasedApp":"NEXT_TIME_BLOCK"}})");
   tado::buildOverlayBody(body, sizeof(body), 19.26f);
   EXPECT_NE(std::strstr(body, R"("celsius":19.5)"), nullptr);
 }
@@ -406,9 +410,8 @@ TEST(TadoBodies, OverlayBodyRoundsAndUsesNextTimeBlock) {
 TEST(TadoBodies, HeatingOffOverlayHasNoTemperature) {
   char body[200];
   ASSERT_GT(tado::buildHeatingOffOverlayBody(body, sizeof(body)), 0u);
-  EXPECT_STREQ(body,
-               R"({"setting":{"type":"HEATING","power":"OFF"},)"
-               R"("termination":{"typeSkillBasedApp":"NEXT_TIME_BLOCK"}})");
+  EXPECT_STREQ(body, R"({"setting":{"type":"HEATING","power":"OFF"},)"
+                     R"("termination":{"typeSkillBasedApp":"NEXT_TIME_BLOCK"}})");
   char tiny[8];
   EXPECT_EQ(tado::buildHeatingOffOverlayBody(tiny, sizeof(tiny)), sizeof(tiny) - 1);
 }

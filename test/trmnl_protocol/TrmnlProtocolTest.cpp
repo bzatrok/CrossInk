@@ -83,9 +83,7 @@ TEST(TrmnlDisplay, NonObjectBodyFails) {
 
 // ---------------------------------------------------------------- no change
 
-TEST(TrmnlNoChange, Status202IsNoChange) {
-  EXPECT_TRUE(trmnl::isNoChange(display(R"({"status":202})"), "a.png"));
-}
+TEST(TrmnlNoChange, Status202IsNoChange) { EXPECT_TRUE(trmnl::isNoChange(display(R"({"status":202})"), "a.png")); }
 
 TEST(TrmnlNoChange, SameFilenameIsNoChange) {
   EXPECT_TRUE(trmnl::isNoChange(display(R"({"status":0,"image_url":"u","filename":"a.png"})"), "a.png"));

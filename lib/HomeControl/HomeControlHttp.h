@@ -14,8 +14,8 @@
 
 namespace homecontrol {
 
-constexpr int kStatusLowMemory = -100;    // heap gate refused the TLS handshake
-constexpr int kStatusTransport = -1;      // connect/handshake/header failure
+constexpr int kStatusLowMemory = -100;     // heap gate refused the TLS handshake
+constexpr int kStatusTransport = -1;       // connect/handshake/header failure
 constexpr int kStatusBodyTooLarge = -101;  // response did not fit the caller's buffer
 constexpr uint32_t kDefaultTimeoutMs = 15000;
 

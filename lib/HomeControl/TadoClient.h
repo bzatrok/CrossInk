@@ -57,6 +57,6 @@ class TadoClient {
   uint32_t accessExpiresAtMs = 0;
   char urlBuf[192];
   char bodyBuf[200];
-  char formBuf[1700];  // refresh token (≤512 chars) percent-encoded plus fixed fields
+  char formBuf[1700];     // refresh token (≤512 chars) percent-encoded plus fixed fields
   char authHeader[3088];  // "Bearer " + access token
 };

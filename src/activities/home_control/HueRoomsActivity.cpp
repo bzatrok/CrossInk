@@ -51,10 +51,9 @@ int tappedAction(MappedInputManager& mappedInput, const TouchActionButtons::Layo
   consumed = false;
   if (!mappedInput.hasTouch() || actions.count == 0) return -1;
   int touched = -1;
-  const auto touch = mappedInput.rowTouch(touched, actions.buttons[0].y,
-                                          TouchActionButtons::kDefaultHeight + TouchActionButtons::kDefaultGap,
-                                          actions.count, actions.buttons[0].x,
-                                          actions.buttons[0].x + actions.buttons[0].width, actions.buttons[0].height);
+  const auto touch = mappedInput.rowTouch(
+      touched, actions.buttons[0].y, TouchActionButtons::kDefaultHeight + TouchActionButtons::kDefaultGap,
+      actions.count, actions.buttons[0].x, actions.buttons[0].x + actions.buttons[0].width, actions.buttons[0].height);
   if (touch == MappedInputManager::RowTouch::Down) {
     consumed = true;
     return -1;
@@ -104,7 +103,8 @@ bool HueRoomsActivity::allocateNetworkResources() {
   size_t cap = BODY_BUFFER_PSRAM;
 #endif
   if (!body) {
-    LOG_ERR("HC", "PSRAM body buffer failed, falling back to internal %u bytes", static_cast<unsigned>(BODY_BUFFER_FALLBACK));
+    LOG_ERR("HC", "PSRAM body buffer failed, falling back to internal %u bytes",
+            static_cast<unsigned>(BODY_BUFFER_FALLBACK));
     body = makeInternalByteBufferNoThrow(BODY_BUFFER_FALLBACK);
     cap = BODY_BUFFER_FALLBACK;
   }
@@ -588,8 +588,8 @@ void HueRoomsActivity::renderRooms() {
     content.icon = &icon_bulb_32;
     content.enabled = rooms[index].groupedLightId[0] != '\0';
     content.filled = roomStateKnown[index] && roomStates[index].on;
-    TileGrid::drawTile(renderer, geometry.grid.tiles[i], content, showSelection && index == selectedRoom,
-                       UI_10_FONT_ID, UI_10_FONT_ID);
+    TileGrid::drawTile(renderer, geometry.grid.tiles[i], content, showSelection && index == selectedRoom, UI_10_FONT_ID,
+                       UI_10_FONT_ID);
   }
   const char* labels[] = {tr(STR_HUE_ALL_ON), tr(STR_HUE_ALL_OFF)};
   HomeControlTileScreen::drawChrome(renderer, geometry, labels, mappedInput.hasTouch());

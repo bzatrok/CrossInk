@@ -49,8 +49,11 @@ class Backstop {
   explicit Backstop(const uint32_t intervalSeconds) {
 #ifndef SIMULATOR
     backstopTimerSeconds = intervalSeconds;
-    const esp_timer_create_args_t args = {.callback = &onBackstop, .arg = nullptr, .dispatch_method = ESP_TIMER_TASK,
-                                          .name = "dash_backstop", .skip_unhandled_events = true};
+    const esp_timer_create_args_t args = {.callback = &onBackstop,
+                                          .arg = nullptr,
+                                          .dispatch_method = ESP_TIMER_TASK,
+                                          .name = "dash_backstop",
+                                          .skip_unhandled_events = true};
     if (esp_timer_create(&args, &timer_) != ESP_OK ||
         esp_timer_start_once(timer_, static_cast<uint64_t>(BACKSTOP_SECONDS) * 1000000ULL) != ESP_OK) {
       LOG_ERR("DSH", "Could not start the wake backstop");

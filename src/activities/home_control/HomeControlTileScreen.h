@@ -34,8 +34,8 @@ struct Event {
 
 // Reads touch and buttons for one loop tick. Confirm opens the selected tile,
 // Up/Down move the selection, vertical swipes page.
-Event pollInput(MappedInputManager& mappedInput, ButtonNavigator& navigator, const Geometry& geometry,
-                int itemCount, int selected);
+Event pollInput(MappedInputManager& mappedInput, ButtonNavigator& navigator, const Geometry& geometry, int itemCount,
+                int selected);
 
 void drawChrome(const GfxRenderer& renderer, const Geometry& geometry, const char* const* actionLabels,
                 bool showActions);

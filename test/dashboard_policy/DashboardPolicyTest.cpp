@@ -2,11 +2,11 @@
 
 #include "dashboard/DashboardPolicy.h"
 
+using dashboard::chooseDrawRotation;
+using dashboard::DrawRotation;
 using dashboard::evaluatePolicy;
 using dashboard::isInQuietHours;
 using dashboard::PolicyInput;
-using dashboard::chooseDrawRotation;
-using dashboard::DrawRotation;
 using dashboard::Screen;
 
 namespace {

@@ -29,8 +29,7 @@ inline int reply(HttpResponse& out, const int status, const char* body) {
 
 constexpr const char* kPairLinkNotPressed =
     R"([{"error":{"type":101,"address":"","description":"link button not pressed"}}])";
-constexpr const char* kPairSuccess =
-    R"([{"success":{"username":"sim-app-key-0000","clientkey":"sim-client-key"}}])";
+constexpr const char* kPairSuccess = R"([{"success":{"username":"sim-app-key-0000","clientkey":"sim-client-key"}}])";
 constexpr const char* kRooms = R"({"errors":[],"data":[
   {"id":"room-living","type":"room","children":[],"services":[{"rid":"gl-living","rtype":"grouped_light"}],
    "metadata":{"name":"Living room","archetype":"living_room"}},
@@ -136,16 +135,18 @@ inline int replyGroupedLightList(HttpResponse& out) {
         R"({"id":"%s","type":"grouped_light","owner":{"rid":"room-%u","rtype":"room"},"on":{"on":%s},"dimming":{"brightness":%d.0}},)",
         light.rid, static_cast<unsigned>(i), light.on ? "true" : "false", light.brightness));
   }
-  std::snprintf(body + pos, sizeof(body) - pos,
-                R"({"id":"%s","type":"grouped_light","owner":{"rid":"bh-1","rtype":"bridge_home"},"on":{"on":%s},"dimming":{"brightness":50.0}}]})",
-                kAllLightsRid, anyOn ? "true" : "false");
+  std::snprintf(
+      body + pos, sizeof(body) - pos,
+      R"({"id":"%s","type":"grouped_light","owner":{"rid":"bh-1","rtype":"bridge_home"},"on":{"on":%s},"dimming":{"brightness":50.0}}]})",
+      kAllLightsRid, anyOn ? "true" : "false");
   return reply(out, 200, body);
 }
 
 inline int replyLightState(HttpResponse& out, const SimLight& light) {
   char body[160];
-  std::snprintf(body, sizeof(body), R"({"errors":[],"data":[{"id":"%s","on":{"on":%s},"dimming":{"brightness":%d.0}}]})",
-                light.rid, light.on ? "true" : "false", light.brightness);
+  std::snprintf(body, sizeof(body),
+                R"({"errors":[],"data":[{"id":"%s","on":{"on":%s},"dimming":{"brightness":%d.0}}]})", light.rid,
+                light.on ? "true" : "false", light.brightness);
   return reply(out, 200, body);
 }
 constexpr const char* kPutOk = R"({"errors":[],"data":[{"rid":"gl","rtype":"grouped_light"}]})";

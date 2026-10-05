@@ -700,12 +700,12 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
   // wake. The fallback screen is the regular sleepScreen setting.
   uint8_t dashboardEnabled = 0;
   char dashboardServerUrl[128] = "";
-  char dashboardApiKey[64] = "";  // persisted obfuscated, never returned by the web GET
+  char dashboardApiKey[64] = "";   // persisted obfuscated, never returned by the web GET
   uint8_t dashboardInterval = 15;  // minutes; raw enum values 1/2/3/5/10/15/30/60
   uint8_t dashboardQuietEnabled = 1;
-  uint8_t dashboardQuietStart = 22;  // local hour, 0-23
-  uint8_t dashboardQuietEnd = 7;     // local hour, 0-23
-  uint8_t dashboardRetries = 3;      // failed wakes in a row before the fallback screen
+  uint8_t dashboardQuietStart = 22;    // local hour, 0-23
+  uint8_t dashboardQuietEnd = 7;       // local hour, 0-23
+  uint8_t dashboardRetries = 3;        // failed wakes in a row before the fallback screen
   uint8_t dashboardBatteryFloor = 15;  // percent; 0 = off
   uint8_t dashboardOrientation = 0;    // how the device stands: 0 = portrait, 1 = landscape
 #endif

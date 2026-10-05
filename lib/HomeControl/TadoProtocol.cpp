@@ -76,8 +76,8 @@ size_t buildDeviceAuthorizeForm(char* out, size_t cap) {
 
 size_t buildDeviceTokenForm(char* out, size_t cap, const char* deviceCode) {
   char prefix[128];
-  std::snprintf(prefix, sizeof(prefix), "client_id=%s&grant_type=urn%%3Aietf%%3Aparams%%3Aoauth%%3Agrant-type%%3Adevice_code",
-                kClientId);
+  std::snprintf(prefix, sizeof(prefix),
+                "client_id=%s&grant_type=urn%%3Aietf%%3Aparams%%3Aoauth%%3Agrant-type%%3Adevice_code", kClientId);
   return buildForm(out, cap, prefix, "&device_code=", deviceCode);
 }
 
@@ -247,13 +247,15 @@ size_t buildZonesPath(char* out, size_t cap, const int32_t homeId) {
 }
 
 size_t buildZoneStatePath(char* out, size_t cap, const int32_t homeId, const int32_t zoneId) {
-  return finish(out, cap, std::snprintf(out, cap, "/homes/%ld/zones/%ld/state", static_cast<long>(homeId),
-                                        static_cast<long>(zoneId)));
+  return finish(
+      out, cap,
+      std::snprintf(out, cap, "/homes/%ld/zones/%ld/state", static_cast<long>(homeId), static_cast<long>(zoneId)));
 }
 
 size_t buildZoneOverlayPath(char* out, size_t cap, const int32_t homeId, const int32_t zoneId) {
-  return finish(out, cap, std::snprintf(out, cap, "/homes/%ld/zones/%ld/overlay", static_cast<long>(homeId),
-                                        static_cast<long>(zoneId)));
+  return finish(
+      out, cap,
+      std::snprintf(out, cap, "/homes/%ld/zones/%ld/overlay", static_cast<long>(homeId), static_cast<long>(zoneId)));
 }
 
 }  // namespace tado

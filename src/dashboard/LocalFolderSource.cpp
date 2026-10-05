@@ -4,10 +4,10 @@
 
 #include <HalStorage.h>
 #include <Logging.h>
+#include <strings.h>
 
 #include <cstdio>
 #include <cstring>
-#include <strings.h>
 
 #include "DashboardImageStore.h"
 
