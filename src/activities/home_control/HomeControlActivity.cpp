@@ -60,7 +60,7 @@ void HomeControlActivity::onExit() {
   }
   // Launched from the minimal network boot, so restore the full app even if
   // Wi-Fi never came up.
-  silentRestartAfterNetwork();
+  silentRestart();
 #endif
 }
 

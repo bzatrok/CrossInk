@@ -2,6 +2,8 @@
 
 Keep this file focused on repo-specific gotchas that are worth reusing in future sessions.
 
+**Fork:** read `PROJECT_CONTEXT.md` before acting. It holds this fork's invariants and what is out of scope.
+
 ## FreeInk SDK
 
 Refer to https://freeink.org/llms.txt for guidance.
