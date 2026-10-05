@@ -31,6 +31,9 @@ screen for quiet hours, low battery, and repeated failures.
 | Orientation | Portrait / Landscape | Portrait | How the device stands. See "Orientation" below. |
 | Quiet hours | Off / On | On | Show the fallback screen between Quiet start and Quiet end. |
 | Quiet start / Quiet end | 0-23 (hour) | 22 / 7 | Local hours; the window wraps past midnight. Equal hours mean no quiet period. |
+| Evening light | Off / On | Off | Between Evening start and Evening end, a side-key press toggles the frontlight while the dashboard shows. See "Evening light" below. Needs a frontlight (X4 Pro). |
+| Evening start / Evening end | 0-23 (hour) | 18 / 22 | Local hours, same rules as quiet hours. Quiet hours win where the two overlap. |
+| Evening brightness | 10-100 % | 30 % | Frontlight level a side-key press turns on. |
 | Retry attempts | 1, 3, 5, 10 | 3 | Failed wakes in a row before the fallback screen replaces the dashboard. |
 | Battery floor | Off, 10-30 % | 15 % | Below it, the fallback screen shows and timer wakes stop until a button wake. |
 | Status | read-only | | Last update time, the current failure, or why it is paused. |
@@ -69,6 +72,39 @@ never apply.
    interval timer whatever the main task is doing.
 
 A power-button wake behaves exactly as before.
+
+### Evening light
+
+The day has three phases: **day** deep-sleeps between refreshes as above;
+**evening** (Evening start to Evening end) waits between refreshes in light
+sleep; **night** (quiet hours) shows the fallback screen in deep sleep. Light
+sleep never runs at night.
+
+In the evening wait (`src/dashboard/DashboardEvening.cpp`):
+
+- **Side key** (either of the X4 Pro's two keys, GPIO0 / GPIO7) turns the
+  frontlight on at Evening brightness for 60 s; another press turns it off. A
+  refresh that falls due while the light is on waits until it goes out.
+- **Refresh due:** the wait ends and the device deep-sleeps for 1 s, so the
+  fetch runs on the normal timer wake above. Each refresh still boots fresh.
+- **Power button:** the press is verified (a long hold unless short-press wake
+  is on), then the device restarts into a normal power-button wake.
+- A key held for more than 5 s is left out of the next wait, so a stuck key
+  cannot keep the device awake.
+- If light sleep fails, the device deep-sleeps for the rest of the interval.
+
+The key wake is a level wake on the raw pads; `HalPowerManager::startLightSleep()`
+keeps the pads' input and pull-up through sleep (`gpio_sleep_sel_dis`), and the
+press is confirmed through the debounced input path before the light toggles.
+The frontlight keeps shining through light sleep because the X4 Pro envs build
+with `FREEINK_FRONTLIGHT_LS`. The light-sleep clock (RC_FAST, ~17.5 MHz) cannot
+drive the board's 25 kHz at 10 bits, so the SDK drops to 9-bit PWM at the same
+frequency. `HalFrontlight::parkForDeepSleep()` drives the pads LOW before every
+deep sleep so they do not leak current.
+
+A GT911 double-tap was tried first and did not wake the chip from light sleep
+on hardware (2026-10-05); the touch controller stays powered during the evening
+wait but is not a wake source.
 
 ### Local folder source
 
