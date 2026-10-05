@@ -120,3 +120,4 @@ add_subdirectory(scalable_fonts)
 
 add_subdirectory(glyph_bitmap)
 add_subdirectory(dashboard_policy)
+add_subdirectory(trmnl_protocol)
