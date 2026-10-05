@@ -9,6 +9,7 @@
 
 #include <cassert>
 
+#include "HalFrontlight.h"
 #include "HalGPIO.h"
 
 HalPowerManager powerManager;  // Singleton instance
@@ -113,6 +114,9 @@ void HalPowerManager::startDeepSleep(HalGPIO& gpio, const uint32_t timerWakeSeco
     delay(20);
   }
   disableWiFiBeforeDeepSleep();
+  // Drive and hold the frontlight pads LOW: a light-sleep-capable (KEEP_ALIVE)
+  // channel otherwise keeps drawing current through deep sleep.
+  Frontlight.parkForDeepSleep();
 
 #ifdef ENABLE_SERIAL_LOG
   // Tear down HWCDC so the host sees a clean disconnect and the peripheral
@@ -171,6 +175,92 @@ void HalPowerManager::startDeepSleep(HalGPIO& gpio, const uint32_t timerWakeSeco
 #endif
   gpio_deep_sleep_hold_en();
   esp_deep_sleep_start();
+}
+
+namespace {
+// Active-LOW digital side keys that can wake light sleep (-1 = not wired).
+// Up/Down are the X4 Pro's two physical keys (GPIO0 / GPIO7).
+void sideButtonPins(int8_t (&pins)[2]) {
+  pins[0] = BoardConfig::ACTIVE.input.up;
+  pins[1] = BoardConfig::ACTIVE.input.down;
+}
+
+// Light-sleep GPIO wake is level-triggered: a held key would re-wake at once.
+// Returns false when a key is still down after the timeout (stuck or held).
+bool waitForSideButtonsRelease(const int8_t (&pins)[2]) {
+  constexpr unsigned long RELEASE_TIMEOUT_MS = 5000;
+  const unsigned long startMs = millis();
+  for (;;) {
+    bool held = false;
+    for (const int8_t pin : pins) held = held || (pin >= 0 && digitalRead(pin) == LOW);
+    if (!held) return true;
+    if (millis() - startMs >= RELEASE_TIMEOUT_MS) return false;
+    delay(20);
+  }
+}
+}  // namespace
+
+HalPowerManager::LightSleepWake HalPowerManager::startLightSleep(const uint32_t timerMs,
+                                                                const bool wakeOnSideButtons) const {
+  // No rail cut, pad isolation or pad holds: those are deep-sleep steps.
+  disableWiFiBeforeDeepSleep();
+  // The power wake is level-triggered: a held button would re-wake at once.
+  freeink::PowerManager::waitForPowerButtonRelease();
+  esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
+  freeink::PowerManager::armPowerButtonWakeup();
+  if (timerMs > 0) esp_sleep_enable_timer_wakeup(static_cast<uint64_t>(timerMs) * 1000ULL);
+
+  int8_t pins[2];
+  sideButtonPins(pins);
+  bool armButtons = wakeOnSideButtons && (pins[0] >= 0 || pins[1] >= 0);
+  if (armButtons && !waitForSideButtonsRelease(pins)) {
+    LOG_ERR("PWR", "Side key held; light sleep without key wake");
+    armButtons = false;
+  }
+  if (armButtons) {
+    for (const int8_t pin : pins) {
+      if (pin < 0) continue;
+      const auto g = static_cast<gpio_num_t>(pin);
+      // Keep the pad's active config (input + pull-up) through sleep instead of
+      // the sleep-mode override, so the key can still pull the line LOW.
+      gpio_sleep_sel_dis(g);
+      gpio_wakeup_enable(g, GPIO_INTR_LOW_LEVEL);
+    }
+    esp_sleep_enable_gpio_wakeup();
+  }
+
+#ifdef ENABLE_SERIAL_LOG
+  logSerial.flush();
+#endif
+  const esp_err_t err = esp_light_sleep_start();
+  const esp_sleep_wakeup_cause_t cause = esp_sleep_get_wakeup_cause();
+
+  // Restore the pads' normal interrupt type and sleep selection so polling
+  // input and the deep-sleep pad isolation are unaffected.
+  if (armButtons) {
+    for (const int8_t pin : pins) {
+      if (pin < 0) continue;
+      const auto g = static_cast<gpio_num_t>(pin);
+      gpio_wakeup_disable(g);
+      gpio_sleep_sel_en(g);
+    }
+  }
+  esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
+
+  if (err != ESP_OK) {
+    LOG_ERR("PWR", "Light sleep rejected (err=%d)", static_cast<int>(err));
+    return LightSleepWake::Other;
+  }
+  switch (cause) {
+    case ESP_SLEEP_WAKEUP_TIMER:
+      return LightSleepWake::Timer;
+    case ESP_SLEEP_WAKEUP_GPIO:
+      return LightSleepWake::SideButton;
+    case ESP_SLEEP_WAKEUP_EXT1:
+      return LightSleepWake::PowerButton;
+    default:
+      return LightSleepWake::Other;
+  }
 }
 
 uint16_t HalPowerManager::getBatteryPercentage() const {
