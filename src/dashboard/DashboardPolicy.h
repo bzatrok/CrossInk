@@ -17,6 +17,14 @@ enum class Screen : uint8_t {
   FallbackFailures,  // Retry limit reached: the regular sleep screen, still retrying.
 };
 
+// When a side key may light the frontlight between refreshes (light sleep
+// instead of deep sleep). Values match the dashboardLightMode setting.
+enum class KeyLightMode : uint8_t {
+  Off,     // deep sleep between refreshes, as without the feature
+  Always,  // whenever the dashboard shows
+  Window,  // only between keyLightStartHour and keyLightEndHour
+};
+
 struct PolicyInput {
   bool enabled = false;
   bool clockValid = false;  // false without RTC time or before 2026; never counts as quiet
@@ -27,7 +35,9 @@ struct PolicyInput {
   bool quietEnabled = false;
   uint8_t quietStartHour = 0;
   uint8_t quietEndHour = 0;
-  bool keyLightAvailable = false;  // the board has a frontlight (decided by the caller)
+  KeyLightMode keyLightMode = KeyLightMode::Off;  // the caller passes Off without a frontlight
+  uint8_t keyLightStartHour = 0;                  // Window mode only
+  uint8_t keyLightEndHour = 0;
   uint8_t consecutiveFailures = 0;
   uint8_t retryLimit = 1;
   uint8_t intervalMinutes = 15;
@@ -42,7 +52,7 @@ struct PolicyResult {
 };
 
 // True when hour falls inside [startHour, endHour), wrapping past midnight.
-// start == end means "no quiet period".
+// start == end means "no window". Quiet hours and the key-light window share it.
 bool isInQuietHours(uint8_t hour, uint8_t startHour, uint8_t endHour);
 
 PolicyResult evaluatePolicy(const PolicyInput& input);

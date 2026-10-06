@@ -6,6 +6,7 @@ using dashboard::chooseDrawRotation;
 using dashboard::DrawRotation;
 using dashboard::evaluatePolicy;
 using dashboard::isInQuietHours;
+using dashboard::KeyLightMode;
 using dashboard::PolicyInput;
 using dashboard::Screen;
 
@@ -118,11 +119,19 @@ TEST(DashboardPolicy, BatteryWinsOverQuiet) {
 
 static PolicyInput withKeyLight(const uint8_t hour, const uint8_t minute) {
   PolicyInput in = at(hour, minute);
-  in.keyLightAvailable = true;
+  in.keyLightMode = KeyLightMode::Always;
   return in;
 }
 
-TEST(DashboardPolicy, KeyLightWheneverTheDashboardShows) {
+static PolicyInput withWindow(const uint8_t hour, const uint8_t minute) {
+  PolicyInput in = at(hour, minute);
+  in.keyLightMode = KeyLightMode::Window;
+  in.keyLightStartHour = 18;
+  in.keyLightEndHour = 22;
+  return in;
+}
+
+TEST(DashboardPolicy, KeyLightAlwaysWheneverTheDashboardShows) {
   const auto r = evaluatePolicy(withKeyLight(9, 0));
   EXPECT_EQ(r.screen, Screen::Dashboard);
   EXPECT_TRUE(r.keyLight);
@@ -130,7 +139,7 @@ TEST(DashboardPolicy, KeyLightWheneverTheDashboardShows) {
   EXPECT_TRUE(evaluatePolicy(withKeyLight(21, 59)).keyLight);
 }
 
-TEST(DashboardPolicy, KeyLightOffWithoutFrontlight) { EXPECT_FALSE(evaluatePolicy(at(9, 0)).keyLight); }
+TEST(DashboardPolicy, KeyLightOffMode) { EXPECT_FALSE(evaluatePolicy(at(9, 0)).keyLight); }
 
 TEST(DashboardPolicy, KeyLightOffInQuietHours) {
   const auto r = evaluatePolicy(withKeyLight(23, 30));
@@ -154,10 +163,42 @@ TEST(DashboardPolicy, KeyLightContinuesWhileFailuresRetry) {
   EXPECT_TRUE(r.keyLight);
 }
 
-TEST(DashboardPolicy, KeyLightNeedsNoClock) {
+TEST(DashboardPolicy, KeyLightAlwaysNeedsNoClock) {
   PolicyInput in = withKeyLight(9, 0);
   in.clockValid = false;
   EXPECT_TRUE(evaluatePolicy(in).keyLight);
+}
+
+TEST(DashboardPolicy, KeyLightWindowOnlyInsideHours) {
+  EXPECT_FALSE(evaluatePolicy(withWindow(17, 59)).keyLight);
+  EXPECT_TRUE(evaluatePolicy(withWindow(18, 0)).keyLight);
+  EXPECT_TRUE(evaluatePolicy(withWindow(21, 59)).keyLight);
+  EXPECT_FALSE(evaluatePolicy(withWindow(22, 0)).keyLight);
+  EXPECT_FALSE(evaluatePolicy(withWindow(9, 0)).keyLight);
+}
+
+TEST(DashboardPolicy, KeyLightWindowNeedsValidClock) {
+  PolicyInput in = withWindow(19, 0);
+  in.clockValid = false;
+  EXPECT_FALSE(evaluatePolicy(in).keyLight);
+}
+
+TEST(DashboardPolicy, QuietWinsOverKeyLightWindow) {
+  PolicyInput in = withWindow(22, 30);
+  in.keyLightEndHour = 23;  // overlaps quiet hours (22 -> 7)
+  const auto r = evaluatePolicy(in);
+  EXPECT_EQ(r.screen, Screen::FallbackQuiet);
+  EXPECT_FALSE(r.keyLight);
+}
+
+TEST(DashboardPolicy, KeyLightWindowWrapsPastMidnight) {
+  PolicyInput in = withWindow(0, 30);
+  in.quietEnabled = false;
+  in.keyLightStartHour = 20;
+  in.keyLightEndHour = 1;
+  EXPECT_TRUE(evaluatePolicy(in).keyLight);
+  in.localHour = 1;
+  EXPECT_FALSE(evaluatePolicy(in).keyLight);
 }
 
 TEST(DashboardPolicy, FailuresBelowAndAtLimit) {

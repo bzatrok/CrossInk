@@ -20,6 +20,20 @@ uint32_t secondsUntilHour(const uint8_t hour, const uint8_t minute, const uint8_
 }
 }  // namespace
 
+namespace {
+bool keyLightActive(const PolicyInput& input) {
+  switch (input.keyLightMode) {
+    case KeyLightMode::Always:
+      return true;
+    case KeyLightMode::Window:
+      return input.clockValid && isInQuietHours(input.localHour, input.keyLightStartHour, input.keyLightEndHour);
+    case KeyLightMode::Off:
+      break;
+  }
+  return false;
+}
+}  // namespace
+
 bool isInQuietHours(const uint8_t hour, const uint8_t startHour, const uint8_t endHour) {
   if (startHour == endHour) return false;
   if (startHour < endHour) return hour >= startHour && hour < endHour;
@@ -39,10 +53,10 @@ PolicyResult evaluatePolicy(const PolicyInput& input) {
   }
 
   if (input.consecutiveFailures >= input.retryLimit) {
-    return {Screen::FallbackFailures, intervalSeconds(input.intervalMinutes), input.keyLightAvailable};
+    return {Screen::FallbackFailures, intervalSeconds(input.intervalMinutes), keyLightActive(input)};
   }
 
-  return {Screen::Dashboard, intervalSeconds(input.intervalMinutes), input.keyLightAvailable};
+  return {Screen::Dashboard, intervalSeconds(input.intervalMinutes), keyLightActive(input)};
 }
 
 DrawRotation chooseDrawRotation(const int imageWidth, const int imageHeight, const bool deviceStandsPortrait) {
