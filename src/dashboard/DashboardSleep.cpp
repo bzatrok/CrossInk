@@ -33,7 +33,12 @@ dashboard::PolicyResult evaluateNow(const dashboard::DashboardState& state) {
   in.quietStartHour = SETTINGS.dashboardQuietStart;
   in.quietEndHour = SETTINGS.dashboardQuietEnd;
   // The light-sleep wait exists to toggle the frontlight on a side-key press.
-  in.keyLightAvailable = Frontlight.present();
+  const uint8_t lightMode = SETTINGS.dashboardLightMode;
+  in.keyLightMode = Frontlight.present() && lightMode <= static_cast<uint8_t>(dashboard::KeyLightMode::Window)
+                        ? static_cast<dashboard::KeyLightMode>(lightMode)
+                        : dashboard::KeyLightMode::Off;
+  in.keyLightStartHour = SETTINGS.dashboardLightStart;
+  in.keyLightEndHour = SETTINGS.dashboardLightEnd;
   in.consecutiveFailures = state.consecutiveFailures;
   in.retryLimit = SETTINGS.dashboardRetries;
   in.intervalMinutes = SETTINGS.dashboardInterval;

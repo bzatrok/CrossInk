@@ -298,6 +298,13 @@ const std::vector<SettingInfo>& getBaseSettingsList() {
                            "dashboardQuietStart", StrId::STR_CAT_DASHBOARD));
     add(SettingInfo::Value(StrId::STR_DASHBOARD_QUIET_END, &CrossPointSettings::dashboardQuietEnd, {0, 23, 1},
                            "dashboardQuietEnd", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::Enum(StrId::STR_DASHBOARD_LIGHT_MODE, &CrossPointSettings::dashboardLightMode,
+                          {StrId::STR_STATE_OFF, StrId::STR_ALWAYS, StrId::STR_DASHBOARD_LIGHT_WINDOW},
+                          "dashboardLightMode", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::Value(StrId::STR_DASHBOARD_LIGHT_START, &CrossPointSettings::dashboardLightStart, {0, 23, 1},
+                           "dashboardLightStart", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::Value(StrId::STR_DASHBOARD_LIGHT_END, &CrossPointSettings::dashboardLightEnd, {0, 23, 1},
+                           "dashboardLightEnd", StrId::STR_CAT_DASHBOARD));
     add(SettingInfo::Value(StrId::STR_DASHBOARD_LIGHT_BRIGHTNESS, &CrossPointSettings::dashboardLightBrightness,
                            {10, 100, 10}, "dashboardLightBrightness", StrId::STR_CAT_DASHBOARD));
     add(SettingInfo::Enum(StrId::STR_DASHBOARD_RETRIES, &CrossPointSettings::dashboardRetries,

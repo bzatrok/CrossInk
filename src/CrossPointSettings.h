@@ -708,7 +708,11 @@ class CrossPointSettings : public PersistableStore<CrossPointSettings> {
   uint8_t dashboardRetries = 3;        // failed wakes in a row before the fallback screen
   uint8_t dashboardBatteryFloor = 15;  // percent; 0 = off
   uint8_t dashboardOrientation = 0;    // how the device stands: 0 = portrait, 1 = landscape
-  // Frontlight level a side-key press turns on while the dashboard shows.
+  // Side-key light: a side-key press toggles the frontlight while the dashboard
+  // shows. Mode 0 = off, 1 = always, 2 = only between Light from and Light until.
+  uint8_t dashboardLightMode = 1;
+  uint8_t dashboardLightStart = 18;       // local hour, 0-23
+  uint8_t dashboardLightEnd = 22;         // local hour, 0-23
   uint8_t dashboardLightBrightness = 30;  // percent, 10-100
 #endif
 

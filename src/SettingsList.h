@@ -1120,10 +1120,11 @@ inline std::vector<SettingInfo> buildSystemGlobalStatsSettingsList(const std::ve
 inline std::vector<SettingInfo> buildDashboardSettingsList(const std::vector<SettingInfo>& allSettings,
                                                            std::function<std::string()> statusGetter) {
   std::vector<SettingInfo> settings;
-  settings.reserve(13);
+  settings.reserve(16);
   for (const char* key : {"dashboardEnabled", "dashboardServerUrl", "dashboardApiKey", "dashboardInterval",
                           "dashboardOrientation", "dashboardQuietEnabled", "dashboardQuietStart", "dashboardQuietEnd",
-                          "dashboardLightBrightness", "dashboardRetries", "dashboardBatteryFloor"}) {
+                          "dashboardLightMode", "dashboardLightStart", "dashboardLightEnd", "dashboardLightBrightness",
+                          "dashboardRetries", "dashboardBatteryFloor"}) {
     addSettingByKey(settings, allSettings, key);
   }
   // No setter and no backing field: the settings screen treats it as read-only.
