@@ -201,7 +201,7 @@ bool waitForSideButtonsRelease(const int8_t (&pins)[2]) {
 }  // namespace
 
 HalPowerManager::LightSleepWake HalPowerManager::startLightSleep(const uint32_t timerMs,
-                                                                const bool wakeOnSideButtons) const {
+                                                                 const bool wakeOnSideButtons) const {
   // No rail cut, pad isolation or pad holds: those are deep-sleep steps.
   disableWiFiBeforeDeepSleep();
   // The power wake is level-triggered: a held button would re-wake at once.

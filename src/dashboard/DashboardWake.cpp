@@ -224,9 +224,9 @@ DashboardSleep::SleepPlan run(GfxRenderer& renderer, MappedInputManager& mappedI
 
   // Recompute: this wake may have changed the failure count.
   const dashboard::PolicyResult next = DashboardSleep::evaluateNow(state);
-  LOG_INF("DSH", "Timer wake: policy=%s fetch=%s refresh=%s next=%us evening=%d awake=%lums",
-          screenName(policy.screen), fetchResult, refreshMode, static_cast<unsigned>(next.timerSeconds),
-          next.evening ? 1 : 0, static_cast<unsigned long>(millis() - startMs));
+  LOG_INF("DSH", "Timer wake: policy=%s fetch=%s refresh=%s next=%us evening=%d awake=%lums", screenName(policy.screen),
+          fetchResult, refreshMode, static_cast<unsigned>(next.timerSeconds), next.evening ? 1 : 0,
+          static_cast<unsigned long>(millis() - startMs));
   return {next.timerSeconds, next.evening};
 }
 
