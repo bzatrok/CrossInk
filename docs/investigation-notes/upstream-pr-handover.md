@@ -45,16 +45,52 @@ and `x4-pro-trace-2026-10-06-verified.log` (after). Fork only; quote the numbers
 Prepared in this session, nothing pushed, no PR opened:
 
 - `~/dev/freeink-sdk-pr`: git worktree of the SDK, branch `fix/gt911-home-key-precedence`
-  from `Free-Ink/freeink-sdk` `upstream/main`, commit `db9d323` (cherry-pick of `c2ae821`,
-  one file, +5 lines). Not yet built.
+  from `Free-Ink/freeink-sdk` `upstream/main`, commit `a0eaaee` (cherry-pick of `c2ae821`,
+  one file, +5 lines, trailers removed). Not yet built.
 - `~/dev/CrossInk-pr`: git worktree of CrossInk, branch `perf/home-one-refresh-per-tap`
-  from `uxjulia/CrossInk` `upstream/main`, commit `44ea283a`. The three `LATENCY_LOG`
+  from `uxjulia/CrossInk` `upstream/main`, commit `ecd02955`. The three `LATENCY_LOG`
   lines and the include are already stripped; `CHANGELOG.md` has a new `[Unreleased]`
   section with the two Home entries. Submodules not yet initialised, not yet built.
 
 A new session executing PR A starts at "Build check" below. A session executing PR B
 starts at `git submodule update --init --recursive` in `~/dev/CrossInk-pr`, then the
 build commands. Remove the worktrees afterwards with `git worktree remove <path>`.
+
+## Review before sending (Ben: heavy manual review, surgical, no AI footprint)
+
+Both PRs go out under Ben's name after he has read every line. Checklist:
+
+- **Diff is only the fix.** `git diff upstream/main --stat` shows two files for B
+  (`HomeActivity.cpp`, `CHANGELOG.md`) and one for A. No trace code, no reformatting
+  of untouched lines, no stray whitespace.
+- **Comments read like their neighbours.** Upstream comments in these files are one to
+  three short lines about intent, no measurements, no device names. The two comments
+  in B were trimmed to that; drop them entirely if they still stand out.
+- **Commit messages match upstream's style.** Upstream subjects are lowercase
+  `fix:`/`feat:`/`chore:` plus a short clause, bodies are a few plain sentences or
+  none. Both prepared commits follow that and carry no `Co-Authored-By` or session
+  trailer. Do not add them when amending. `git log -1 --format=%B | grep -c Claude`
+  must print 0.
+- **PR description is short and in Ben's words.** Problem, cause, fix, how it was
+  tested on the device (the numbers from the Why section are fine), nothing more.
+  No generated-with footer, no links to sessions.
+- **Changelog lines read like the existing ones.** Compare with the `[Unreleased]`
+  block of an earlier upstream release before keeping the wording.
+- **Hardware re-test on the PR build**, not on the fork build: run the Verification
+  steps on firmware built from the PR worktree.
+- **Builds**: `x4-pro`, `default`, `sticky`, and the simulator smoke test for B;
+  `x4-pro` from the parent repo for A.
+
+## Where to run what
+
+| PR | Folder | Branch |
+| --- | --- | --- |
+| A, SDK fix | `~/dev/freeink-sdk-pr` | `fix/gt911-home-key-precedence` |
+| B, Home refresh | `~/dev/CrossInk-pr` | `perf/home-one-refresh-per-tap` |
+| C, pointer bump | `~/dev/CrossInk-pr` after B is merged, or a fresh worktree from `upstream/main` | new branch |
+
+The fork itself, `~/dev/CrossInk` on `perf/x4-pro-fewer-refreshes`, is not touched by
+either PR. The SDK worktree shares the git database with `~/dev/CrossInk/freeink-sdk`.
 
 ## Steps
 
