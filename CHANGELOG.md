@@ -8,7 +8,7 @@
 - Dashboard sleep on the Xteink X4 Pro: while asleep, the reader shows a dashboard image and refreshes it on a timer (1 to 60 minutes) without a boot screen or a full flash. A new Settings > Dashboard tab sets the interval, quiet hours, retry attempts, and a battery floor; outside those limits the regular sleep screen shows instead. A failed refresh keeps the last image with a "Not updated since" banner. Without a server, images come from a `/dashboard/` folder on the SD card.
 - Dashboard sleep fetches its image from a self-hosted TRMNL BYOS server (Terminus or byos_next): set the Server URL in Settings > Dashboard and the device registers itself on the first refresh. Unchanged screens are not downloaded or redrawn.
 - Dashboard Orientation setting (Portrait by default): on a portrait-standing device, a server image rotated 90° (Terminus Model rotation 90) draws upright, and the banner follows the device.
-- Dashboard side-key light on the Xteink X4 Pro: while the dashboard shows, pressing a side key turns the frontlight on for a minute at its own brightness (Settings > Dashboard > Side-key light). Quiet hours and the battery floor still sleep as before.
+- Dashboard side-key light on the Xteink X4 Pro: while the dashboard shows, pressing a side key turns the frontlight on for a minute at its own brightness. Settings > Dashboard > Side-key light chooses Always, Evening only (between two hours), or Off. Quiet hours and the battery floor still sleep as before.
 
 ### Fixed
 

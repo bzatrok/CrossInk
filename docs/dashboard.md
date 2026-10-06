@@ -31,7 +31,9 @@ screen for quiet hours, low battery, and repeated failures.
 | Orientation | Portrait / Landscape | Portrait | How the device stands. See "Orientation" below. |
 | Quiet hours | Off / On | On | Show the fallback screen between Quiet start and Quiet end. |
 | Quiet start / Quiet end | 0-23 (hour) | 22 / 7 | Local hours; the window wraps past midnight. Equal hours mean no quiet period. |
-| Side-key light | 10-100 % | 30 % | Frontlight level a side-key press turns on while the dashboard shows. See "Side-key light" below. X4 Pro only (needs a frontlight). |
+| Side-key light | Off / Always / Evening only | Always | Whether a side key can light the frontlight while the dashboard shows. See "Side-key light" below. X4 Pro only (needs a frontlight). |
+| Light from / Light until | 0-23 (hour) | 18 / 22 | Hours for Evening only; same rules as quiet hours. Quiet hours win where the two overlap. |
+| Light brightness | 10-100 % | 30 % | Frontlight level a side-key press turns on. |
 | Retry attempts | 1, 3, 5, 10 | 3 | Failed wakes in a row before the fallback screen replaces the dashboard. |
 | Battery floor | Off, 10-30 % | 15 % | Below it, the fallback screen shows and timer wakes stop until a button wake. |
 | Status | read-only | | Last update time, the current failure, or why it is paused. |
@@ -73,11 +75,14 @@ A power-button wake behaves exactly as before.
 
 ### Side-key light
 
-While the dashboard shows (it refreshes, or keeps retrying after failures), the
-device waits between refreshes in light sleep instead of deep sleep, so a side
-key can light the frontlight at any hour. Quiet hours and the battery floor
-still deep-sleep with the fallback screen, so nothing runs overnight or on a
-nearly empty battery.
+While the dashboard shows (it refreshes, or keeps retrying after failures) and
+Side-key light allows it, the device waits between refreshes in light sleep
+instead of deep sleep, so a side key can light the frontlight. **Always** does
+this at any hour; **Evening only** between Light from and Light until (needs a
+valid clock); **Off** deep-sleeps as before. Quiet hours and the battery floor
+always deep-sleep with the fallback screen, so nothing runs overnight or on a
+nearly empty battery. Deep sleep uses less power but only the power button and
+the timer can wake it; light sleep keeps the side keys live.
 
 In the light-sleep wait (`src/dashboard/DashboardKeyLight.cpp`):
 
@@ -101,11 +106,11 @@ drive the board's 25 kHz at 10 bits, so the SDK drops to 9-bit PWM at the same
 frequency. `HalFrontlight::parkForDeepSleep()` drives the pads LOW before every
 deep sleep so they do not leak current.
 
-History: the first version (2026-10-05) limited the light sleep to an evening
-window, and a GT911 double-tap was tried as the trigger. The double-tap did not
-wake the chip from light sleep on hardware, and the window was dropped
-(2026-10-06) so the key works at any hour. The touch controller stays powered
-during the wait but is not a wake source.
+History: the first version (2026-10-05) had only the evening window, and a
+GT911 double-tap was tried as the trigger. The double-tap did not wake the chip
+from light sleep on hardware. On 2026-10-06 the window became one mode next to
+Always and Off. The touch controller stays powered during the wait but is not a
+wake source.
 
 ### Local folder source
 
