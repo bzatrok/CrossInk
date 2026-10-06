@@ -40,6 +40,22 @@ the panel waveform. The slow interactions were the ones that triggered two refre
 Raw logs: `docs/investigation-notes/x4-pro-trace-2026-10-06-eventlines.log` (before)
 and `x4-pro-trace-2026-10-06-verified.log` (after). Fork only; quote the numbers.
 
+## State on 2026-10-06 evening: both branches already exist locally
+
+Prepared in this session, nothing pushed, no PR opened:
+
+- `~/dev/freeink-sdk-pr`: git worktree of the SDK, branch `fix/gt911-home-key-precedence`
+  from `Free-Ink/freeink-sdk` `upstream/main`, commit `db9d323` (cherry-pick of `c2ae821`,
+  one file, +5 lines). Not yet built.
+- `~/dev/CrossInk-pr`: git worktree of CrossInk, branch `perf/home-one-refresh-per-tap`
+  from `uxjulia/CrossInk` `upstream/main`, commit `44ea283a`. The three `LATENCY_LOG`
+  lines and the include are already stripped; `CHANGELOG.md` has a new `[Unreleased]`
+  section with the two Home entries. Submodules not yet initialised, not yet built.
+
+A new session executing PR A starts at "Build check" below. A session executing PR B
+starts at `git submodule update --init --recursive` in `~/dev/CrossInk-pr`, then the
+build commands. Remove the worktrees afterwards with `git worktree remove <path>`.
+
 ## Steps
 
 ### A. SDK PR
