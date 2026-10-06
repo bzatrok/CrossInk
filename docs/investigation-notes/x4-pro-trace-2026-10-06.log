@@ -1,0 +1,661 @@
+y_call
+LAT:   1717.00 ms  (+    0.03)  driver_start
+LAT:   1783.43 ms  (+   66.43)  waveform_wait
+LAT:   1783.44 ms  (+    0.01)  busy_wait
+LAT:   2266.81 ms  (+  483.37)  busy_done
+LAT:   2266.82 ms  (+    0.01)  busy_released
+LAT:   2329.51 ms  (+   62.69)  driver_return
+LAT:   2329.59 ms  (+    0.08)  render_done
+LAT: total 2329.59 ms
+LAT:      0.00 ms  (+    0.00)  render_start
+LAT:     16.13 ms  (+   16.13)  display_call
+LAT:     16.16 ms  (+    0.03)  driver_start
+LAT:     83.79 ms  (+   67.64)  waveform_wait
+LAT:     83.80 ms  (+    0.01)  busy_wait
+LAT:    567.45 ms  (+  483.65)  busy_done
+LAT:    567.47 ms  (+    0.01)  busy_released
+LAT:    631.56 ms  (+   64.09)  driver_return
+LAT:    647.57 ms  (+   16.01)  render_done
+LAT: total 647.57 ms
+[11071] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[21082] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[31093] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[41104] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[51115] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[61127] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[71138] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[81149] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[91160] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[101171] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[111182] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[121194] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[131205] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[141216] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[151227] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[161238] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[171249] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[181261] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[191272] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[201283] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[211294] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[221305] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[231316] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[240735]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (9 marks, t0 = render_start) ----
+LAT:      0.00 ms  (+    0.00)  render_start
+LAT:    116.60 ms  (+  116.60)  display_call
+LAT:    116.62 ms  (+    0.03)  driver_start
+LAT:    185.30 ms  (+   68.67)  waveform_wait
+LAT:    185.31 ms  (+    0.02)  busy_wait
+LAT:    669.21 ms  (+  483.90)  busy_done
+LAT:    669.22 ms  (+    0.01)  busy_released
+LAT:    735.19 ms  (+   65.97)  driver_return
+LAT:    735.25 ms  (+    0.06)  render_done
+LAT: total 735.25 ms
+[241357] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[251368] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[261379] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[271390] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[281401] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[291412] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[301424] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[311435] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[341467] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[351478] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[361490] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[371501] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[381512] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[391523] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[401534] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[411545] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[421557] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[431568] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[441579] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[451590] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[461601] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[471612] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[481624] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[491635] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[501646] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[511657] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[521668] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[531679] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[541691] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[551702] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[561713] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[571724] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[581735] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[591746] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[601758] [INF] [MEM] Periodic: heap free=195032 total=288348 min=194400 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[604253]   Wait complete:  8279x4_DRF (1329 ms)
+[604384]   Wait complete:  8279x4_POF (76 ms)
+[604451] [INF] [DSH] Sleep entry: dashboard drawn
+[604503] [INF] [DSH] Sleep entry: policy=1 timer=2s keyLight=0
+[604504] [INF] [FrontlightMgr] park: begun, driving pads LOW + hold
++   70.35)  driver_return
+LAT:   2198.81 ms  (+    1.21)  display_call
+LAT:   2198.82 ms  (+    0.02)  driver_start
+LAT:   2271.67 ms  (+   72.85)  waveform_wait
+LAT:   2271.69 ms  (+    0.02)  busy_wait
+LAT:   2754.79 ms  (+  483.10)  busy_done
+LAT:   2754.81 ms  (+    0.01)  busy_released
+LAT:   2824.21 ms  (+   69.40)  driver_return
+LAT:   6209.57 ms  (+ 3385.36)  display_call
+LAT:   6209.59 ms  (+    0.03)  driver_start
+LAT:   6281.61 ms  (+   72.02)  waveform_wait
+LAT:   6281.63 ms  (+    0.01)  busy_wait
+LAT:   6764.80 ms  (+  483.17)  busy_done
+LAT:   6764.81 ms  (+    0.01)  busy_released
+LAT:   6834.18 ms  (+   69.37)  driver_return
+LAT:   6834.27 ms  (+    0.09)  render_done
+LAT: total 6834.27 ms
+[55137] [INF] [MEM] Periodic: heap free=189280 total=288348 min=157972 maxAlloc=139252 psram free=6292628 total=8388608 min=3038412 maxAlloc=6160372
+[65173] [INF] [MEM] Periodic: heap free=189280 total=288348 min=157972 maxAlloc=139252 psram free=6292628 total=8388608 min=3038412 maxAlloc=6160372
+[65745] [INF] [EPS] reader exit after caches: internal free=187996 max=139252; psram free=6292628 max=6160372 total=8388608
+[65801] [RBPR] Failed to open file for reading: /.crosspoint/epub_4285618977922491722/progress_percent.bin
+[66484]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:     63.27 ms  (+   63.27)  render_start
+LAT:    188.18 ms  (+  124.91)  display_call
+LAT:    188.20 ms  (+    0.03)  driver_start
+LAT:    256.84 ms  (+   68.64)  waveform_wait
+LAT:    256.86 ms  (+    0.02)  busy_wait
+LAT:    740.77 ms  (+  483.91)  busy_done
+LAT:    740.78 ms  (+    0.02)  busy_released
+LAT:    806.75 ms  (+   65.96)  driver_return
+LAT:    806.82 ms  (+    0.07)  render_done
+LAT: total 806.82 ms
+[67125]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    815.18 ms  (+  815.18)  render_start
+LAT:    831.55 ms  (+   16.37)  display_call
+LAT:    831.58 ms  (+    0.03)  driver_start
+LAT:    898.26 ms  (+   66.68)  waveform_wait
+LAT:    898.27 ms  (+    0.02)  busy_wait
+LAT:   1381.77 ms  (+  483.49)  busy_done
+LAT:   1381.78 ms  (+    0.01)  busy_released
+LAT:   1445.36 ms  (+   63.58)  driver_return
+LAT:   1459.05 ms  (+   13.69)  render_done
+LAT: total 1459.05 ms
+[67993]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      1.07 ms  (+    1.07)  render_start
+LAT:    124.34 ms  (+  123.27)  display_call
+LAT:    124.37 ms  (+    0.03)  driver_start
+LAT:    193.08 ms  (+   68.71)  waveform_wait
+LAT:    193.09 ms  (+    0.02)  busy_wait
+LAT:    676.64 ms  (+  483.55)  busy_done
+LAT:    676.66 ms  (+    0.01)  busy_released
+LAT:    742.61 ms  (+   65.96)  driver_return
+LAT:    742.67 ms  (+    0.06)  render_done
+LAT: total 742.67 ms
+[69283]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:     44.45 ms  (+   44.45)  render_start
+LAT:     75.79 ms  (+   31.34)  display_call
+LAT:     75.82 ms  (+    0.03)  driver_start
+LAT:    144.84 ms  (+   69.03)  waveform_wait
+LAT:    144.86 ms  (+    0.02)  busy_wait
+LAT:    629.05 ms  (+  484.19)  busy_done
+LAT:    629.07 ms  (+    0.02)  busy_released
+LAT:    696.81 ms  (+   67.74)  driver_return
+LAT:    696.85 ms  (+    0.04)  render_done
+LAT: total 696.85 ms
+[70302] [RBPR] Failed to open file for reading: /.crosspoint/epub_4285618977922491722/progress_percent.bin
+[70982]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    413.63 ms  (+  413.63)  render_start
+LAT:    537.19 ms  (+  123.56)  display_call
+LAT:    537.23 ms  (+    0.04)  driver_start
+LAT:    604.15 ms  (+   66.92)  waveform_wait
+LAT:    604.17 ms  (+    0.02)  busy_wait
+LAT:   1087.99 ms  (+  483.82)  busy_done
+LAT:   1088.01 ms  (+    0.02)  busy_released
+LAT:   1154.06 ms  (+   66.05)  driver_return
+LAT:   1154.13 ms  (+    0.07)  render_done
+LAT: total 1154.13 ms
+[71628]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    554.26 ms  (+  554.26)  render_start
+LAT:    570.90 ms  (+   16.64)  display_call
+LAT:    570.93 ms  (+    0.03)  driver_start
+LAT:    639.56 ms  (+   68.63)  waveform_wait
+LAT:    639.58 ms  (+    0.02)  busy_wait
+LAT:   1123.86 ms  (+  484.28)  busy_done
+LAT:   1123.87 ms  (+    0.01)  busy_released
+LAT:   1188.92 ms  (+   65.05)  driver_return
+LAT:   1204.18 ms  (+   15.26)  render_done
+LAT: total 1204.18 ms
+[74665]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      1.08 ms  (+    1.08)  render_start
+LAT:    123.22 ms  (+  122.14)  display_call
+LAT:    123.25 ms  (+    0.03)  driver_start
+LAT:    190.35 ms  (+   67.11)  waveform_wait
+LAT:    190.37 ms  (+    0.02)  busy_wait
+LAT:    674.64 ms  (+  484.27)  busy_done
+LAT:    674.65 ms  (+    0.01)  busy_released
+LAT:    740.54 ms  (+   65.89)  driver_return
+LAT:    740.60 ms  (+    0.06)  render_done
+LAT: total 740.60 ms
+[75182] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[75715]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      1.06 ms  (+    1.06)  render_start
+LAT:     16.89 ms  (+   15.83)  display_call
+LAT:     16.92 ms  (+    0.03)  driver_start
+LAT:     83.70 ms  (+   66.78)  waveform_wait
+LAT:     83.72 ms  (+    0.02)  busy_wait
+LAT:    567.61 ms  (+  483.89)  busy_done
+LAT:    567.64 ms  (+    0.03)  busy_released
+LAT:    631.58 ms  (+   63.93)  driver_return
+LAT:    631.64 ms  (+    0.07)  render_done
+LAT: total 631.64 ms
+[76404]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      9.02 ms  (+    9.02)  render_start
+LAT:     33.25 ms  (+   24.23)  display_call
+LAT:     33.28 ms  (+    0.03)  driver_start
+LAT:     99.70 ms  (+   66.42)  waveform_wait
+LAT:     99.72 ms  (+    0.01)  busy_wait
+LAT:    584.04 ms  (+  484.32)  busy_done
+LAT:    584.07 ms  (+    0.04)  busy_released
+LAT:    647.78 ms  (+   63.70)  driver_return
+LAT:    647.81 ms  (+    0.04)  render_done
+LAT: total 647.81 ms
+[77812]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    313.57 ms  (+  313.57)  render_start
+LAT:    330.30 ms  (+   16.73)  display_call
+LAT:    330.33 ms  (+    0.03)  driver_start
+LAT:    396.59 ms  (+   66.25)  waveform_wait
+LAT:    396.60 ms  (+    0.02)  busy_wait
+LAT:    880.05 ms  (+  483.45)  busy_done
+LAT:    880.07 ms  (+    0.01)  busy_released
+LAT:    943.64 ms  (+   63.58)  driver_return
+LAT:    943.70 ms  (+    0.06)  render_done
+LAT: total 943.70 ms
+[85212] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[95223] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[105234] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[115245] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[125257] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[135268] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[145279] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[155290] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[165301] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[175312] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[185324] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[195335] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[205346] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[215357] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[225368] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[235379] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[245391] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[255402] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[265413] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[275424] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[285435] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[295446] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[305458] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[315469] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[325480] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[335491] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[345502] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[355513] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[365525] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[375536] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[385547] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[395558] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[405569] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[415580] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[425592] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[435603] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[445614] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[455625] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[465636] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[475647] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[485659] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[495670] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[505681] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[515692] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[525703] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[535714] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[545726] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[555737] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[565748] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[575759] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[585770] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[595781] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[605793] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[615804] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[625815] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[635826] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[645837] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[655848] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[665860] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[675871] [INF] [MEM] Periodic: heap free=191136 total=288348 min=154116 maxAlloc=139252 psram free=6274192 total=8388608 min=3038412 maxAlloc=6160372
+[679411]   Wait complete:  8279x4_DRF (1330 ms)
+[679542]   Wait complete:  8279x4_POF (76 ms)
+[679607] [INF] [DSH] Sleep entry: dashboard drawn
+[679659] [INF] [DSH] Sleep entry: policy=1 timer=2s keyLight=0
+[679660] [INF] [FrontlightMgr] park: begun, driving pads LOW + hold
+[4341] [INF] [WFC] Connected to it_should_work
+[4555] [INF] [TRMNL] Fetching http://192.168.0.131:2300/uploads/edf921e1b916b15c7993c61a596b8a74.png
+[5638]   Wait complete:  8279x4_PON (40 ms)
+[6968]   Wait complete:  8279x4_DRF (1329 ms)
+[7099]   Wait complete:  8279x4_POF (76 ms)
+[7179] [INF] [DSH] Timer wake: policy=dashboard fetch=updated refresh=half next=300s keyLight=1 awake=6497ms
+[7180] [INF] [DSH] Key-light wait 300s
+[4344] [INF] [WFC] Connected to it_should_work
+[4599] [INF] [TRMNL] Fetching http://192.168.0.131:2300/uploads/ddedf3ac4e18a3c0fc8d7f85c404ce4f.png
+[5659]   Wait complete:  8279x4_PON (40 ms)
+[6989]   Wait complete:  8279x4_DRF (1329 ms)
+[7120]   Wait complete:  8279x4_POF (76 ms)
+[7201] [INF] [DSH] Timer wake: policy=dashboard fetch=updated refresh=half next=300s keyLight=1 awake=6517ms
+[7202] [INF] [DSH] Key-light wait 300s
+[4348] [INF] [WFC] Connected to it_should_work
+[4457] [INF] [TRMNL] Fetching http://192.168.0.131:2300/uploads/3644fad5688a83bbd59184563365186d.png
+[5508]   Wait complete:  8279x4_PON (40 ms)
+[6838]   Wait complete:  8279x4_DRF (1329 ms)
+[6969]   Wait complete:  8279x4_POF (76 ms)
+[7049] [INF] [DSH] Timer wake: policy=dashboard fetch=updated refresh=half next=300s keyLight=1 awake=6367ms
+[7050] [INF] [DSH] Key-light wait 300s
+[2650]   Wait complete:  8279x4_DRF (1330 ms)
+LAT: ---- trace (11 marks, t0 = render_start) ----
+LAT:      0.00 ms  (+    0.00)  render_start
+LAT:    140.17 ms  (+  140.17)  display_call
+LAT:    140.20 ms  (+    0.03)  driver_start
+LAT:    266.85 ms  (+  126.65)  busy_wait
+LAT:    307.58 ms  (+   40.73)  busy_done
+LAT:    307.75 ms  (+    0.17)  waveform_wait
+LAT:    307.75 ms  (+    0.01)  busy_wait
+LAT:   1638.00 ms  (+ 1330.25)  busy_done
+LAT:   1638.01 ms  (+    0.01)  busy_released
+LAT:   1702.81 ms  (+   64.79)  driver_return
+LAT:   1702.88 ms  (+    0.08)  render_done
+LAT: total 1702.88 ms
+[3292]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (9 marks, t0 = render_start) ----
+LAT:      0.00 ms  (+    0.00)  render_start
+LAT:     17.02 ms  (+   17.02)  display_call
+LAT:     17.05 ms  (+    0.03)  driver_start
+LAT:     84.99 ms  (+   67.95)  waveform_wait
+LAT:     85.01 ms  (+    0.01)  busy_wait
+LAT:    568.71 ms  (+  483.70)  busy_done
+LAT:    568.72 ms  (+    0.01)  busy_released
+LAT:    634.58 ms  (+   65.86)  driver_return
+LAT:    650.33 ms  (+   15.75)  render_done
+LAT: total 650.33 ms
+[6533]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      1.10 ms  (+    1.10)  render_start
+LAT:    105.04 ms  (+  103.93)  display_call
+LAT:    105.06 ms  (+    0.03)  driver_start
+LAT:    161.73 ms  (+   56.67)  waveform_wait
+LAT:    161.73 ms  (+    0.00)  busy_wait
+LAT:    645.55 ms  (+  483.82)  busy_done
+LAT:    645.55 ms  (+    0.00)  busy_released
+LAT:    699.58 ms  (+   54.03)  driver_return
+LAT:    699.61 ms  (+    0.03)  render_done
+LAT: total 699.61 ms
+[7216]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    730.55 ms  (+  730.55)  render_start
+LAT:    760.88 ms  (+   30.33)  display_call
+LAT:    760.91 ms  (+    0.03)  driver_start
+LAT:    830.98 ms  (+   70.07)  waveform_wait
+LAT:    830.99 ms  (+    0.02)  busy_wait
+LAT:   1314.74 ms  (+  483.75)  busy_done
+LAT:   1314.76 ms  (+    0.02)  busy_released
+LAT:   1382.34 ms  (+   67.59)  driver_return
+LAT:   1382.39 ms  (+    0.04)  render_done
+LAT: total 1382.39 ms
+[10025] [INF] [MEM] Periodic: heap free=170460 total=288348 min=164684 maxAlloc=122868 psram free=8254676 total=8388608 min=8236240 maxAlloc=8126452
+[19095] [RBPR] Failed to open file for reading: /.crosspoint/epub_4285618977922491722/progress_percent.bin
+[19781]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    415.43 ms  (+  415.43)  render_start
+LAT:    542.14 ms  (+  126.70)  display_call
+LAT:    542.16 ms  (+    0.03)  driver_start
+LAT:    610.75 ms  (+   68.58)  waveform_wait
+LAT:    610.76 ms  (+    0.02)  busy_wait
+LAT:   1094.99 ms  (+  484.23)  busy_done
+LAT:   1095.01 ms  (+    0.02)  busy_released
+LAT:   1160.97 ms  (+   65.97)  driver_return
+LAT:   1161.05 ms  (+    0.07)  render_done
+LAT: total 1161.05 ms
+[20036] [INF] [MEM] Periodic: heap free=194980 total=288348 min=157972 maxAlloc=147444 psram free=8236240 total=8388608 min=8236240 maxAlloc=8126452
+[20423]   Wait complete:  8279x4_DRF (482 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:   1169.41 ms  (+ 1169.41)  render_start
+LAT:   1186.02 ms  (+   16.61)  display_call
+LAT:   1186.04 ms  (+    0.03)  driver_start
+LAT:   1253.68 ms  (+   67.64)  waveform_wait
+LAT:   1254.61 ms  (+    0.93)  busy_wait
+LAT:   1736.98 ms  (+  482.37)  busy_done
+LAT:   1737.00 ms  (+    0.02)  busy_released
+LAT:   1800.57 ms  (+   63.57)  driver_return
+LAT:   1814.81 ms  (+   14.24)  render_done
+LAT: total 1814.81 ms
+[27072]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      1.07 ms  (+    1.07)  render_start
+LAT:    109.93 ms  (+  108.86)  display_call
+LAT:    109.96 ms  (+    0.03)  driver_start
+LAT:    166.71 ms  (+   56.75)  waveform_wait
+LAT:    166.71 ms  (+    0.00)  busy_wait
+LAT:    650.56 ms  (+  483.85)  busy_done
+LAT:    650.56 ms  (+    0.00)  busy_released
+LAT:    704.58 ms  (+   54.02)  driver_return
+LAT:    704.61 ms  (+    0.03)  render_done
+LAT: total 704.61 ms
+[27209] [INF] [EBP] Loaded X locations: 1385 locations, 332 reference pages across 50 spine items
+[27245] [INF] [EPS] reader enter: internal free=191196 max=131060; psram free=8254676 max=8126452 total=8388608
+[27430] [SCT] Failed to open file for reading: /.crosspoint/epub_2831409095213327647/sections/5.bin
+[27436] [SCT] Failed to open file for reading: /.crosspoint/epub_2831409095213327647/sections/7.bin
+[29312]   Wait complete:  8279x4_DRF (1330 ms)
+[29914]   Wait complete:  8279x4_gray (229 ms)
+[30039] [INF] [MEM] Periodic: heap free=181392 total=288348 min=157972 maxAlloc=131060 psram free=6223224 total=8388608 min=6223224 maxAlloc=6160372
+LAT: ---- trace (24 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    939.36 ms  (+  939.36)  render_start
+LAT:   1368.17 ms  (+  428.82)  display_call
+LAT:   1368.20 ms  (+    0.03)  driver_start
+LAT:   1510.65 ms  (+  142.45)  waveform_wait
+LAT:   1510.67 ms  (+    0.02)  busy_wait
+LAT:   2841.42 ms  (+ 1330.75)  busy_done
+LAT:   2841.43 ms  (+    0.01)  busy_released
+LAT:   2910.63 ms  (+   69.20)  driver_return
+LAT:   2980.66 ms  (+   70.03)  display_call
+LAT:   2980.67 ms  (+    0.01)  driver_start
+LAT:   3053.83 ms  (+   73.16)  driver_return
+LAT:   3120.42 ms  (+   66.59)  display_call
+LAT:   3120.44 ms  (+    0.01)  driver_start
+LAT:   3213.17 ms  (+   92.73)  driver_return
+LAT:   3213.56 ms  (+    0.39)  display_call
+LAT:   3213.56 ms  (+    0.00)  driver_start
+LAT:   3214.17 ms  (+    0.61)  busy_wait
+LAT:   3443.42 ms  (+  229.25)  busy_done
+LAT:   3582.72 ms  (+  139.30)  driver_return
+LAT:   3584.72 ms  (+    2.00)  display_call
+LAT:   3584.72 ms  (+    0.00)  driver_start
+LAT:   3655.58 ms  (+   70.86)  driver_return
+LAT:   3677.08 ms  (+   21.50)  render_done
+LAT: total 3677.08 ms
+[36640] [INF] [EPS] reader exit after caches: internal free=180940 max=131060; psram free=6271632 max=6160372 total=8388608
+[36822]   Wait complete:  8279x4_gray_base_ready (2 ms)
+[36888]   Wait complete:  8279x4_gray_pre_ready (0 ms)
+[37449]   Wait complete:  8279x4_gray_pre_DRF (560 ms)
+LAT: ---- trace (12 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    364.14 ms  (+  364.14)  render_start
+LAT:    488.17 ms  (+  124.03)  display_call
+LAT:    488.19 ms  (+    0.03)  driver_start
+LAT:    490.44 ms  (+    2.25)  busy_wait
+LAT:    492.29 ms  (+    1.85)  busy_done
+LAT:    557.86 ms  (+   65.56)  busy_wait
+LAT:    558.78 ms  (+    0.93)  busy_done
+LAT:    559.49 ms  (+    0.71)  busy_wait
+LAT:   1119.76 ms  (+  560.27)  busy_done
+LAT:   1183.90 ms  (+   64.14)  driver_return
+LAT:   1184.00 ms  (+    0.10)  render_done
+LAT: total 1184.00 ms
+[38087]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:   1188.54 ms  (+ 1188.54)  render_start
+LAT:   1204.92 ms  (+   16.38)  display_call
+LAT:   1204.95 ms  (+    0.03)  driver_start
+LAT:   1273.58 ms  (+   68.63)  waveform_wait
+LAT:   1273.59 ms  (+    0.02)  busy_wait
+LAT:   1757.77 ms  (+  484.18)  busy_done
+LAT:   1757.79 ms  (+    0.02)  busy_released
+LAT:   1822.75 ms  (+   64.96)  driver_return
+LAT:   1838.45 ms  (+   15.70)  render_done
+LAT: total 1838.45 ms
+[39313]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      1.06 ms  (+    1.06)  render_start
+LAT:    113.28 ms  (+  112.22)  display_call
+LAT:    113.31 ms  (+    0.03)  driver_start
+LAT:    170.00 ms  (+   56.69)  waveform_wait
+LAT:    170.00 ms  (+    0.00)  busy_wait
+LAT:    653.63 ms  (+  483.63)  busy_done
+LAT:    653.63 ms  (+    0.00)  busy_released
+LAT:    707.66 ms  (+   54.03)  driver_return
+LAT:    707.69 ms  (+    0.03)  render_done
+LAT: total 707.69 ms
+[40044] [INF] [MEM] Periodic: heap free=192032 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[41005]   Wait complete:  8279x4_DRF (1330 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    781.57 ms  (+  781.57)  render_start
+LAT:    822.43 ms  (+   40.86)  display_call
+LAT:    822.46 ms  (+    0.03)  driver_start
+LAT:    954.94 ms  (+  132.48)  waveform_wait
+LAT:    954.96 ms  (+    0.02)  busy_wait
+LAT:   2284.70 ms  (+ 1329.75)  busy_done
+LAT:   2284.72 ms  (+    0.02)  busy_released
+LAT:   2349.22 ms  (+   64.50)  driver_return
+LAT:   2349.26 ms  (+    0.04)  render_done
+LAT: total 2349.26 ms
+[42424]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    394.09 ms  (+  394.09)  render_start
+LAT:    519.49 ms  (+  125.40)  display_call
+LAT:    519.52 ms  (+    0.03)  driver_start
+LAT:    588.05 ms  (+   68.53)  waveform_wait
+LAT:    588.07 ms  (+    0.02)  busy_wait
+LAT:   1072.02 ms  (+  483.95)  busy_done
+LAT:   1072.03 ms  (+    0.01)  busy_released
+LAT:   1138.07 ms  (+   66.04)  driver_return
+LAT:   1138.14 ms  (+    0.07)  render_done
+LAT: total 1138.14 ms
+[43065]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:   1146.44 ms  (+ 1146.44)  render_start
+LAT:   1162.93 ms  (+   16.50)  display_call
+LAT:   1162.96 ms  (+    0.03)  driver_start
+LAT:   1229.59 ms  (+   66.63)  waveform_wait
+LAT:   1229.61 ms  (+    0.02)  busy_wait
+LAT:   1713.03 ms  (+  483.42)  busy_done
+LAT:   1713.05 ms  (+    0.01)  busy_released
+LAT:   1779.06 ms  (+   66.01)  driver_return
+LAT:   1794.86 ms  (+   15.80)  render_done
+LAT: total 1794.86 ms
+[50087] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[53826]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      1.10 ms  (+    1.10)  render_start
+LAT:    117.12 ms  (+  116.02)  display_call
+LAT:    117.15 ms  (+    0.03)  driver_start
+LAT:    173.83 ms  (+   56.68)  waveform_wait
+LAT:    173.84 ms  (+    0.00)  busy_wait
+LAT:    657.57 ms  (+  483.73)  busy_done
+LAT:    657.57 ms  (+    0.00)  busy_released
+LAT:    711.60 ms  (+   54.03)  driver_return
+LAT:    711.62 ms  (+    0.03)  render_done
+LAT: total 711.62 ms
+[54462]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    645.42 ms  (+  645.42)  render_start
+LAT:    665.70 ms  (+   20.28)  display_call
+LAT:    665.73 ms  (+    0.03)  driver_start
+LAT:    733.76 ms  (+   68.03)  waveform_wait
+LAT:    733.78 ms  (+    0.02)  busy_wait
+LAT:   1217.63 ms  (+  483.86)  busy_done
+LAT:   1217.65 ms  (+    0.01)  busy_released
+LAT:   1282.10 ms  (+   64.45)  driver_return
+LAT:   1282.95 ms  (+    0.84)  render_done
+LAT: total 1282.95 ms
+[56199]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    333.89 ms  (+  333.89)  render_start
+LAT:    458.38 ms  (+  124.49)  display_call
+LAT:    458.41 ms  (+    0.03)  driver_start
+LAT:    526.96 ms  (+   68.55)  waveform_wait
+LAT:    526.98 ms  (+    0.02)  busy_wait
+LAT:   1011.02 ms  (+  484.05)  busy_done
+LAT:   1011.04 ms  (+    0.02)  busy_released
+LAT:   1077.01 ms  (+   65.97)  driver_return
+LAT:   1077.08 ms  (+    0.07)  render_done
+LAT: total 1077.08 ms
+[56842]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:   1085.44 ms  (+ 1085.44)  render_start
+LAT:   1102.01 ms  (+   16.57)  display_call
+LAT:   1102.03 ms  (+    0.03)  driver_start
+LAT:   1170.65 ms  (+   68.61)  waveform_wait
+LAT:   1170.67 ms  (+    0.02)  busy_wait
+LAT:   1654.03 ms  (+  483.36)  busy_done
+LAT:   1654.05 ms  (+    0.02)  busy_released
+LAT:   1708.18 ms  (+   54.13)  driver_return
+LAT:   1721.30 ms  (+   13.12)  render_done
+LAT: total 1721.30 ms
+[57550]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    259.00 ms  (+  259.00)  render_start
+LAT:    357.13 ms  (+   98.13)  display_call
+LAT:    357.15 ms  (+    0.03)  driver_start
+LAT:    413.83 ms  (+   56.67)  waveform_wait
+LAT:    413.83 ms  (+    0.00)  busy_wait
+LAT:    898.07 ms  (+  484.24)  busy_done
+LAT:    898.07 ms  (+    0.00)  busy_released
+LAT:    952.10 ms  (+   54.03)  driver_return
+LAT:    952.13 ms  (+    0.03)  render_done
+LAT: total 952.13 ms
+[59116]   Wait complete:  8279x4_DRF (1329 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    959.86 ms  (+  959.86)  render_start
+LAT:   1001.77 ms  (+   41.92)  display_call
+LAT:   1001.80 ms  (+    0.03)  driver_start
+LAT:   1134.19 ms  (+  132.39)  waveform_wait
+LAT:   1134.21 ms  (+    0.02)  busy_wait
+LAT:   2464.07 ms  (+ 1329.86)  busy_done
+LAT:   2464.09 ms  (+    0.02)  busy_released
+LAT:   2528.33 ms  (+   64.24)  driver_return
+LAT:   2528.38 ms  (+    0.05)  render_done
+LAT: total 2528.38 ms
+[60094] [INF] [MEM] Periodic: heap free=192040 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[62041]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    394.09 ms  (+  394.09)  render_start
+LAT:    517.04 ms  (+  122.95)  display_call
+LAT:    517.07 ms  (+    0.03)  driver_start
+LAT:    585.66 ms  (+   68.59)  waveform_wait
+LAT:    585.67 ms  (+    0.02)  busy_wait
+LAT:   1070.03 ms  (+  484.36)  busy_done
+LAT:   1070.05 ms  (+    0.02)  busy_released
+LAT:   1136.01 ms  (+   65.96)  driver_return
+LAT:   1136.08 ms  (+    0.07)  render_done
+LAT: total 1136.08 ms
+[62686]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:   1145.44 ms  (+ 1145.44)  render_start
+LAT:   1162.93 ms  (+   17.50)  display_call
+LAT:   1162.96 ms  (+    0.03)  driver_start
+LAT:   1231.55 ms  (+   68.59)  waveform_wait
+LAT:   1231.57 ms  (+    0.02)  busy_wait
+LAT:   1715.03 ms  (+  483.46)  busy_done
+LAT:   1715.05 ms  (+    0.01)  busy_released
+LAT:   1780.10 ms  (+   65.05)  driver_return
+LAT:   1796.38 ms  (+   16.28)  render_done
+LAT: total 1796.38 ms
+[70136] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[80147] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[90158] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[100169] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[110180] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[120192] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[130203] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[140214] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[150225] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[160236] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372
+[170247] [INF] [MEM] Periodic: heap free=191400 total=288348 min=157972 maxAlloc=147444 psram free=6292628 total=8388608 min=6223224 maxAlloc=6160372

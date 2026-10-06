@@ -176,7 +176,30 @@ Shared locks on the hot path: `renderingMutex` (RenderLock; loop uses Try mode),
 
 ## 3. Time per stage
 
-Nothing was measured. Column "Source" says where the number comes from. Wire time
+**Measured 2026-10-06** on Ben's X4 Pro with the trace build (raw log:
+`docs/investigation-notes/x4-pro-trace-2026-10-06.log`). The unit probes as UC8279
+(SDK refresh tag `8279x4_DRF`). Column "Measured" is from `LAT:` blocks; the rest of
+the table is the pre-measurement estimate kept for comparison.
+
+| Stage | Measured |
+| --- | --- |
+| Framebuffer render (`render_start` → `display_call`) | 16 ms (boot/simple screens) to 125 ms (Home with covers) |
+| DTM2 upload (`driver_start` → `waveform_wait`) | 66-73 ms (estimate was 48) |
+| Waveform #1, normal refresh (`busy_wait` → `busy_done`) | **483 ms, identical on every render** |
+| Waveform, full refresh (dashboard draw, `8279x4_DRF`) | 1329 ms, plus `8279x4_POF` 76 ms |
+| DTM1 resync after busy (`busy_done` → `driver_return`) | 63-69 ms (estimate was 48) |
+| **Whole B/W render, tap to panel done** | **~650-800 ms**, of which 483 ms is the panel |
+| Internal heap at runtime | 195 KB free, 147 KB largest block (`[MEM] Periodic`) |
+| Main loop during a render | not blocked (`main.cpp` Try-lock); edge → `render_start` is ~1 ms when idle, 300-1150 ms when a render is already running (queued) |
+
+No AA (grayscale) page turn was captured yet; all blocks were 2-plane renders.
+
+Consequence for the ranking in §4: #1 (SPI clock) saves at most ~65 ms of ~650;
+#4 (shorter waveform) is the only item that can halve a turn; #14 fits in heap.
+
+### Estimates before measurement
+
+Nothing was measured when this table was written. Column "Source" says where the number comes from. Wire time
 = bytes x 8 / 10 MHz, excluding FIFO refill gaps (938 refills per plane, each a few
 register writes; not quantified).
 
@@ -212,7 +235,7 @@ build first.
 
 | # | Change | Files | Mechanism | Expected saving | Risk | HW test |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | **Raise display SPI clock 10 → 20 MHz** | `BC.h:882` (or a per-board `displaySpiHz` for X4 Pro at `BC.h:1644`) | Halves every plane upload. UC8279 driver comment rates the part at 20 MHz (`Uc8279X4Driver.cpp:245`); SSD1677 default was 40 MHz. SCLK/MOSI on GPIO12/11; whether those are FSPI IOMUX pins (80 MHz class per IDF docs, 26 MHz via GPIO matrix) is UNVERIFIED | ~48 ms per B/W page, ~144 ms per AA page | Signal integrity on the flex: corrupt rows, ghosting. Trivial to revert | yes |
+| 1 | **Raise display SPI clock 10 → 20 MHz** | `BC.h:882` (or a per-board `displaySpiHz` for X4 Pro at `BC.h:1644`) | Halves every plane upload. UC8279 driver comment rates the part at 20 MHz (`Uc8279X4Driver.cpp:245`); SSD1677 default was 40 MHz. SCLK/MOSI on GPIO12/11; verified 2026-10-06: GPIO12 = `SPI2_IOMUX_PIN_NUM_CLK`, GPIO11 = `SPI2_IOMUX_PIN_NUM_MOSI` (IDF `soc/spi_pins.h`), but the Arduino HAL attaches SCK via `pinMatrixOutAttach` (`esp32-hal-spi.c:278`, core 3.3.7), i.e. the GPIO matrix, so the IOMUX ceiling does not apply as-is. The link is write-only (no MISO), which is the case the matrix penalises least | ~48 ms per B/W page, ~144 ms per AA page | Signal integrity on the flex: corrupt rows, ghosting. Trivial to revert | yes |
 | 2 | **Trigger the page turn on press, not release, when no long action is bound** | `src/activities/reader/SideButtonShortcuts.h:53-85`, default `sideButtonDownLong = SIDE_NEXT_CHAPTER` (`CrossPointSettings.h:551`) | Removes the user's hold time plus one poll + 6 ms debounce round. Needs the long action moved to "press-and-hold after the turn" or disabled | tens of ms to >100 ms perceived (hold time UNVERIFIED) | UX change; chapter-skip long press must stay reachable | yes (behaviour) |
 | 3 | **Do not drop to 50 ms polling / 80 MHz while in the reader** | `src/main.cpp:1974-1977`, `lib/hal/HalPowerManager.h:43` | A page is read for >3 s, so almost every turn hits the slow path: up to 40 ms extra poll latency plus the clock switch before the loop body runs | 0-40 ms + switch time | Battery: 10 ms polling at 240 MHz while reading. Mitigate with a longer threshold (30 s) or by using GPIO wake (`InputManager::beginAsync` exists unused, `InputManager.cpp:225-273`) | yes (power) |
 | 4 | **Faster DU waveform via external LUT** ("A2-style") | `Uc8279X4Driver.cpp:459-510` (OTP DU today), LUT tables `:50-77`, `setCustomLUT` plumbing `FreeInkDisplay.cpp:1054` | The fast path already uses the controller's OTP DU. A shorter REG=1 table (fewer frames) cuts waveform #1; the AA path already runs external tables | Unknown until waveform #1 is measured; potentially the largest single item | **Incorrect LUTs can damage the panel (DC imbalance, overdrive) and cause permanent ghosting. Do not ship untested tables.** | yes, carefully |
@@ -261,6 +284,63 @@ Confirmation with the trace build: a lost press shows as a turn with no precedin
 Fix candidates: ranked item #3 (keep 10 ms polling in the reader), or start the SDK
 input task so presses are captured as events independent of the loop.
 
+## 4b. Measured: the two-tap symptom (2026-10-06)
+
+Ben's test on the Cover Grid home: a brisk tap on Settings opened it first time; a
+normal tap had needed two. Root cause, verified in source, consistent with the test:
+
+- `src/components/UiAppHelpers.h:211 touchSnapshotFrom()` asks `wasScreenLongPress()`
+  first. The SDK fires a long press after a stationary hold of `TOUCH_LONG_PRESS_MS = 500`
+  (`freeink-sdk/.../InputManager.h:470`), and `MappedInputManager::wasScreenLongPress()`
+  (`src/MappedInputManager.cpp:353-367`) then calls `suppressTouchContact()`, so the lift
+  is no longer a tap.
+- The snapshot is routed as `InputLongPress`; a plain tile only accepts `InputTouch` and
+  `findTouch()` (`FreeInkUICore.h`) has no fallback for long press, so nothing fires.
+- The touch-down `StateActive` highlight repaint (483 ms refresh) is the "select" the user
+  sees, and e-ink's delay invites holding the finger past 500 ms.
+- Affects `CoverGridHomeUi` and every screen using `touchSnapshotFrom` (~30 list and
+  settings screens). The Lyra and carousel home paths do not use it.
+- Fix options (not applied): skip the long-press query on screens where no element
+  accepts `InputLongPress`; or raise the threshold there; or make the SDK not suppress
+  the contact when the long press went unconsumed.
+
+Still open after the test, needs the timestamped event lines (see §6):
+- Home key "needed two taps": single tap is deferred by the 300 ms double-tap window
+  (`main.cpp X4PRO_HOME_KEY_DOUBLE_TAP_MS`), so first visible change is ~300 ms + a
+  ~700 ms render later; a second tap inside 300 ms becomes the double-tap action
+  (default: toggle frontlight). Unconfirmed which happened.
+- One Library tile tap "not registered": no render followed. Could be the 500 ms
+  long-press path again, or a tap landing during the previous refresh.
+
+## 4c. Measured: which taps are quick and which are slow (2026-10-06, event-line build)
+
+Log: `docs/investigation-notes/x4-pro-trace-2026-10-06-eventlines.log`. Every tap in this
+run registered (`edge tDown/tUp` lines). All refreshes are `8279x4_DRF` at 483 ms, so
+one refresh costs ~650-700 ms end to end and the differences come from *how many*
+refreshes a tap triggers and whether the render task was already busy.
+
+| Tap | Refreshes | Input → panel | Why |
+| --- | --- | --- | --- |
+| Settings list item | 1 | 660-1000 ms | One render per tap. Settings does not use FreeInkUI, so no touch-down repaint. |
+| Library tile (Cover Grid home) | 1 (+1 queued before it) | 995 ms | Render task was still finishing Home's second refresh, so render_start came 358 ms after the lift. |
+| Home key (from Library or reader) | 2 | 1077 ms first paint, 1735 ms final | 300 ms double-tap deferral, then `HomeActivity::render()` always requests a second render (`firstRenderDone` → `requestUpdate()`, `HomeActivity.cpp:2087,2145,2205,2271`). The second refresh is identical when thumbnails are cached and blocks the next tap. |
+| Cover Grid tile (Settings, book) | 2 | 1484 ms to Settings | FreeInkUI sets the tile active on touch-down (`FreeInkUICore.h:1313`), `app.invalidated()` → `requestUpdate()` (`HomeActivity.cpp:1397`), so a highlight-only refresh (711 ms) runs *before* the action's render can start. |
+| Open book | 3 refreshes + layout | 6050 ms | Section cache was missing (`Failed to open .../sections/0.bin`), layout took 3.2 s and then failed: `[EHP] Couldn't allocate memory for buffer`, `[SCT] Failed to parse XML and build pages`. Separate bug, not a latency item; internal heap was 188 KB free / 147 KB max block at the time. |
+
+What this means for the "loading state" question: FreeInkUI's tap flash is designed to
+ride in the same refresh as the result (`FreeInkApp.h:905-916`), but navigating handlers
+clear it, and on the Cover Grid the touch-down highlight already costs a full refresh of
+its own. A separate loading frame would add another ~650 ms on this panel. The lever is
+fewer refreshes per tap, not more feedback frames:
+
+1. Cover Grid: do not repaint on touch-down (or paint the highlight only in the result
+   frame as the SDK intends). Saves one refresh (~700 ms) on every tile tap.
+2. Home: skip the unconditional second render when nothing changed (thumbnails cached,
+   `recentsLoaded`). Saves one refresh after every Home key press and un-blocks the next tap.
+3. Long-press suppression fix from §4b (lost taps).
+4. Home key: the 300 ms deferral is only needed when a double-tap action is configured.
+5. Waveform (#4) shortens every remaining refresh.
+
 ## 5. Suggested order
 
 1. Flash the trace build and fill in the "unknown" rows (render time, waveform #1,
@@ -308,17 +388,35 @@ no-ops otherwise; the default `x4-pro` env was rebuilt to confirm):
 - `src/main.cpp` (`InputEdge`), `src/activities/ActivityManager.cpp` (`RenderStart`, `RenderDone`, dump), `src/activities/reader/EpubReaderActivity.cpp` (`PageTurn`).
 - `platformio.ini`: `[env:x4-pro-latency]`.
 
-Remove by deleting the new files, the `[env:x4-pro-latency]` block, and the
-`FREEINK_LAT_*` / `LATENCY_MARK` lines; nothing else was touched.
+Timestamped event lines (added 2026-10-06, **built, not yet flashed**):
+`LATENCY_LOG(...)` in `src/util/LatencyTrace.h` prints `LAT: @<ms> ...` immediately via
+`BoardConfig::serialTransport()`. It cannot use `Serial`: in any file that includes
+`Logging.h`, `Serial` is the `MySerialImpl` proxy, whose body only exists under
+`SIMULATOR`, so the link fails on hardware (`undefined reference to MySerialImpl::instance`).
+Sites: `src/main.cpp` (every input edge with btn/touch/home-key flags; Home key tap
+pending / single fires / double / long), `src/MappedInputManager.cpp` (touch long-press
+fired → contact suppressed), `src/activities/ActivityManager.cpp` (`render <activity>`).
+Next step is `pio run -e x4-pro-latency -t upload` and a repeat of the Home key and
+Library tile taps.
+
+Capture: `scripts/capture_latency_trace.py [/dev/cu.usbmodemXXXX] [seconds]` filters
+`LAT:` / `Wait complete` lines to stdout and appends everything to `serial_full.log`.
+It reconnects when the port drops and reopens after 30 s of silence. Gotchas: a device
+in dashboard sleep does not answer esptool ("No serial data received"), wake it first;
+dashboard sleep drops the USB port; after a reset a stale open handle reads nothing.
+
+Remove by deleting the new files (`src/util/LatencyTrace.*`,
+`scripts/capture_latency_trace.py`), the `[env:x4-pro-latency]` block, and the
+`FREEINK_LAT_*` / `LATENCY_MARK` / `LATENCY_LOG` lines; nothing else was touched.
 
 ## 7. Unverified
 
-- Which controller this unit probes to (project note of 2026-10-05 says UC8279).
-- Every waveform duration, render duration, and SD read duration.
-- Whether GPIO12/GPIO11 are FSPI IOMUX pins on the S3 (affects the ceiling for #1).
+- ~~Which controller this unit probes to~~ Measured: UC8279.
+- ~~Every waveform duration, render duration~~ Measured for B/W renders (§3); AA page turns and SD read time still unmeasured.
+- ~~Whether GPIO12/GPIO11 are FSPI IOMUX pins on the S3~~ Verified: they are (`SPI2_IOMUX_PIN_NUM_CLK/MOSI`), but the Arduino SPI HAL routes them through the GPIO matrix anyway; see #1. The matrix-routed ceiling for a write-only link is still unverified.
 - Time taken by the 80 → 240 MHz clock switch.
 - GT911 report interval and I2C transaction time; Wire-mutex contention magnitude.
-- Runtime free internal heap on the X4 Pro (affects #14).
+- ~~Runtime free internal heap on the X4 Pro~~ Measured: 195 KB free, 147 KB largest block.
 - Whether the user's reader font takes the TrueType path or a monochrome `.cpfont`
   (decides whether the AA pipeline runs at all).
 - Wi-Fi task priority (closed library).
