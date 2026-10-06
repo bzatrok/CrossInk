@@ -78,6 +78,7 @@
 #include "util/BookCacheUtils.h"
 #include "util/BookMoveUtils.h"
 #include "util/Dictionary.h"
+#include "util/LatencyTrace.h"
 #include "util/ScreenshotUtil.h"
 
 namespace {
@@ -5823,6 +5824,7 @@ void EpubReaderActivity::setAutoPageTurnIntervalSeconds(uint16_t seconds) {
 }
 
 void EpubReaderActivity::requestManualPageTurn(const bool isForwardTurn, const char* source) {
+  LATENCY_MARK(PageTurn);
   finishManualPageTurnBrakeIfReady();
   const ManualPageTurnRequest request{isForwardTurn, source};
   if (pendingManualPageTurns.dispatchedDirectionOpposes(isForwardTurn)) {

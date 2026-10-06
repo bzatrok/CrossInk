@@ -45,6 +45,7 @@
 #include "settings/SettingsActivity.h"
 #include "util/FrontlightPanelActivity.h"
 #include "util/FullScreenMessageActivity.h"
+#include "util/LatencyTrace.h"
 #include "util/SwipeAdjustment.h"
 #include "util/TwoFingerSwipe.h"
 
@@ -486,8 +487,11 @@ void ActivityManager::renderTaskLoop() {
       // Apply Night Mode to each activity's normal-polarity frame. SleepActivity
       // preserves it only for Quick Resume and clears it for other sleep screens.
       display.setInverted(SETTINGS.screenInverted != 0);
+      LATENCY_MARK(RenderStart);
       currentActivity->render(std::move(lock));
       restoredActivityNeedsRender = false;
+      LATENCY_MARK(RenderDone);
+      LatencyTrace::dump();
     }
     TouchRegistry::getInstance().publish();
     // Notify any task blocked in requestUpdateAndWait() that the render is done.

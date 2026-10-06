@@ -133,6 +133,7 @@ inline esp_sleep_wakeup_cause_t esp_sleep_get_wakeup_cause() {
 #include "util/Dictionary.h"
 #include "util/DictionaryRegistry.h"
 #include "util/FrontlightSchedule.h"
+#include "util/LatencyTrace.h"
 #include "util/ScreenshotUtil.h"
 #include "util/SleepWakePolicy.h"
 
@@ -1753,6 +1754,7 @@ void loop() {
     powerManager.setPowerSaving(false);  // Restore normal CPU frequency on user activity
   }
   if (userInputReceived) {
+    LATENCY_MARK(InputEdge);
     activityManager.notifyUserInput();
   }
 
