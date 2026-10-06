@@ -1,3 +1,13 @@
+## [Unreleased]
+
+### Changed
+
+- Touching a cover or menu item on the Home screen no longer refreshes the screen before the tap opens it, so Settings, Library and books open one e-ink refresh sooner on touch devices.
+
+### Fixed
+
+- The Home screen (Classic, Lyra, Lyra Extended, Rounded) no longer refreshes a second time right after it appears when the covers are already cached.
+
 ## [v1.6.1] - 2026-10-03
 
 ### Added

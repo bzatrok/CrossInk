@@ -1921,26 +1921,18 @@ void HomeActivity::loop() {
       int touchedBookIndex = -1;
       if (activate ? mappedInput.wasCoverTapped(touchedBookIndex) : mappedInput.wasCoverTouchedDown(touchedBookIndex)) {
         if (touchedBookIndex < 0 || touchedBookIndex >= visibleBookCount) return false;
-        const int previousSelectorIndex = selectorIndex;
         selectorIndex = metrics.homeContinueReadingInMenu ? 0 : touchedBookIndex;
-        if (activate) {
-          activateSelectedHomeItem();
-        } else if (selectorIndex != previousSelectorIndex) {
-          requestUpdate();
-        }
+        // Touch-down only moves the selector; repainting here would add a full
+        // refresh before the tap's own render.
+        if (activate) activateSelectedHomeItem();
         return true;
       }
 
       int touchedMenuIndex = -1;
       if (activate ? mappedInput.wasItemTapped(touchedMenuIndex) : mappedInput.wasItemTouchedDown(touchedMenuIndex)) {
         if (touchedMenuIndex < 0 || touchedMenuIndex >= static_cast<int>(menuItems.size())) return false;
-        const int previousSelectorIndex = selectorIndex;
         selectorIndex = getHomeMenuSelectionOffset(recentBooks) + touchedMenuIndex;
-        if (activate) {
-          activateSelectedHomeItem();
-        } else if (selectorIndex != previousSelectorIndex) {
-          requestUpdate();
-        }
+        if (activate) activateSelectedHomeItem();
         return true;
       }
       return false;
@@ -2253,12 +2245,10 @@ void HomeActivity::render(RenderLock&&) {
 
   displayHomeBuffer();
 
-  if (!firstRenderDone) {
-    firstRenderDone = true;
-    requestUpdate();
-    return;
-  }
-
+  // The frame is already on the panel, so load covers in this pass instead of
+  // re-rendering an identical screen first. loadRecentCovers() requests a
+  // render when a cover changes.
+  firstRenderDone = true;
   if (!recentsLoaded && !recentsLoading) {
     recentsLoading = true;
     loadRecentCovers(metrics.homeCoverHeight);
