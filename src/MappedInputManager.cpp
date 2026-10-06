@@ -1,5 +1,7 @@
 #include "MappedInputManager.h"
 
+#include "util/LatencyTrace.h"
+
 #include <GfxRenderer.h>
 #include <I18n.h>
 
@@ -364,6 +366,7 @@ bool MappedInputManager::wasScreenLongPress(int& x, int& y) const {
   float nx = 0.0f;
   float ny = 0.0f;
   if (!gpio.wasTouchLongPress(nx, ny)) return false;
+  LATENCY_LOG("touch long-press fired -> contact suppressed");
   gpio.suppressTouchContact();
   renderer.tapToLogical(nx, ny, x, y);
   return true;

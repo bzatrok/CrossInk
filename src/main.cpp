@@ -973,6 +973,7 @@ bool handleX4ProHomeKeyShortcuts() {
     // A single-tap action must wait briefly so the reader does not navigate
     // away before a second capacitive-key tap can be recognized.
     x4ProHomeKeyTapPending = false;
+    LATENCY_LOG("homekey single-tap fires after %lu ms window", now - lastX4ProHomeKeyTapAt);
     if (SETTINGS.homeButtonTapAction == CrossPointSettings::HOME_BUTTON_BACK_HOME) {
       // Keep reader menus and other overlays on their existing local Home route.
       mappedInputManager.queueDeferredHomeGesture();
@@ -985,6 +986,7 @@ bool handleX4ProHomeKeyShortcuts() {
   if (wasX4ProHomeKeyLongPressed()) {
     // A hold is a separate gesture, not the second half of a double tap.
     x4ProHomeKeyTapPending = false;
+    LATENCY_LOG("homekey long-press");
     if (SETTINGS.homeButtonLongPressAction == CrossPointSettings::HOME_BUTTON_READER_MENU) {
       return completedPendingTap;
     }
@@ -997,10 +999,12 @@ bool handleX4ProHomeKeyShortcuts() {
   if (!x4ProHomeKeyTapPending) {
     lastX4ProHomeKeyTapAt = now;
     x4ProHomeKeyTapPending = true;
+    LATENCY_LOG("homekey tap seen, pending");
     return true;
   }
 
   x4ProHomeKeyTapPending = false;
+  LATENCY_LOG("homekey double-tap");
   executeX4ProHomeButtonAction(SETTINGS.homeButtonDoubleTapAction, QuickLockTrigger::HomeDoubleTap);
   return true;
 }
@@ -1755,6 +1759,14 @@ void loop() {
   }
   if (userInputReceived) {
     LATENCY_MARK(InputEdge);
+#if defined(CROSSINK_LATENCY_TRACE) && CROSSINK_LATENCY_TRACE && CROSSINK_APP_CAP_TOUCH
+    {
+      float nx = 0, ny = 0;
+      LATENCY_LOG("edge btnP=%d btnR=%d tDown=%d tUp=%d hkP=%d hkTap=%d hkLong=%d", gpio.wasAnyPressed(),
+                  gpio.wasAnyReleased(), gpio.wasTouchDown(nx, ny), gpio.wasTouchReleased(), gpio.wasHomeKeyPressed(),
+                  gpio.wasHomeKeyTapped(), gpio.wasHomeKeyLongPressed());
+    }
+#endif
     activityManager.notifyUserInput();
   }
 

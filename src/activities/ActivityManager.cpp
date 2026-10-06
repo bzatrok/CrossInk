@@ -488,6 +488,7 @@ void ActivityManager::renderTaskLoop() {
       // preserves it only for Quick Resume and clears it for other sleep screens.
       display.setInverted(SETTINGS.screenInverted != 0);
       LATENCY_MARK(RenderStart);
+      LATENCY_LOG("render %s", currentActivity->name.c_str());
       currentActivity->render(std::move(lock));
       restoredActivityNeedsRender = false;
       LATENCY_MARK(RenderDone);
