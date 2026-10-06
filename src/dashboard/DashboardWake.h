@@ -12,8 +12,8 @@ class MappedInputManager;
 // Headless timer-wake path for Dashboard sleep. setup() calls run() instead of
 // the normal boot when the wake cause is the RTC timer: no boot screen, no
 // Home, no reader. It fetches, redraws only when needed, and returns the next
-// timer wake for the caller's deep sleep, and whether to wait for it in the
-// evening phase's light sleep.
+// timer wake for the caller's deep sleep, and whether to wait for it in light
+// sleep with the side-key light armed.
 namespace DashboardWake {
 
 // Hard cap on one timer wake. When it fires, the device deep-sleeps with the

@@ -17,7 +17,7 @@ namespace DashboardSleep {
 // What the deep-sleep tail does after a sleep entry or a timer wake.
 struct SleepPlan {
   uint32_t timerSeconds = 0;  // 0 = button wake only
-  bool evening = false;       // wait for the timer in light sleep (DashboardEvening)
+  bool keyLight = false;      // wait for the timer in light sleep (DashboardKeyLight)
 };
 
 // Seconds until the first fetch after the dashboard is drawn on sleep entry.

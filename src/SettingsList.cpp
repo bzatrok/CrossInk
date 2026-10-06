@@ -298,14 +298,8 @@ const std::vector<SettingInfo>& getBaseSettingsList() {
                            "dashboardQuietStart", StrId::STR_CAT_DASHBOARD));
     add(SettingInfo::Value(StrId::STR_DASHBOARD_QUIET_END, &CrossPointSettings::dashboardQuietEnd, {0, 23, 1},
                            "dashboardQuietEnd", StrId::STR_CAT_DASHBOARD));
-    add(SettingInfo::Toggle(StrId::STR_DASHBOARD_EVENING_LIGHT, &CrossPointSettings::dashboardEveningEnabled,
-                            "dashboardEveningEnabled", StrId::STR_CAT_DASHBOARD));
-    add(SettingInfo::Value(StrId::STR_DASHBOARD_EVENING_START, &CrossPointSettings::dashboardEveningStart, {0, 23, 1},
-                           "dashboardEveningStart", StrId::STR_CAT_DASHBOARD));
-    add(SettingInfo::Value(StrId::STR_DASHBOARD_EVENING_END, &CrossPointSettings::dashboardEveningEnd, {0, 23, 1},
-                           "dashboardEveningEnd", StrId::STR_CAT_DASHBOARD));
-    add(SettingInfo::Value(StrId::STR_DASHBOARD_EVENING_BRIGHTNESS, &CrossPointSettings::dashboardEveningBrightness,
-                           {10, 100, 10}, "dashboardEveningBrightness", StrId::STR_CAT_DASHBOARD));
+    add(SettingInfo::Value(StrId::STR_DASHBOARD_LIGHT_BRIGHTNESS, &CrossPointSettings::dashboardLightBrightness,
+                           {10, 100, 10}, "dashboardLightBrightness", StrId::STR_CAT_DASHBOARD));
     add(SettingInfo::Enum(StrId::STR_DASHBOARD_RETRIES, &CrossPointSettings::dashboardRetries,
                           {StrId::STR_DASHBOARD_COUNT_1, StrId::STR_DASHBOARD_COUNT_3, StrId::STR_DASHBOARD_COUNT_5,
                            StrId::STR_DASHBOARD_COUNT_10},

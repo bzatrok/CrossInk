@@ -32,10 +32,8 @@ dashboard::PolicyResult evaluateNow(const dashboard::DashboardState& state) {
   in.quietEnabled = SETTINGS.dashboardQuietEnabled != 0;
   in.quietStartHour = SETTINGS.dashboardQuietStart;
   in.quietEndHour = SETTINGS.dashboardQuietEnd;
-  // The evening phase exists to light the frontlight on a side-key press.
-  in.eveningEnabled = SETTINGS.dashboardEveningEnabled != 0 && Frontlight.present();
-  in.eveningStartHour = SETTINGS.dashboardEveningStart;
-  in.eveningEndHour = SETTINGS.dashboardEveningEnd;
+  // The light-sleep wait exists to toggle the frontlight on a side-key press.
+  in.keyLightAvailable = Frontlight.present();
   in.consecutiveFailures = state.consecutiveFailures;
   in.retryLimit = SETTINGS.dashboardRetries;
   in.intervalMinutes = SETTINGS.dashboardInterval;
@@ -105,9 +103,9 @@ SleepPlan planOnSleepEntry(GfxRenderer& renderer) {
   refreshSoonRequested = false;
   SleepPlan plan;
   plan.timerSeconds = fetchSoon ? FIRST_FETCH_DELAY_SECONDS : result.timerSeconds;
-  plan.evening = result.evening && !fetchSoon;
-  LOG_INF("DSH", "Sleep entry: policy=%u timer=%us evening=%d", static_cast<unsigned>(result.screen),
-          static_cast<unsigned>(plan.timerSeconds), plan.evening ? 1 : 0);
+  plan.keyLight = result.keyLight && !fetchSoon;
+  LOG_INF("DSH", "Sleep entry: policy=%u timer=%us keyLight=%d", static_cast<unsigned>(result.screen),
+          static_cast<unsigned>(plan.timerSeconds), plan.keyLight ? 1 : 0);
   return plan;
 }
 

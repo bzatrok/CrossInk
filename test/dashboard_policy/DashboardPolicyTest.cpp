@@ -116,69 +116,48 @@ TEST(DashboardPolicy, BatteryWinsOverQuiet) {
   EXPECT_EQ(evaluatePolicy(in).screen, Screen::FallbackBattery);
 }
 
-static PolicyInput evening(const uint8_t hour, const uint8_t minute) {
+static PolicyInput withKeyLight(const uint8_t hour, const uint8_t minute) {
   PolicyInput in = at(hour, minute);
-  in.eveningEnabled = true;
-  in.eveningStartHour = 18;
-  in.eveningEndHour = 22;
+  in.keyLightAvailable = true;
   return in;
 }
 
-TEST(DashboardPolicy, EveningOnlyInsideWindow) {
-  EXPECT_FALSE(evaluatePolicy(evening(17, 59)).evening);
-  const auto r = evaluatePolicy(evening(18, 0));
+TEST(DashboardPolicy, KeyLightWheneverTheDashboardShows) {
+  const auto r = evaluatePolicy(withKeyLight(9, 0));
   EXPECT_EQ(r.screen, Screen::Dashboard);
-  EXPECT_TRUE(r.evening);
+  EXPECT_TRUE(r.keyLight);
   EXPECT_EQ(r.timerSeconds, 15u * 60);  // the refresh interval is unchanged
-  EXPECT_TRUE(evaluatePolicy(evening(21, 59)).evening);
-  EXPECT_FALSE(evaluatePolicy(evening(12, 0)).evening);
+  EXPECT_TRUE(evaluatePolicy(withKeyLight(21, 59)).keyLight);
 }
 
-TEST(DashboardPolicy, EveningOffByDefaultAndWhenDisabled) {
-  EXPECT_FALSE(evaluatePolicy(at(19, 0)).evening);
-  PolicyInput in = evening(19, 0);
-  in.eveningEnabled = false;
-  EXPECT_FALSE(evaluatePolicy(in).evening);
-}
+TEST(DashboardPolicy, KeyLightOffWithoutFrontlight) { EXPECT_FALSE(evaluatePolicy(at(9, 0)).keyLight); }
 
-TEST(DashboardPolicy, QuietWinsOverEvening) {
-  PolicyInput in = evening(22, 30);
-  in.eveningEndHour = 23;  // overlaps quiet hours (22 -> 7)
-  const auto r = evaluatePolicy(in);
+TEST(DashboardPolicy, KeyLightOffInQuietHours) {
+  const auto r = evaluatePolicy(withKeyLight(23, 30));
   EXPECT_EQ(r.screen, Screen::FallbackQuiet);
-  EXPECT_FALSE(r.evening);
+  EXPECT_FALSE(r.keyLight);
 }
 
-TEST(DashboardPolicy, EveningNeedsValidClock) {
-  PolicyInput in = evening(19, 0);
-  in.clockValid = false;
-  EXPECT_FALSE(evaluatePolicy(in).evening);
-}
-
-TEST(DashboardPolicy, EveningSkippedBelowBatteryFloor) {
-  PolicyInput in = evening(19, 0);
+TEST(DashboardPolicy, KeyLightOffBelowBatteryFloor) {
+  PolicyInput in = withKeyLight(9, 0);
   in.batteryPercent = 5;
   const auto r = evaluatePolicy(in);
   EXPECT_EQ(r.screen, Screen::FallbackBattery);
-  EXPECT_FALSE(r.evening);
+  EXPECT_FALSE(r.keyLight);
 }
 
-TEST(DashboardPolicy, EveningContinuesWhileFailuresRetry) {
-  PolicyInput in = evening(19, 0);
+TEST(DashboardPolicy, KeyLightContinuesWhileFailuresRetry) {
+  PolicyInput in = withKeyLight(9, 0);
   in.consecutiveFailures = 3;
   const auto r = evaluatePolicy(in);
   EXPECT_EQ(r.screen, Screen::FallbackFailures);
-  EXPECT_TRUE(r.evening);
+  EXPECT_TRUE(r.keyLight);
 }
 
-TEST(DashboardPolicy, EveningWindowWrapsPastMidnight) {
-  PolicyInput in = evening(0, 30);
-  in.quietEnabled = false;
-  in.eveningStartHour = 20;
-  in.eveningEndHour = 1;
-  EXPECT_TRUE(evaluatePolicy(in).evening);
-  in.localHour = 1;
-  EXPECT_FALSE(evaluatePolicy(in).evening);
+TEST(DashboardPolicy, KeyLightNeedsNoClock) {
+  PolicyInput in = withKeyLight(9, 0);
+  in.clockValid = false;
+  EXPECT_TRUE(evaluatePolicy(in).keyLight);
 }
 
 TEST(DashboardPolicy, FailuresBelowAndAtLimit) {

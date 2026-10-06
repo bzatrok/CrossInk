@@ -115,7 +115,7 @@ inline esp_sleep_wakeup_cause_t esp_sleep_get_wakeup_cause() {
 #include "components/UITheme.h"
 #include "components/icons/tablerFilledIcons.h"
 #if CROSSINK_APP_CAP_DASHBOARD
-#include "dashboard/DashboardEvening.h"
+#include "dashboard/DashboardKeyLight.h"
 #include "dashboard/DashboardSleep.h"
 #include "dashboard/DashboardWake.h"
 #endif
@@ -1098,8 +1098,8 @@ void mirrorWakeShortPressToNvs() {
 }
 
 // Hardware tail of every deep sleep: no file writes may follow it.
-// eveningWait: Dashboard evening phase, wait for the timer in light sleep first.
-static void sleepHardware(uint32_t timerWakeSeconds, const bool eveningWait = false) {
+// keyLightWait: Dashboard sleep, wait for the timer in light sleep with the side-key light armed.
+static void sleepHardware(uint32_t timerWakeSeconds, const bool keyLightWait = false) {
   // All sleep-time file writes are complete. Stop SDMMC before the power path
   // cuts peripheral rails and isolates the bus pads; SPI boards are a no-op.
   libraryScanSleepToken.save(!library::libraryIndexNeedsRefresh());
@@ -1109,11 +1109,11 @@ static void sleepHardware(uint32_t timerWakeSeconds, const bool eveningWait = fa
   display.deepSleep();
   mirrorWakeShortPressToNvs();
 #if CROSSINK_APP_CAP_DASHBOARD && !defined(SIMULATOR)
-  if (eveningWait && timerWakeSeconds > DashboardEvening::FETCH_HANDOFF_SECONDS) {
-    timerWakeSeconds = DashboardEvening::waitForNextFetch(timerWakeSeconds, readWakeShortPressFromNvs());
+  if (keyLightWait && timerWakeSeconds > DashboardKeyLight::FETCH_HANDOFF_SECONDS) {
+    timerWakeSeconds = DashboardKeyLight::waitForNextFetch(timerWakeSeconds, readWakeShortPressFromNvs());
   }
 #else
-  (void)eveningWait;
+  (void)keyLightWait;
 #endif
   LOG_DBG("MAIN", "Entering deep sleep (timer %us)", static_cast<unsigned>(timerWakeSeconds));
 
@@ -1170,7 +1170,7 @@ void enterDeepSleep(bool fromTimeout) {
   BatteryDiagnosticLog::record(BatteryDiagnosticLog::Event::Sleep, BoardConfig::ACTIVE.name);
 #if CROSSINK_APP_CAP_DASHBOARD
   const DashboardSleep::SleepPlan plan = DashboardSleep::planOnSleepEntry(renderer);
-  sleepHardware(plan.timerSeconds, plan.evening);
+  sleepHardware(plan.timerSeconds, plan.keyLight);
 #else
   sleepHardware(0);
 #endif
@@ -1422,7 +1422,7 @@ void setup() {
     // loop, which this path never reaches; present the drawn frame once.
     display.presentIfNeeded();
 #endif
-    sleepHardware(next.timerSeconds, next.evening);
+    sleepHardware(next.timerSeconds, next.keyLight);
 #ifdef SIMULATOR
     // Simulator deep sleep returns on QUIT. _Exit skips static destructors,
     // which assert on a never-started activity stack.

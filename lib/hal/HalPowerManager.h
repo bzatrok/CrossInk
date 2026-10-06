@@ -57,7 +57,7 @@ class HalPowerManager {
   // timerWakeSeconds > 0 also arms an RTC timer wake (Dashboard sleep).
   void startDeepSleep(HalGPIO& gpio, uint32_t timerWakeSeconds = 0) const;
 
-  // Light sleep for the Dashboard evening phase. Unlike deep sleep it keeps RAM
+  // Light sleep for Dashboard sleep's side-key light. Unlike deep sleep it keeps RAM
   // and a lit LEDC frontlight (FREEINK_FRONTLIGHT_LS), and returns in place.
   // Turns WiFi off and waits for the power and side buttons to be released,
   // then wakes on the timer, the power button and, with wakeOnSideButtons, a

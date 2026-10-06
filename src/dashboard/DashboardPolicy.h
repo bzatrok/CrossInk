@@ -27,9 +27,7 @@ struct PolicyInput {
   bool quietEnabled = false;
   uint8_t quietStartHour = 0;
   uint8_t quietEndHour = 0;
-  bool eveningEnabled = false;  // also requires a frontlight (decided by the caller)
-  uint8_t eveningStartHour = 0;
-  uint8_t eveningEndHour = 0;
+  bool keyLightAvailable = false;  // the board has a frontlight (decided by the caller)
   uint8_t consecutiveFailures = 0;
   uint8_t retryLimit = 1;
   uint8_t intervalMinutes = 15;
@@ -38,13 +36,13 @@ struct PolicyInput {
 struct PolicyResult {
   Screen screen;
   uint32_t timerSeconds;  // 0 = no timer wake (button wake only)
-  // Evening phase: wait for the timer in light sleep with the side keys armed,
-  // so a press can light the frontlight. Only while the dashboard still fetches.
-  bool evening = false;
+  // Wait for the timer in light sleep with the side keys armed, so a press can
+  // toggle the frontlight. Only while the dashboard still fetches.
+  bool keyLight = false;
 };
 
 // True when hour falls inside [startHour, endHour), wrapping past midnight.
-// start == end means "no window". Quiet hours and the evening window share it.
+// start == end means "no quiet period".
 bool isInQuietHours(uint8_t hour, uint8_t startHour, uint8_t endHour);
 
 PolicyResult evaluatePolicy(const PolicyInput& input);

@@ -4,11 +4,11 @@
 
 #include <cstdint>
 
-// Evening phase of Dashboard sleep. Between two refreshes the device waits in
-// light sleep instead of deep sleep, so a side-key press can toggle the
-// frontlight. Refreshes still run on the normal timer wake: when one is due,
+// Side-key frontlight for Dashboard sleep. Between two refreshes the device
+// waits in light sleep instead of deep sleep, so a side-key press can toggle
+// the frontlight. Refreshes still run on the normal timer wake: when one is due,
 // the caller deep-sleeps for FETCH_HANDOFF_SECONDS.
-namespace DashboardEvening {
+namespace DashboardKeyLight {
 
 // The deep-sleep timer that hands a due refresh to the normal timer-wake path.
 constexpr uint32_t FETCH_HANDOFF_SECONDS = 1;
@@ -23,6 +23,6 @@ constexpr uint32_t LIGHT_ON_SECONDS = 60;
 // a normal wake and does not return.
 uint32_t waitForNextFetch(uint32_t timerSeconds, bool shortPressWakes);
 
-}  // namespace DashboardEvening
+}  // namespace DashboardKeyLight
 
 #endif  // CROSSINK_APP_CAP_DASHBOARD && !SIMULATOR

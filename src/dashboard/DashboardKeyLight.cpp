@@ -1,4 +1,4 @@
-#include "DashboardEvening.h"
+#include "DashboardKeyLight.h"
 
 #if CROSSINK_APP_CAP_DASHBOARD && !defined(SIMULATOR)
 
@@ -9,7 +9,7 @@
 
 #include "CrossPointSettings.h"
 
-namespace DashboardEvening {
+namespace DashboardKeyLight {
 
 namespace {
 using Wake = HalPowerManager::LightSleepWake;
@@ -29,7 +29,7 @@ bool sideKeyConfirmed() {
 }
 
 void setLight(const bool on) {
-  if (on) Frontlight.setBrightness(SETTINGS.dashboardEveningBrightness);
+  if (on) Frontlight.setBrightness(SETTINGS.dashboardLightBrightness);
   Frontlight.setOn(on);
 }
 }  // namespace
@@ -42,7 +42,7 @@ uint32_t waitForNextFetch(const uint32_t timerSeconds, const bool shortPressWake
   setLight(false);
   bool lightOn = false;
   unsigned long lightOnSinceMs = 0;
-  LOG_INF("DSH", "Evening wait %us", static_cast<unsigned>(timerSeconds));
+  LOG_INF("DSH", "Key-light wait %us", static_cast<unsigned>(timerSeconds));
 
   for (;;) {
     const unsigned long now = millis();
@@ -64,7 +64,7 @@ uint32_t waitForNextFetch(const uint32_t timerSeconds, const bool shortPressWake
         lightOn = !lightOn;
         setLight(lightOn);
         if (lightOn) lightOnSinceMs = millis();
-        LOG_INF("DSH", "Evening: light %s", lightOn ? "on" : "off");
+        LOG_INF("DSH", "Key light: %s", lightOn ? "on" : "off");
         break;
       case Wake::PowerButton:
         if (gpio.verifyPowerButtonWakeup(shortPressWakes, CrossPointSettings::POWER_BUTTON_LONG_PRESS_MS, millis())) {
@@ -77,13 +77,13 @@ uint32_t waitForNextFetch(const uint32_t timerSeconds, const bool shortPressWake
         if (lightOn) setLight(false);
         const unsigned long leftMs = fetchDueMs > elapsedMs ? fetchDueMs - elapsedMs : 0;
         const uint32_t leftSeconds = static_cast<uint32_t>(leftMs / 1000UL);
-        LOG_ERR("DSH", "Evening: light sleep failed; deep sleep for %us", static_cast<unsigned>(leftSeconds));
+        LOG_ERR("DSH", "Key light: light sleep failed; deep sleep for %us", static_cast<unsigned>(leftSeconds));
         return leftSeconds > FETCH_HANDOFF_SECONDS ? leftSeconds : FETCH_HANDOFF_SECONDS;
       }
     }
   }
 }
 
-}  // namespace DashboardEvening
+}  // namespace DashboardKeyLight
 
 #endif  // CROSSINK_APP_CAP_DASHBOARD && !SIMULATOR
