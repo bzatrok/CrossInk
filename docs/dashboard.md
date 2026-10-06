@@ -16,7 +16,7 @@ shows reading stats. This feature has its own settings tab.
 
 ## Where it is
 
-**Settings > Dashboard** (the fifth tab). Turn on **Dashboard sleep**, then
+**Settings > Dash** (the fifth tab). Turn on **Dashboard sleep**, then
 sleep the device as usual. The regular **Sleep Screen** setting is the fallback
 screen for quiet hours, low battery, and repeated failures.
 
