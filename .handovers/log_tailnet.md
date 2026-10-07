@@ -50,7 +50,7 @@ at home or travelling. A dashboard wake with a fresh cache adds at most 1 s.
   private. Ben makes it public. Rejected: `tinytail` (taken), any name with "tailscale" in it (trademark).
 - During development CrossInk pulls `tailesp32` as a root submodule through `symlink://` in the `x4-pro*`
   environments, as it does `freeink-sdk`. Rejected: a `lib_deps` git URL (no editing in place), a vendored copy.
-- AMB-HM-001 has no public ingress and the home router offers no port mapping (`tailscale netcheck`, 2026-10-07).
+- AMB-HM-001 (tailnet name `amb-biz-host`, `100.85.148.88`, untagged) has no public ingress and the home router offers no port mapping (`tailscale netcheck`, 2026-10-07).
   A travelling device reaches it only through DERP. DERP is required, not a fallback.
 - Terminus moves with a `pg_dump`/restore of its database, so device #6, its model and screens carry over.
   The work is a handover in `Amberglass.Infra`. Rejected: a fresh install plus re-provisioning.
@@ -66,6 +66,8 @@ at home or travelling. A dashboard wake with a fresh cache adds at most 1 s.
 - Terminus on the VM listens on all interfaces at 2300. Its `API_URI` follows the device: the LAN URL until the
   device has the tunnel, then the 100.x URL. Rejected: a tailnet-only bind (no server for the device meanwhile).
 - `push-template.sh` gains an optional `TERMINUS_SSH`. Rejected: running the push script on the VM.
+- Tailnet policy: untagged devices (all of Ben's) keep full access; `tag:xteink` gets only Terminus and Grimmory
+  ports plus ICMP on `amb-biz-host` and the Mac, with save-time tests. Rejected: the default allow-all for the device.
 - All tailnet state (keys and the peer cache) lives in NVS. Dashboard state stays on SD. Rejected: the peer cache on SD.
 - The tunnel starts when Wi-Fi connects and stops with Wi-Fi. A small task sends keepalives and renews keys.
   Rejected: starting on the first 100.x connection (needs a hook inside lwIP routing).

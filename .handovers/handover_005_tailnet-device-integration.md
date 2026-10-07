@@ -17,7 +17,7 @@ the dashboard at Terminus's 100.x address and prove it on hardware.
   and `.claude/CONTEXT.md`. `pio` is at `~/.platformio/penv/bin/pio`. Flashing: `docs/development/fork-workflow.md`.
 - **Prerequisite:** [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) is ✅ in the log. Stop if not.
 - **Prerequisite for the hardware checks only:** Ben's Mac is on the `bzatrok.github` tailnet, or Terminus already
-  runs on AMB-HM-001 (Amberglass.Infra handover `terminus-home-vm`). Check with `tailscale status`. If neither
+  runs on the home VM, `amb-biz-host` (Amberglass.Infra handover `terminus-home-vm`). Check with `tailscale status`. If neither
   holds, finish everything else, then stop and ask Ben in the PR body. Do not switch the Mac's tailnet yourself.
 - **Two repos, two rules.** CrossInk commits keep the normal attribution trailers. `tailesp32` commits and its PR
   follow the no-AI-footprint Invariant in the log: no trailers, no "Generated with", no handover number in titles.
@@ -125,7 +125,7 @@ the dashboard at Terminus's 100.x address and prove it on hardware.
 ## 7 — Point the dashboard at the tailnet  *(DECIDED)*
 
 Terminus builds image links from its `API_URI`. The device fetches those links, so both must use the 100.x address.
-- Find the Terminus host's 100.x address with `tailscale status`. It is the Mac, or `amb-hm-001` if Terminus has
+- Find the Terminus host's 100.x address with `tailscale status`. It is the Mac (`100.86.228.24`), or `amb-biz-host` (`100.85.148.88`) if Terminus has
   moved.
 - On that host, set `API_URI=http://<100.x>:2300` in Terminus's `.env` (`~/dev/terminus/.env` on the Mac,
   `/opt/terminus/.env` on the VM), then `docker compose up -d` in that directory.

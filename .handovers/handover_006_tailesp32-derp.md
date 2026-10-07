@@ -109,7 +109,7 @@ a phone hotspot.
 
 - `tailesp32`: `ctest` passes. New tests: frame encode and decode round trips, ClientInfo box opens with the
   server key, cache version 1 is rejected, path-memory replacement.
-- Mac: `tailesp32-cli ping <amb-hm-001 100.x> --force-derp` gets 3 echo replies. Add the `--force-derp` flag
+- Mac: `tailesp32-cli ping 100.85.148.88 --force-derp` gets 3 echo replies. Add the `--force-derp` flag
   (skips direct endpoints). Print the timings and put them in README "Measurements".
 - CrossInk builds: `pio run -e x4-pro`, `-e x4-pro-debug`, `-e default`.
 - Hardware, X4 Pro on a phone hotspot (away from the home LAN): three timer wakes refresh the dashboard from the

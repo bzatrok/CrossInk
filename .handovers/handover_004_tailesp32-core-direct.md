@@ -24,9 +24,9 @@ handover. That is [tailnet-device-integration](handover_005_tailnet-device-integ
   - No file in the repo mentions Claude, Anthropic or an AI assistant. Comments stay terse.
   - `CLAUDE.md` and `PROJECT_CONTEXT.md` exist locally only. They go in `.git/info/exclude`, not `.gitignore`.
 - **Prerequisites Ben does before you start.** Check them first. Stop and report if one is missing.
-  1. In the `bzatrok.github` tailnet policy: `"tag:xteink": ["autogroup:admin"]` under `tagOwners`, and the rule
-     `{"action": "accept", "src": ["tag:xteink"], "dst": ["tag:home-vm:2300,6060", "bzatrok@github:2300"]}`
-     under `acls`. ICMP needs no rule: Tailscale allows it wherever TCP between the two devices is allowed.
+  1. The `bzatrok.github` tailnet policy defines `tag:xteink` under `tagOwners` and grants it
+     `tcp:2300`, `tcp:6060` and `icmp:*` to `amb-biz-host` (`100.85.148.88`), and `tcp:2300` and `icmp:*` to
+     `bens-macbook-pro` (`100.86.228.24`). Every untagged device keeps full access.
   2. A reusable, pre-approved auth key tagged `tag:xteink`, from the `bzatrok.github` admin console. Ben saves it
      with `~/.config/tailesp32/save-authkey.sh`, which writes `~/.config/tailesp32/.env` (mode 600) as
      `TAILESP32_AUTHKEY=tskey-auth-...` and creates the 1Password item "tailesp32 auth key (tag:xteink)" in the
@@ -34,8 +34,9 @@ handover. That is [tailnet-device-integration](handover_005_tailnet-device-integ
   - Check 2 by `grep -q '^TAILESP32_AUTHKEY=tskey-auth-' ~/.config/tailesp32/.env`. Never print the key. You
     cannot check 1 directly. Task 7 proves it.
   - The Mac does not need to switch tailnets. The prototype is its own tailnet node.
-- **Test peer:** AMB-HM-001, the home VM. LAN `192.168.0.152`, same LAN as the Mac, Tailscale hostname
-  `amb-hm-001`, tag `tag:home-vm`. Its 100.x address comes from the prototype's own peer list.
+- **Test peer:** the home VM, Tailscale hostname `amb-biz-host`, tailnet `100.85.148.88`, LAN `192.168.0.152`
+  (same LAN as the Mac), untagged. The infra repo calls it AMB-HM-001; its README's `amb-hm-001` and
+  `tag:home-vm` are not what is live.
 - **Reference code.** Clone both into your scratchpad with `git clone --depth 1`. Never into the repo.
   - `github.com/CamM2325/microlink` (MIT). Reuse is allowed with the notice kept. Key files, under
     `components/microlink/`:
@@ -227,8 +228,8 @@ module depends on them.
 - `cmake -S . -B build && cmake --build build && ctest --test-dir build --output-on-failure` passes with
   `-Werror`.
 - Adding `#include <sys/socket.h>` to any file in `src/core/` fails the build. Show it once, then revert.
-- `./build/tools/cli/tailesp32-cli register` prints own 100.x and a peer list that includes `amb-hm-001`.
-- `./build/tools/cli/tailesp32-cli ping <amb-hm-001 100.x> --count 3` gets 3 echo replies. Run it again after 5
+- `./build/tools/cli/tailesp32-cli register` prints own 100.x and a peer list that includes `amb-biz-host`.
+- `./build/tools/cli/tailesp32-cli ping 100.85.148.88 --count 3` gets 3 echo replies. Run it again after 5
   minutes, so the WireGuard session has expired and only the cache remains. It still works, makes no TCP
   connection, and reaches the first echo reply in under 1000 ms. Put both runs' timings in README "Measurements".
 - Ask Ben to confirm the node `tailesp32-proto` appears with `tag:xteink` in the admin console. Do not wait for
