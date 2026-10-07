@@ -24,12 +24,13 @@ handover. That is [tailnet-device-integration](handover_005_tailnet-device-integ
   - No file in the repo mentions Claude, Anthropic or an AI assistant. Comments stay terse.
   - `CLAUDE.md` and `PROJECT_CONTEXT.md` exist locally only. They go in `.git/info/exclude`, not `.gitignore`.
 - **Prerequisites Ben does before you start.** Check them first. Stop and report if one is missing.
-  1. In the `bzatrok.github` tailnet policy: a `tagOwners` entry for `tag:xteink` (owner Ben), and rules that let
-     `tag:xteink` reach `tag:home-vm` on tcp 2300, tcp 6060 and ICMP, and Ben's Mac on tcp 2300. Ben writes the
-     rules in his policy's own syntax.
-  2. A reusable, pre-approved auth key tagged `tag:xteink`, from the `bzatrok.github` admin console, in
-     `~/.config/tailesp32/.env` (mode 600) as `TAILESP32_AUTHKEY=tskey-auth-...`. It lives outside every repo,
-     because this handover creates the repo.
+  1. In the `bzatrok.github` tailnet policy: `"tag:xteink": ["autogroup:admin"]` under `tagOwners`, and the rule
+     `{"action": "accept", "src": ["tag:xteink"], "dst": ["tag:home-vm:2300,6060", "bzatrok@github:2300"]}`
+     under `acls`. ICMP needs no rule: Tailscale allows it wherever TCP between the two devices is allowed.
+  2. A reusable, pre-approved auth key tagged `tag:xteink`, from the `bzatrok.github` admin console. Ben saves it
+     with `~/.config/tailesp32/save-authkey.sh`, which writes `~/.config/tailesp32/.env` (mode 600) as
+     `TAILESP32_AUTHKEY=tskey-auth-...` and creates the 1Password item "tailesp32 auth key (tag:xteink)" in the
+     `Employee` vault. The file lives outside every repo, because this handover creates the repo.
   - Check 2 by `grep -q '^TAILESP32_AUTHKEY=tskey-auth-' ~/.config/tailesp32/.env`. Never print the key. You
     cannot check 1 directly. Task 7 proves it.
   - The Mac does not need to switch tailnets. The prototype is its own tailnet node.
