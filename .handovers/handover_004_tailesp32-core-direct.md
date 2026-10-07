@@ -28,8 +28,10 @@ handover. That is [tailnet-device-integration](handover_005_tailnet-device-integ
      `tag:xteink` reach `tag:home-vm` on tcp 2300, tcp 6060 and ICMP, and Ben's Mac on tcp 2300. Ben writes the
      rules in his policy's own syntax.
   2. A reusable, pre-approved auth key tagged `tag:xteink`, from the `bzatrok.github` admin console, in
-     `~/dev/tailesp32/.env` as `TAILESP32_AUTHKEY=tskey-auth-...`. The file is gitignored.
-  - Check 2 by `test -s ~/dev/tailesp32/.env`. You cannot check 1 directly. Task 7 proves it.
+     `~/.config/tailesp32/.env` (mode 600) as `TAILESP32_AUTHKEY=tskey-auth-...`. It lives outside every repo,
+     because this handover creates the repo.
+  - Check 2 by `grep -q '^TAILESP32_AUTHKEY=tskey-auth-' ~/.config/tailesp32/.env`. Never print the key. You
+    cannot check 1 directly. Task 7 proves it.
   - The Mac does not need to switch tailnets. The prototype is its own tailnet node.
 - **Test peer:** AMB-HM-001, the home VM. LAN `192.168.0.152`, same LAN as the Mac, Tailscale hostname
   `amb-hm-001`, tag `tag:home-vm`. Its 100.x address comes from the prototype's own peer list.
@@ -69,7 +71,7 @@ handover. That is [tailnet-device-integration](handover_005_tailnet-device-integ
 
 ## 1 — Create the repo  *(DECIDED)*
 
-- `mkdir ~/dev/tailesp32 && cd ~/dev/tailesp32 && git init -b main`.
+- `mkdir -p ~/dev/tailesp32 && cd ~/dev/tailesp32 && git init -b main`.
 - Add `.git/info/exclude` lines: `CLAUDE.md`, `PROJECT_CONTEXT.md`.
 - Scaffold commit on `main`:
   - `README.md`: what it is (a small Tailscale-compatible client for ESP32, with a portable C core), status
@@ -177,7 +179,8 @@ The shape is fixed. Exact names and signatures are yours.
 
 `tools/cli/tailesp32-cli`, state in `--state-dir` (default `./state`):
 
-- `register`: reads `TAILESP32_AUTHKEY` from the environment or `.env`, hostname `tailesp32-proto`. Prints own
+- `register`: reads `TAILESP32_AUTHKEY` from the environment, else from `~/.config/tailesp32/.env`, hostname
+  `tailesp32-proto`. Prints own
   100.x and the peer list.
 - `refresh`, `peers`: as named.
 - `ping <100.x> [--count N]`: fast path only. It must not open a TCP connection. Add a guard in the POSIX port

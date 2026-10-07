@@ -130,7 +130,7 @@ Terminus builds image links from its `API_URI`. The device fetches those links, 
 - On that host, set `API_URI=http://<100.x>:2300` in Terminus's `.env` (`~/dev/terminus/.env` on the Mac,
   `/opt/terminus/.env` on the VM), then `docker compose up -d` in that directory.
 - On the device web portal, set Server URL to `http://<100.x>:2300` and enter the reusable auth key from
-  `~/dev/tailesp32/.env`.
+  `~/.config/tailesp32/.env`.
 
 ## Sequencing
 
