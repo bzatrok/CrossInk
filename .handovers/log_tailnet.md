@@ -65,6 +65,8 @@ at home or travelling. A dashboard wake with a fresh cache adds at most 1 s.
   Rejected: `medimarket.hu` (shared with zsolt.zatrok, and the home VM is not in it).
 - Terminus on the VM listens on all interfaces at 2300. Its `API_URI` follows the device: the LAN URL until the
   device has the tunnel, then the 100.x URL. Rejected: a tailnet-only bind (no server for the device meanwhile).
+- [tailnet-device-integration](handover_005_tailnet-device-integration.md) — handshake timestamps are max(valid
+  wall clock, stored last + 1 ms), kept in NVS by the library. Rejected: waiting for SNTP before the tunnel starts.
 - `push-template.sh` gains an optional `TERMINUS_SSH`. Rejected: running the push script on the VM.
 - Tailnet policy: untagged devices (all of Ben's) keep full access; `tag:xteink` gets only Terminus and Grimmory
   ports plus ICMP on `amb-biz-host` and the Mac, with save-time tests. Rejected: the default allow-all for the device.
@@ -95,8 +97,6 @@ at home or travelling. A dashboard wake with a fresh cache adds at most 1 s.
 
 ## Not yet specified
 <!-- in-scope questions you can see coming but cannot yet state sharply -->
-- Wall clock on the device: WireGuard handshake timestamps come from the wall clock. Before SNTP the peer may drop
-  them. Handover 005 should start the tunnel after time sync; how CrossInk knows the time is synced is open.
 - When `tailesp32` is stable enough for a first release on the PlatformIO Registry, after which CrossInk pins a
   version instead of the submodule. Not before DERP works on hardware.
 

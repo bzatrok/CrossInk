@@ -67,6 +67,19 @@ the dashboard at Terminus's 100.x address and prove it on hardware.
 - API: `tse_esp_start()`, `tse_esp_stop()`, `tse_esp_wait_ready(timeout_ms)`, `tse_esp_register(auth_key)`.
   Each logs and returns false on failure. None aborts.
 
+## 1b — Handshake timestamps that never go backwards  *(DECIDED)*
+
+**Files:** `tailesp32` core (`src/core/wg.c` or where the TAI64N timestamp is built), a test in `tests/`.
+- Why: a peer drops a WireGuard handshake initiation whose timestamp is not newer than the last one it saw from
+  this node (wireguard-go replay check). The device's clock can be unset before SNTP or after a power loss.
+  CrossInk's own validity check (`dashboard::clock::nowUtc`) has minute resolution only, which is too coarse.
+- Rule: timestamp = the later of (a) the platform wall clock when it reads 2026-01-01 or later, and (b) the last
+  sent timestamp plus 1 ms. Store the last sent timestamp in a store blob `wgts` before the initiation leaves.
+- This lives in the core, so the POSIX and ESP-IDF ports both get it. CrossInk needs no clock hook and the tunnel
+  does not wait for SNTP.
+- Test: with the wall clock at 0, then at a value earlier than the stored one, then later, each new timestamp is
+  strictly greater than the previous one, and the stored blob follows.
+
 ## 2 — Pull tailesp32 into CrossInk  *(DECIDED)*
 
 - `git submodule add -b main https://github.com/bzatrok/tailesp32.git tailesp32`. HTTPS URL, as `freeink-sdk`.
@@ -134,11 +147,13 @@ Terminus builds image links from its `API_URI`. The device fetches those links, 
 
 ## Sequencing
 
-1, then 2 (build only), then 3, 4, 5, then flash and run the hardware checks, then 6 and 7. Task 7 changes a live
+1 and 1b, then 2 (build only), then 3, 4, 5, then flash and run the hardware checks, then 6 and 7. Task 7 changes a live
 server setting, so do it last, right before the hardware checks.
 
 ## Decisions — locked ✅
 
+- Handshake timestamps come from max(valid wall clock, stored last + 1 ms) in the library. Rejected: starting the
+  tunnel only after SNTP (adds the SNTP wait to every wake, and fails without NTP).
 - One global Wi-Fi event hook in `main.cpp`. Rejected: hooks in each activity, and a lazy start on the first
   100.x connection.
 - The netif owns 100.64.0.0/10 and is never the default netif. Rejected: per-client binding to the tunnel IP.
@@ -173,6 +188,9 @@ server setting, so do it last, right before the hardware checks.
   - Wi-Fi off and on in a foreground network screen: the log shows the tunnel stop and start, with no leak in
     `ESP.getFreeHeap()` over 3 cycles.
   - Open a book with Wi-Fi off: free heap matches the `.claude/CONTEXT.md` baseline (about 85-90 KB free).
+  - Power the device fully off (hold power, or let the battery cut out), power on, and trigger "Refresh now". The
+    first wake after power-on still reaches the 100.x Server URL. The log shows the handshake timestamp source
+    (wall clock or stored floor).
 - `git status --short` shows no `.pio/`, `*.generated.h`, `compile_commands.json` or `platformio.local.ini`.
 
 ---
