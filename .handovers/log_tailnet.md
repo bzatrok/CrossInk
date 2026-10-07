@@ -79,9 +79,24 @@ at home or travelling. A dashboard wake with a fresh cache adds at most 1 s.
   (`ml_coord.c:10-12`, `:230`). Rejected: fetching the key over HTTPS (TLS on the slow path).
 - Wake budget: the fast path adds at most 1 s. The slow path takes at most 10 s and runs only on a stale (over 24 h)
   or failed cache.
+- [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) — the library is C11 with a platform seam; the core is its own CMake target and a networking include fails
+  its build. Rejected: C++ or Arduino, a suppressible lint rule.
+- [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) — cJSON over a buffered map response (cap 256 KB), one non-streaming map, pinned control key, protocol 131.
+  Rejected: a streaming parser, capability 148.
+- [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) — the disco key is permanent; IPv4 only; one held packet per peer during a handshake. Rejected: a new disco
+  key per start, IPv6 endpoints, a packet queue.
+- [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) — the UDP port is the port's choice (`tse_platform.udp_port`, 0 = 41641); the POSIX port uses 41642.
+  Rejected: 41641 on the Mac (its Tailscale client holds it), quitting the Mac's Tailscale to test.
+- [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) — endpoints in 172.16/12 and 169.254/16 sort last before the cap of 4; HomeDERP falls back to the legacy
+  `DERP` field. Rejected: raising the cap.
+- [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) — the handshake initiation is re-sent right after we answer the peer's disco ping, at least 50 ms after the
+  previous one. A peer answers only over a path its own ping confirmed, and wireguard-go drops initiations within
+  20 ms. Rejected: fast blind retries (no effect), waiting for the 5 s WireGuard retry (blows the 1 s budget).
 
 ## Not yet specified
 <!-- in-scope questions you can see coming but cannot yet state sharply -->
+- Wall clock on the device: WireGuard handshake timestamps come from the wall clock. Before SNTP the peer may drop
+  them. Handover 005 should start the tunnel after time sync; how CrossInk knows the time is synced is open.
 - When `tailesp32` is stable enough for a first release on the PlatformIO Registry, after which CrossInk pins a
   version instead of the submodule. Not before DERP works on hardware.
 
@@ -93,7 +108,7 @@ at home or travelling. A dashboard wake with a fresh cache adds at most 1 s.
 
 | # | Slug | Goal | Status | Branch | Created | Completed |
 |---|------|------|--------|--------|---------|-----------|
-| 004 | [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) | New `tailesp32` repo: portable C core, register and map, cache, disco, WireGuard, Mac prototype pings the home VM | ⬜ pending | tailesp32 `feat/core-direct-path` | 2026-10-07 | — |
+| 004 | [tailesp32-core-direct](handover_004_tailesp32-core-direct.md) | New `tailesp32` repo: portable C core, register and map, cache, disco, WireGuard, Mac prototype pings the home VM | ✅ done ([PR #1](https://github.com/bzatrok/tailesp32/pull/1)) | tailesp32 `feat/core-direct-path` | 2026-10-07 | 2026-10-07 |
 | 005 | [tailnet-device-integration](handover_005_tailnet-device-integration.md) | ESP-IDF port and lwIP netif, global tunnel on the X4 Pro, auth key in the web portal, dashboard over 100.x at home | ⬜ pending | `feat/tailnet-client` + tailesp32 `feat/esp-idf-port` | 2026-10-07 | — |
 | 006 | [tailesp32-derp](handover_006_tailesp32-derp.md) | DERP relay with path memory, so the dashboard refreshes away from home | ⬜ pending | tailesp32 `feat/derp` + `feat/tailnet-derp` | 2026-10-07 | — |
 | — | Amberglass.Infra `terminus-home-vm` (`~/prod/Amberglass/Amberglass.Infra/.handovers/handover_004_terminus-home-vm.md`) | Terminus on AMB-HM-001, Grimmory 6060 on the tailnet, feed on the Mac's tailnet IP. Lower priority, any time | ⬜ pending | `feature/terminus-home-vm` | 2026-10-07 | — |
