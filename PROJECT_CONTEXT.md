@@ -39,3 +39,4 @@ fork-only features that upstream's `SCOPE.md` excludes.
 
 ## Efforts
 - [.handovers/handover_log.md](.handovers/handover_log.md) — TRMNL dashboard sleep mode.
+- [.handovers/log_tailnet.md](.handovers/log_tailnet.md) — Tailnet client for the X4 Pro (`tailesp32`).
