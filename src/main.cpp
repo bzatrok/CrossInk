@@ -1762,9 +1762,12 @@ void loop() {
 #if defined(CROSSINK_LATENCY_TRACE) && CROSSINK_LATENCY_TRACE && CROSSINK_APP_CAP_TOUCH
     {
       float nx = 0, ny = 0;
-      LATENCY_LOG("edge btnP=%d btnR=%d tDown=%d tUp=%d hkP=%d hkTap=%d hkLong=%d", gpio.wasAnyPressed(),
-                  gpio.wasAnyReleased(), gpio.wasTouchDown(nx, ny), gpio.wasTouchReleased(), gpio.wasHomeKeyPressed(),
-                  gpio.wasHomeKeyTapped(), gpio.wasHomeKeyLongPressed());
+      const bool tDown = gpio.wasTouchDown(nx, ny);
+      float ux = 0, uy = 0;
+      const bool tUp = gpio.wasTouchReleased() && gpio.wasTouchTap(ux, uy);
+      LATENCY_LOG("edge btnP=%d btnR=%d tDown=%d(%.3f,%.3f) tUp=%d tap=%d(%.3f,%.3f) hkP=%d hkTap=%d hkLong=%d",
+                  gpio.wasAnyPressed(), gpio.wasAnyReleased(), tDown, nx, ny, gpio.wasTouchReleased(), tUp, ux, uy,
+                  gpio.wasHomeKeyPressed(), gpio.wasHomeKeyTapped(), gpio.wasHomeKeyLongPressed());
     }
 #endif
     activityManager.notifyUserInput();

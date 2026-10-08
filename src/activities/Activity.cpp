@@ -5,12 +5,17 @@
 #include "GlobalActions.h"
 #include "KOReaderCredentialStore.h"
 #include "reader/EpubReaderMenuModel.h"
+#include "util/LatencyTrace.h"
 
 void Activity::onEnter() { LOG_DBG("ACT", "Entering activity: %s", name.c_str()); }
 
 void Activity::onExit() { LOG_DBG("ACT", "Exiting activity: %s", name.c_str()); }
 
-void Activity::requestUpdate(bool immediate) { activityManager.requestUpdate(immediate); }
+void Activity::requestUpdate(bool immediate) {
+  // Trace build only: the activity-level caller is the interesting one.
+  LATENCY_LOG("requestUpdate(%d) via Activity from %p", immediate ? 1 : 0, __builtin_return_address(0));
+  activityManager.requestUpdate(immediate);
+}
 
 RequestUpdateResult Activity::requestUpdateAndWait() { return activityManager.requestUpdateAndWait(); }
 

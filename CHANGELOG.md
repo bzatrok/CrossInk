@@ -10,9 +10,15 @@
 - Dashboard Orientation setting (Portrait by default): on a portrait-standing device, a server image rotated 90° (Terminus Model rotation 90) draws upright, and the banner follows the device.
 - Dashboard side-key light on the Xteink X4 Pro: while the dashboard shows, pressing a side key turns the frontlight on for a minute at its own brightness. Settings > Dash > Side-key light chooses Always, Evening only (between two hours), or Off. Quiet hours and the battery floor still sleep as before.
 
+### Changed
+
+- Touching a cover or menu item on the Home screen no longer refreshes the screen before the tap opens it, so Settings, Library and books open one e-ink refresh sooner on touch devices.
+
 ### Fixed
 
 - X4 Pro Quick Resume wakes with a differential refresh instead of a half refresh, so the page appears without a black-white flash.
+- Home key presses on the Xteink X4 Pro no longer need repeating when the finger also touches the glass above the key: the key wins over the screen contact.
+- The Home screen (Classic, Lyra, Lyra Extended, Rounded) no longer refreshes a second time right after it appears when the covers are already cached.
 
 ## [v1.6.1] - 2026-10-03
 

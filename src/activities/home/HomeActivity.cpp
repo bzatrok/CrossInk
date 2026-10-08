@@ -40,6 +40,7 @@
 #include "components/themes/lyra/LyraCarouselTheme.h"
 #include "components/themes/minimal/MinimalTheme.h"
 #include "fontIds.h"
+#include "util/LatencyTrace.h"
 
 namespace {
 constexpr uint32_t CAROUSEL_CACHE_MAGIC = 0x43434152;  // "CCAR"
@@ -1394,7 +1395,10 @@ void HomeActivity::loop() {
 
   if (coverGridUi) {
     const int touched = coverGridUi->selectedAction(mappedInput);
-    if (coverGridUi->app.invalidated()) requestUpdate();
+    if (coverGridUi->app.invalidated()) {
+      LATENCY_LOG("home: cover grid app invalidated -> requestUpdate (touched=%d)", touched);
+      requestUpdate();
+    }
     if (touched >= 0 && touched < getMenuItemCount()) {
       selectorIndex = touched;
       activateCoverGridSelection();
@@ -1936,26 +1940,19 @@ void HomeActivity::loop() {
       int touchedBookIndex = -1;
       if (activate ? mappedInput.wasCoverTapped(touchedBookIndex) : mappedInput.wasCoverTouchedDown(touchedBookIndex)) {
         if (touchedBookIndex < 0 || touchedBookIndex >= visibleBookCount) return false;
-        const int previousSelectorIndex = selectorIndex;
         selectorIndex = metrics.homeContinueReadingInMenu ? 0 : touchedBookIndex;
-        if (activate) {
-          activateSelectedHomeItem();
-        } else if (selectorIndex != previousSelectorIndex) {
-          requestUpdate();
-        }
+        // Touch-down only moves the selector. Repainting here cost a full e-ink
+        // refresh (~650 ms on the X4 Pro) before the tap's own screen could
+        // render; the result frame is the feedback.
+        if (activate) activateSelectedHomeItem();
         return true;
       }
 
       int touchedMenuIndex = -1;
       if (activate ? mappedInput.wasItemTapped(touchedMenuIndex) : mappedInput.wasItemTouchedDown(touchedMenuIndex)) {
         if (touchedMenuIndex < 0 || touchedMenuIndex >= static_cast<int>(menuItems.size())) return false;
-        const int previousSelectorIndex = selectorIndex;
         selectorIndex = getHomeMenuSelectionOffset(recentBooks) + touchedMenuIndex;
-        if (activate) {
-          activateSelectedHomeItem();
-        } else if (selectorIndex != previousSelectorIndex) {
-          requestUpdate();
-        }
+        if (activate) activateSelectedHomeItem();
         return true;
       }
       return false;
@@ -2086,10 +2083,12 @@ void HomeActivity::render(RenderLock&&) {
     }
     if (!firstRenderDone) {
       firstRenderDone = true;
+      LATENCY_LOG("home: first render done -> requestUpdate");
       requestUpdate();
     } else if (!recentsLoaded && !recentsLoading) {
       loadCoverGridThumbnails();
       coverGridUi->refreshCoverPaths();
+      LATENCY_LOG("home: thumbnails checked -> requestUpdate");
       requestUpdate();
     }
     return;
@@ -2268,12 +2267,11 @@ void HomeActivity::render(RenderLock&&) {
 
   displayHomeBuffer();
 
-  if (!firstRenderDone) {
-    firstRenderDone = true;
-    requestUpdate();
-    return;
-  }
-
+  // The panel already shows this frame, so the SD work below can run in the
+  // same render pass. A separate second render used to repaint an identical
+  // screen whenever the covers were cached (one more ~650 ms refresh on the
+  // X4 Pro); loadRecentCovers() requests its own render when a cover changes.
+  firstRenderDone = true;
   if (!recentsLoaded && !recentsLoading) {
     recentsLoading = true;
     loadRecentCovers(metrics.homeCoverHeight);

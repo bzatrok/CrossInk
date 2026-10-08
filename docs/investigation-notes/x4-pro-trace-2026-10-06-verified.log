@@ -1,0 +1,294 @@
+[connected 20:17:44]
+LAT:   1477.30 ms  (+ 1329.90)  busy_done
+LAT:   1477.31 ms  (+    0.00)  busy_released
+LAT:   1531.32 ms  (+   54.01)  driver_return
+LAT:   1587.98 ms  (+   56.66)  render_start
+LAT:   1728.44 ms  (+  140.46)  display_call
+LAT:   1728.46 ms  (+    0.02)  driver_start
+LAT:   1796.47 ms  (+   68.01)  waveform_wait
+LAT:   1796.48 ms  (+    0.01)  busy_wait
+LAT:   2280.32 ms  (+  483.83)  busy_done
+LAT:   2344.74 ms  (+   64.41)  driver_return
+LAT:   2360.98 ms  (+   16.23)  render_done
+LAT: total 2360.98 ms
+LAT: @28197 edge btnP=0 btnR=0 tDown=1(0.840,0.593) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @28237 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.840,0.593) hkP=0 hkTap=0 hkLong=0
+LAT: @28282 requestUpdate(0) via Activity from 0x421b4d7a
+LAT: @28282 requestUpdate(0) from 0x420f52ec
+LAT: @28283 render Settings
+[28868]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:     46.06 ms  (+   46.06)  render_start
+LAT:     79.05 ms  (+   33.00)  display_call
+LAT:     79.08 ms  (+    0.02)  driver_start
+LAT:    147.69 ms  (+   68.62)  waveform_wait
+LAT:    147.71 ms  (+    0.01)  busy_wait
+LAT:    632.02 ms  (+  484.31)  busy_done
+LAT:    632.03 ms  (+    0.01)  busy_released
+LAT:    699.29 ms  (+   67.26)  driver_return
+LAT:    699.33 ms  (+    0.04)  render_done
+LAT: total 699.33 ms
+LAT: @29480 edge btnP=0 btnR=0 tDown=1(0.994,0.459) tUp=0 tap=0(0.000,0.000) hkP=1 hkTap=0 hkLong=0
+LAT: @29545 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=1 hkLong=0
+LAT: @29546 homekey tap seen, pending
+LAT: @29859 homekey single-tap fires after 313 ms window
+LAT: @29962 requestUpdate(0) via Activity from 0x4211ac1b
+LAT: @29962 requestUpdate(0) from 0x420f52ec
+LAT: @29962 render Home
+[30642]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    416.66 ms  (+  416.66)  render_start
+LAT:    543.63 ms  (+  126.96)  display_call
+LAT:    543.65 ms  (+    0.02)  driver_start
+LAT:    612.52 ms  (+   68.87)  waveform_wait
+LAT:    612.53 ms  (+    0.01)  busy_wait
+LAT:   1096.99 ms  (+  484.46)  busy_done
+LAT:   1097.01 ms  (+    0.01)  busy_released
+LAT:   1163.15 ms  (+   66.14)  driver_return
+LAT:   1178.63 ms  (+   15.49)  render_done
+LAT: total 1178.63 ms
+LAT: @31884 edge btnP=0 btnR=0 tDown=1(0.582,0.413) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @31987 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.582,0.413) hkP=0 hkTap=0 hkLong=0
+LAT: @31998 requestUpdate(0) via Activity from 0x42127730
+LAT: @31998 requestUpdate(0) from 0x420f52ec
+LAT: @31998 render Library
+[32571]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:     10.64 ms  (+   10.64)  render_start
+LAT:     32.11 ms  (+   21.47)  display_call
+LAT:     32.13 ms  (+    0.02)  driver_start
+LAT:    100.02 ms  (+   67.88)  waveform_wait
+LAT:    100.03 ms  (+    0.01)  busy_wait
+LAT:    584.02 ms  (+  484.00)  busy_done
+LAT:    584.04 ms  (+    0.01)  busy_released
+LAT:    648.56 ms  (+   64.53)  driver_return
+LAT:    648.62 ms  (+    0.06)  render_done
+LAT: total 648.62 ms
+LAT: @33993 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=1 hkTap=0 hkLong=0
+LAT: @34065 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=1 hkLong=0
+LAT: @34066 homekey tap seen, pending
+LAT: @34369 homekey single-tap fires after 303 ms window
+LAT: @34410 requestUpdate(0) via Activity from 0x4211ac1b
+LAT: @34410 requestUpdate(0) from 0x420f52ec
+LAT: @34411 render Home
+[35088]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    345.31 ms  (+  345.31)  render_start
+LAT:    470.17 ms  (+  124.86)  display_call
+LAT:    470.19 ms  (+    0.02)  driver_start
+LAT:    538.42 ms  (+   68.23)  waveform_wait
+LAT:    538.43 ms  (+    0.01)  busy_wait
+LAT:   1022.50 ms  (+  484.07)  busy_done
+LAT:   1022.52 ms  (+    0.01)  busy_released
+LAT:   1086.18 ms  (+   63.66)  driver_return
+LAT:   1102.97 ms  (+   16.79)  render_done
+LAT: total 1102.97 ms
+LAT: @35375 edge btnP=0 btnR=0 tDown=1(0.830,0.555) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @35453 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.830,0.555) hkP=0 hkTap=0 hkLong=0
+LAT: @35499 requestUpdate(0) via Activity from 0x421b4d7a
+LAT: @35499 requestUpdate(0) from 0x420f52ec
+LAT: @35499 render Settings
+[36083]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:     45.82 ms  (+   45.82)  render_start
+LAT:     75.60 ms  (+   29.78)  display_call
+LAT:     75.63 ms  (+    0.02)  driver_start
+LAT:    145.51 ms  (+   69.88)  waveform_wait
+LAT:    145.52 ms  (+    0.01)  busy_wait
+LAT:    630.02 ms  (+  484.50)  busy_done
+LAT:    630.04 ms  (+    0.01)  busy_released
+LAT:    697.18 ms  (+   67.14)  driver_return
+LAT:    697.23 ms  (+    0.05)  render_done
+LAT: total 697.23 ms
+LAT: @37541 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=1 hkTap=0 hkLong=0
+LAT: @37606 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=1 hkLong=0
+LAT: @37607 homekey tap seen, pending
+LAT: @37920 homekey single-tap fires after 313 ms window
+LAT: @38023 requestUpdate(0) via Activity from 0x4211ac1b
+LAT: @38023 requestUpdate(0) from 0x420f52ec
+LAT: @38023 render Home
+[38701]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    416.85 ms  (+  416.85)  render_start
+LAT:    542.34 ms  (+  125.49)  display_call
+LAT:    542.36 ms  (+    0.02)  driver_start
+LAT:    611.17 ms  (+   68.81)  waveform_wait
+LAT:    611.19 ms  (+    0.01)  busy_wait
+LAT:   1095.02 ms  (+  483.83)  busy_done
+LAT:   1095.03 ms  (+    0.01)  busy_released
+LAT:   1161.17 ms  (+   66.14)  driver_return
+LAT:   1176.79 ms  (+   15.62)  render_done
+LAT: total 1176.79 ms
+LAT: @38897 edge btnP=0 btnR=0 tDown=1(0.558,0.559) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @39000 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.558,0.559) hkP=0 hkTap=0 hkLong=0
+LAT: @39010 requestUpdate(0) via Activity from 0x42127730
+LAT: @39011 requestUpdate(0) from 0x420f52ec
+LAT: @39011 render Library
+[39584]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:     10.63 ms  (+   10.63)  render_start
+LAT:     31.81 ms  (+   21.18)  display_call
+LAT:     31.83 ms  (+    0.02)  driver_start
+LAT:     99.88 ms  (+   68.05)  waveform_wait
+LAT:     99.89 ms  (+    0.01)  busy_wait
+LAT:    584.03 ms  (+  484.13)  busy_done
+LAT:    584.04 ms  (+    0.01)  busy_released
+LAT:    649.16 ms  (+   65.12)  driver_return
+LAT:    649.21 ms  (+    0.05)  render_done
+LAT: total 649.21 ms
+LAT: @39925 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=1 hkTap=0 hkLong=0
+LAT: @40009 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=1 hkLong=0
+LAT: @40010 homekey tap seen, pending
+LAT: @40314 homekey single-tap fires after 304 ms window
+LAT: @40355 requestUpdate(0) via Activity from 0x4211ac1b
+LAT: @40355 requestUpdate(0) from 0x420f52ec
+LAT: @40356 render Home
+[41033]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    346.32 ms  (+  346.32)  render_start
+LAT:    471.06 ms  (+  124.74)  display_call
+LAT:    471.09 ms  (+    0.02)  driver_start
+LAT:    539.38 ms  (+   68.30)  waveform_wait
+LAT:    539.40 ms  (+    0.01)  busy_wait
+LAT:   1023.50 ms  (+  484.10)  busy_done
+LAT:   1023.51 ms  (+    0.01)  busy_released
+LAT:   1087.25 ms  (+   63.74)  driver_return
+LAT:   1103.96 ms  (+   16.71)  render_done
+LAT: total 1103.96 ms
+LAT: @51757 edge btnP=0 btnR=0 tDown=1(0.631,0.484) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @51823 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.631,0.484) hkP=0 hkTap=0 hkLong=0
+LAT: @51832 requestUpdate(0) via Activity from 0x42142932
+LAT: @51833 requestUpdate(0) from 0x420f52ec
+LAT: @51833 render BookStats
+[52407]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:     10.39 ms  (+   10.39)  render_start
+LAT:     34.66 ms  (+   24.28)  display_call
+LAT:     34.69 ms  (+    0.02)  driver_start
+LAT:    101.21 ms  (+   66.52)  waveform_wait
+LAT:    101.22 ms  (+    0.01)  busy_wait
+LAT:    585.01 ms  (+  483.80)  busy_done
+LAT:    585.03 ms  (+    0.01)  busy_released
+LAT:    648.81 ms  (+   63.78)  driver_return
+LAT:    648.85 ms  (+    0.04)  render_done
+LAT: total 648.85 ms
+LAT: @52680 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=1 hkTap=0 hkLong=0
+LAT: @52788 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=1 hkLong=0
+LAT: @52789 homekey tap seen, pending
+LAT: @53090 homekey single-tap fires after 301 ms window
+LAT: @53091 requestUpdate(0) via Activity from 0x42119add
+LAT: @53091 requestUpdate(0) from 0x420f52ec
+LAT: @53091 requestUpdate(0) from 0x420f9239
+LAT: @53092 render Home
+[53769]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    303.10 ms  (+  303.10)  render_start
+LAT:    428.54 ms  (+  125.43)  display_call
+LAT:    428.56 ms  (+    0.02)  driver_start
+LAT:    497.38 ms  (+   68.82)  waveform_wait
+LAT:    497.39 ms  (+    0.01)  busy_wait
+LAT:    981.03 ms  (+  483.64)  busy_done
+LAT:    981.05 ms  (+    0.01)  busy_released
+LAT:   1047.15 ms  (+   66.11)  driver_return
+LAT:   1047.20 ms  (+    0.05)  render_done
+LAT: total 1047.20 ms
+LAT: @53844 edge btnP=0 btnR=0 tDown=1(0.819,0.605) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @53936 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.819,0.605) hkP=0 hkTap=0 hkLong=0
+LAT: @53981 requestUpdate(0) via Activity from 0x421b4d7a
+LAT: @53981 requestUpdate(0) from 0x420f52ec
+LAT: @53981 render Settings
+[54566]   Wait complete:  8279x4_DRF (484 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:     45.86 ms  (+   45.86)  render_start
+LAT:     76.59 ms  (+   30.73)  display_call
+LAT:     76.61 ms  (+    0.02)  driver_start
+LAT:    146.49 ms  (+   69.88)  waveform_wait
+LAT:    146.51 ms  (+    0.01)  busy_wait
+LAT:    631.01 ms  (+  484.51)  busy_done
+LAT:    631.03 ms  (+    0.01)  busy_released
+LAT:    698.17 ms  (+   67.14)  driver_return
+LAT:    698.38 ms  (+    0.21)  render_done
+LAT: total 698.38 ms
+LAT: @54906 edge btnP=0 btnR=0 tDown=1(0.129,0.280) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @54972 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.129,0.280) hkP=0 hkTap=0 hkLong=0
+LAT: @54973 requestUpdate(0) via Activity from 0x421b57d1
+LAT: @54974 requestUpdate(0) from 0x420f52ec
+LAT: @54974 render Settings
+LAT: @55419 edge btnP=0 btnR=0 tDown=1(0.134,0.438) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @55471 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.134,0.438) hkP=0 hkTap=0 hkLong=0
+LAT: @55473 requestUpdate(0) via Activity from 0x421b57d1
+LAT: @55474 requestUpdate(0) from 0x420f52ec
+[55556]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:      2.30 ms  (+    2.30)  render_start
+LAT:     31.15 ms  (+   28.86)  display_call
+LAT:     31.18 ms  (+    0.02)  driver_start
+LAT:    101.04 ms  (+   69.86)  waveform_wait
+LAT:    101.05 ms  (+    0.01)  busy_wait
+LAT:    585.00 ms  (+  483.95)  busy_done
+LAT:    585.01 ms  (+    0.01)  busy_released
+LAT:    650.18 ms  (+   65.17)  driver_return
+LAT:    650.25 ms  (+    0.07)  render_done
+LAT: total 650.25 ms
+LAT: @55626 render Settings
+LAT: @55781 edge btnP=0 btnR=0 tDown=1(0.134,0.693) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @55859 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.134,0.693) hkP=0 hkTap=0 hkLong=0
+LAT: @55861 requestUpdate(0) via Activity from 0x421b57d1
+LAT: @55862 requestUpdate(0) from 0x420f52ec
+[56203]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    154.55 ms  (+  154.55)  render_start
+LAT:    178.25 ms  (+   23.70)  display_call
+LAT:    178.28 ms  (+    0.03)  driver_start
+LAT:    248.25 ms  (+   69.96)  waveform_wait
+LAT:    248.26 ms  (+    0.02)  busy_wait
+LAT:    732.02 ms  (+  483.76)  busy_done
+LAT:    732.04 ms  (+    0.01)  busy_released
+LAT:    796.77 ms  (+   64.73)  driver_return
+LAT:    796.81 ms  (+    0.04)  render_done
+LAT: total 796.81 ms
+LAT: @56271 render Settings
+LAT: @56457 edge btnP=0 btnR=0 tDown=1(0.140,0.317) tUp=0 tap=0(0.000,0.000) hkP=0 hkTap=0 hkLong=0
+LAT: @56496 edge btnP=0 btnR=0 tDown=0(0.000,0.000) tUp=1 tap=1(0.140,0.317) hkP=0 hkTap=0 hkLong=0
+LAT: @56498 requestUpdate(0) via Activity from 0x421b57d1
+LAT: @56499 requestUpdate(0) from 0x420f52ec
+[56868]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    411.25 ms  (+  411.25)  render_start
+LAT:    455.59 ms  (+   44.34)  display_call
+LAT:    455.61 ms  (+    0.02)  driver_start
+LAT:    525.08 ms  (+   69.47)  waveform_wait
+LAT:    525.09 ms  (+    0.01)  busy_wait
+LAT:   1009.03 ms  (+  483.94)  busy_done
+LAT:   1009.04 ms  (+    0.01)  busy_released
+LAT:   1075.20 ms  (+   66.16)  driver_return
+LAT:   1075.25 ms  (+    0.05)  render_done
+LAT: total 1075.25 ms
+LAT: @56938 render Settings
+[57519]   Wait complete:  8279x4_DRF (483 ms)
+LAT: ---- trace (10 marks, t0 = input_edge) ----
+LAT:      0.00 ms  (+    0.00)  input_edge
+LAT:    441.38 ms  (+  441.38)  render_start
+LAT:    470.61 ms  (+   29.22)  display_call
+LAT:    470.63 ms  (+    0.02)  driver_start
+LAT:    539.34 ms  (+   68.71)  waveform_wait
+LAT:    539.35 ms  (+    0.01)  busy_wait
+LAT:   1023.02 ms  (+  483.67)  busy_done
+LAT:   1023.04 ms  (+    0.01)  busy_released
+LAT:   1090.30 ms  (+   67.26)  driver_return
+LAT:   1090.34 ms  (+    0.04)  render_done
+LAT: total 1090.34 ms

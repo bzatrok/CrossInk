@@ -341,6 +341,62 @@ fewer refreshes per tap, not more feedback frames:
 4. Home key: the 300 ms deferral is only needed when a double-tap action is configured.
 5. Waveform (#4) shortens every remaining refresh.
 
+## 4d. Measured: Home key presses that need repeating never reach the firmware (2026-10-06)
+
+Third capture (`scripts/capture_latency_trace.py`, event-line build with Home render
+requesters tagged). Ben: "Home needed 2 taps from Settings, 3 from Library". The log
+shows exactly one Home key press edge per episode (`hkP=1` at @27571 and @40999),
+four and six seconds after the last touch. The repeated presses produced no input
+edge at all, so nothing downstream (deferral, double-tap, render) was involved.
+
+How the key is read (`freeink-sdk/libs/hardware/InputManager/src/InputManager.cpp
+pollGt911`): the GT911 status register 0x814E is polled once per main-loop iteration;
+the key press and release edges are taken from bit 0x10 only on a fresh frame (bit
+0x80), and 0x814E is cleared after each read. The X4 Pro wires the GT911 INT line to
+GPIO10 (`BoardConfig.h:1680-1699`, irq=10) but the GT911 path never uses it. The loop
+polls every 10 ms while active and every 50 ms with the CPU at 80 MHz after 3 s idle
+(`main.cpp` tail, `HalPowerManager::IDLE_POWER_SAVING_MS = 3000`, `LOW_POWER_FREQ = 80`).
+The two presses that did register show 14 ms and 38 ms between press and release
+frames, i.e. the key contact is short. Working hypothesis (not yet proven): a short key
+tap during the 50 ms idle cadence is overwritten by the lift frame before the host
+reads it, so neither edge is seen. Both lost episodes happened after >3 s idle; the
+Home key presses in the second capture that worked first time came ~1 s after activity.
+
+Test that settles it: keep the 10 ms poll while idle (plan item #3) and repeat the
+Home key after 5 s idle. If still lost, latch frames from the INT edge on GPIO10 instead.
+
+Also from this capture: the home screen is not the Cover Grid theme on Ben's device
+(the three tagged `home:` requesters never printed), so the three renders per entry
+come from another theme branch in `HomeActivity::render()` (Lyra carousel
+`preRenderCarouselFrames` → `requestUpdate`, or the default branch's
+`carouselWarmupPending`). Which one is open until the theme is known.
+
+**Correction (same day, capture 5, idle poll kept at 10 ms):** the idle-poll hypothesis is
+wrong and the change was reverted. With the 10 ms poll the counts were unchanged (2, 3, 1,
+2 presses). The log shows the "lost" presses as *screen touches* (`tDown`/`tUp`, 100-160 ms
+contact) with no key bit, then the press that worked as `hkP`/`hkTap`; one press reported
+both at once. So the GT911 reports a Home key press as a touch contact when the finger
+also covers the glass above the key. Next capture prints the contact coordinates; if they
+sit in a fixed strip at the panel's bottom edge, the fix is to route that strip to the
+Home key events (the SDK already does this for the GSLX680 sentinel, `InputManager.cpp:1852`).
+
+Also attributed with the requester addresses (`addr2line` on `firmware.elf`): on Lyra
+Extended, Home renders twice per entry, not three times: `HomeActivity::onEnter()`
+(`HomeActivity.cpp:929`) and the default branch's `firstRenderDone` re-request
+(`HomeActivity.cpp:2294`). The render that followed a tile touch-down came from
+`HomeActivity::loop()` (`HomeActivity.cpp:1950`): `wasCoverTouchedDown` /
+`wasItemTouchedDown` move the selector and repaint. Both are fixed on
+`perf/x4-pro-fewer-refreshes` (second render dropped, touch-down no longer repaints).
+
+**Verified (capture 8, same day):** with the GT911 path suppressing the screen contact while
+the key is down (`InputManager.cpp pollGt911`, end), four Home key presses after 5 s pauses
+all registered first time ("flawless"). The one press that also produced a contact landed at
+normalized (0.994, 0.459): the panel edge next to the key, suppressed. Home key → Home is
+now one render, 1.10-1.18 s from the key release (300 ms deferral + ~700 ms refresh + ~100 ms
+render). Settings and Library tiles open in one refresh, 650-700 ms from the lift, with no
+touch-down repaint. Lost-press case with no key bit at all did not recur in this run; if it
+does, route contacts at x > 0.98 to the key.
+
 ## 5. Suggested order
 
 1. Flash the trace build and fill in the "unknown" rows (render time, waveform #1,

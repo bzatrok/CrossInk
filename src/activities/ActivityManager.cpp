@@ -1327,6 +1327,9 @@ ScreenshotInfo ActivityManager::getScreenshotInfo() const {
 }
 
 void ActivityManager::requestUpdate(bool immediate) {
+  // Trace build only: name the requester so repeated renders can be attributed
+  // (resolve with xtensa-esp-elf-addr2line -e firmware.elf <addr>).
+  LATENCY_LOG("requestUpdate(%d) from %p", immediate ? 1 : 0, __builtin_return_address(0));
   if (immediate) {
     if (renderTaskHandle) {
       xTaskNotify(renderTaskHandle, 1, eIncrement);
